@@ -102,7 +102,7 @@ public class PlayerLocomotion : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.E) && player.CurrentStamina > 0)
         {
             _currentSpeed = player.DashSpeed;
-            player.UseStamina(10f);
+            player.ReduceStamina(10f);
             StartCoroutine(FinishDash(0.2f));
         }
     }

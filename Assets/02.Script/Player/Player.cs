@@ -53,15 +53,20 @@ public class Player : MonoBehaviour
         return hitWall;
     }
 
-    public void UseStamina(float amountPerSecond)
+    public void UseStamina(float amount)
     {
-        CurrentStamina = Mathf.Clamp(CurrentStamina - Time.deltaTime * amountPerSecond, 0f, _maxStamina);
+        CurrentStamina = Mathf.Clamp(CurrentStamina - Time.deltaTime * amount, 0f, _maxStamina);
         UiManager.Instance.RefreshStamina(CurrentStamina);
     }
-
-    public void RecoverStamina(float amountPerSecond)
+    // 한번에 달게하기
+    public void ReduceStamina(float amount)
     {
-        CurrentStamina = Mathf.Clamp(CurrentStamina + Time.deltaTime * amountPerSecond, 0f, _maxStamina);
+        CurrentStamina = Mathf.Clamp(CurrentStamina - amount, 0f, _maxStamina);
+        UiManager.Instance.RefreshStamina(CurrentStamina);
+    }
+    public void RecoverStamina(float amount)
+    {
+        CurrentStamina = Mathf.Clamp(CurrentStamina + Time.deltaTime * amount, 0f, _maxStamina);
         UiManager.Instance.RefreshStamina(CurrentStamina);
     }
 }
