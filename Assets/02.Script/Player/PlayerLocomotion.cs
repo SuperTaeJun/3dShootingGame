@@ -6,19 +6,19 @@ public class PlayerLocomotion : MonoBehaviour
 {
     private Player player;
 
-    private const float Gravity = -9.8f;
-    private float yVelocity;
-    private float currentSpeed;
-    private int jumpCount;
-    private bool isClimbing;
-    private bool isRunning;
+    private const float GRAVITY = -9.8f;
+    private float _yVelocity;
+    private float _currentSpeed;
+    private int _jumpCount;
+    private bool _isClimbing;
+    private bool _isRunning;
 
-    public bool IsRunning => isRunning;
+    public bool IsRunning => _isRunning;
 
     private void Awake()
     {
         player = GetComponent<Player>();
-        currentSpeed = player.WalkSpeed;
+        _currentSpeed = player.WalkSpeed;
     }
 
     private void Update()
@@ -31,9 +31,9 @@ public class PlayerLocomotion : MonoBehaviour
 
         if (player.CharacterController.isGrounded)
         {
-            jumpCount = 0;
-            if (yVelocity < 0f)
-                yVelocity = -1f;
+            _jumpCount = 0;
+            if (_yVelocity < 0f)
+                _yVelocity = -1f;
         }
 
         Jump();
@@ -41,8 +41,8 @@ public class PlayerLocomotion : MonoBehaviour
         Dash();
         Climb();
 
-        Vector3 move = dir * currentSpeed;
-        move.y = yVelocity;
+        Vector3 move = dir * _currentSpeed;
+        move.y = _yVelocity;
         player.CharacterController.Move(move * Time.deltaTime);
         RecoverStamina();
     }
@@ -53,24 +53,24 @@ public class PlayerLocomotion : MonoBehaviour
 
         if (canClimb)
         {
-            isClimbing = true;
+            _isClimbing = true;
             player.UseStamina(20f);
-            yVelocity = player.ClimbSpeed;
+            _yVelocity = player.ClimbSpeed;
         }
         else
         {
-            isClimbing = false;
-            yVelocity += Gravity * Time.deltaTime;
+            _isClimbing = false;
+            _yVelocity += GRAVITY * Time.deltaTime;
         }
     }
 
     private void Jump()
     {
-        bool canJump = jumpCount < player.MaxJumpCount && !isClimbing;
+        bool canJump = _jumpCount < player.MaxJumpCount && !_isClimbing;
         if (Input.GetKeyDown(KeyCode.Space) && canJump)
         {
-            yVelocity = player.JumpPower;
-            jumpCount++;
+            _yVelocity = player.JumpPower;
+            _jumpCount++;
         }
     }
 
@@ -78,20 +78,20 @@ public class PlayerLocomotion : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.LeftShift) && player.CurrentStamina > 0)
         {
-            currentSpeed = player.RunSpeed;
-            isRunning = true;
+            _currentSpeed = player.RunSpeed;
+            _isRunning = true;
             player.UseStamina(4f);
         }
         else if (Input.GetKeyUp(KeyCode.LeftShift))
         {
-            currentSpeed = player.WalkSpeed;
-            isRunning = false;
+            _currentSpeed = player.WalkSpeed;
+            _isRunning = false;
         }
     }
 
     private void RecoverStamina()
     {
-        if (player.CurrentStamina < player.MaxStamina && !isRunning && player.CharacterController.isGrounded)
+        if (player.CurrentStamina < player.MaxStamina && !_isRunning && player.CharacterController.isGrounded)
         {
             player.RecoverStamina(10f);
         }
@@ -101,7 +101,7 @@ public class PlayerLocomotion : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.E) && player.CurrentStamina > 0)
         {
-            currentSpeed = player.DashSpeed;
+            _currentSpeed = player.DashSpeed;
             player.UseStamina(10f);
             StartCoroutine(FinishDash(0.2f));
         }
@@ -110,6 +110,6 @@ public class PlayerLocomotion : MonoBehaviour
     private IEnumerator FinishDash(float delay)
     {
         yield return new WaitForSeconds(delay);
-        currentSpeed = player.WalkSpeed;
+        _currentSpeed = player.WalkSpeed;
     }
 }

@@ -5,38 +5,38 @@ using static UnityEditor.Experimental.GraphView.GraphView;
 public class Player : MonoBehaviour
 {
     [Header("Movement Settings")]
-    [SerializeField] private float walkSpeed = 5f;
-    [SerializeField] private float runSpeed = 12f;
-    [SerializeField] private float dashSpeed = 50f;
-    [SerializeField] private float climbSpeed = 2f;
-    [SerializeField] private float rotationSpeed = 180f;
-    [SerializeField] private float jumpPower = 10f;
-    [SerializeField] private int maxJumpCount = 2;
+    [SerializeField] private float _walkSpeed = 5f;
+    [SerializeField] private float _runSpeed = 12f;
+    [SerializeField] private float _dashSpeed = 50f;
+    [SerializeField] private float _climbSpeed = 2f;
+    [SerializeField] private float _rotationSpeed = 180f;
+    [SerializeField] private float _jumpPower = 10f;
+    [SerializeField] private int _maxJumpCount = 2;
 
     [Header("Stamina Settings")]
-    [SerializeField] private float maxStamina = 100f;
+    [SerializeField] private float _maxStamina = 100f;
 
     [Header("Wall Check Settings")]
-    [SerializeField] private Transform wallCheck;
-    [SerializeField] private float wallCheckDistance = 1.0f;
-    [SerializeField] private LayerMask wallLayer;
+    [SerializeField] private Transform _wallCheck;
+    [SerializeField] private float _wallCheckDistance = 1.0f;
+    [SerializeField] private LayerMask _wallLayer;
 
     public float CurrentStamina { get; private set; }
     public CharacterController CharacterController { get; private set; }
 
-    public float WalkSpeed => walkSpeed;
-    public float RunSpeed => runSpeed;
-    public float DashSpeed => dashSpeed;
-    public float ClimbSpeed => climbSpeed;
-    public float RotationSpeed => rotationSpeed;
-    public float JumpPower => jumpPower;
-    public int MaxJumpCount => maxJumpCount;
-    public float MaxStamina => maxStamina;
+    public float WalkSpeed => _walkSpeed;
+    public float RunSpeed => _runSpeed;
+    public float DashSpeed => _dashSpeed;
+    public float ClimbSpeed => _climbSpeed;
+    public float RotationSpeed => _rotationSpeed;
+    public float JumpPower => _jumpPower;
+    public int MaxJumpCount => _maxJumpCount;
+    public float MaxStamina => _maxStamina;
 
     private void Awake()
     {
         CharacterController = GetComponent<CharacterController>();
-        CurrentStamina = maxStamina;
+        CurrentStamina = _maxStamina;
     }
 
     private void Start()
@@ -46,22 +46,22 @@ public class Player : MonoBehaviour
 
     public bool IsWallInFront()
     {
-        Vector3 origin = wallCheck.position;
-        Vector3 direction = wallCheck.forward;
-        bool hitWall = Physics.Raycast(origin, direction, wallCheckDistance, wallLayer);
+        Vector3 origin = _wallCheck.position;
+        Vector3 direction = _wallCheck.forward;
+        bool hitWall = Physics.Raycast(origin, direction, _wallCheckDistance, _wallLayer);
 
         return hitWall;
     }
 
     public void UseStamina(float amountPerSecond)
     {
-        CurrentStamina = Mathf.Clamp(CurrentStamina - Time.deltaTime * amountPerSecond, 0f, maxStamina);
+        CurrentStamina = Mathf.Clamp(CurrentStamina - Time.deltaTime * amountPerSecond, 0f, _maxStamina);
         UiManager.Instance.RefreshStamina(CurrentStamina);
     }
 
     public void RecoverStamina(float amountPerSecond)
     {
-        CurrentStamina = Mathf.Clamp(CurrentStamina + Time.deltaTime * amountPerSecond, 0f, maxStamina);
+        CurrentStamina = Mathf.Clamp(CurrentStamina + Time.deltaTime * amountPerSecond, 0f, _maxStamina);
         UiManager.Instance.RefreshStamina(CurrentStamina);
     }
 }
