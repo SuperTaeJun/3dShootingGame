@@ -58,7 +58,7 @@ public class Player : MonoBehaviour
         CurrentStamina = Mathf.Clamp(CurrentStamina - Time.deltaTime * amount, 0f, _maxStamina);
         UiManager.Instance.RefreshStamina(CurrentStamina);
     }
-    // ÇÑ¹ø¿¡ ´Ş°ÔÇÏ±â
+    // í•œë²ˆì— ë‹¬ê²Œí•˜ê¸°
     public void ReduceStamina(float amount)
     {
         CurrentStamina = Mathf.Clamp(CurrentStamina - amount, 0f, _maxStamina);
