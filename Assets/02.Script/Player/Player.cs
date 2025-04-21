@@ -48,9 +48,8 @@ public class Player : MonoBehaviour
     {
         Vector3 origin = wallCheck.position;
         Vector3 direction = wallCheck.forward;
-        bool hitWall = Physics.Raycast(origin, direction, out _, wallCheckDistance, wallLayer);
+        bool hitWall = Physics.Raycast(origin, direction, wallCheckDistance, wallLayer);
 
-        Debug.DrawRay(origin, direction * wallCheckDistance, hitWall ? Color.red : Color.green);
         return hitWall;
     }
 
