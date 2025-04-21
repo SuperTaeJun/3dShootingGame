@@ -19,6 +19,8 @@ public class Player : MonoBehaviour
     [SerializeField] private float _useDashStamina = 10f;
     [SerializeField] private float _useClimbStamina = 20f;
     [SerializeField] private float _useRunStamina = 4f;
+    [SerializeField] private float _recoveryStamina = 5f;
+
 
     [Header("Wall Check Settings")]
     [SerializeField] private Transform _wallCheck;
@@ -70,9 +72,9 @@ public class Player : MonoBehaviour
         CurrentStamina = Mathf.Clamp(CurrentStamina - amount, 0f, _maxStamina);
         UiManager.Instance.RefreshStamina(CurrentStamina);
     }
-    public void RecoverStamina(float amount)
+    public void RecoverStamina()
     {
-        CurrentStamina = Mathf.Clamp(CurrentStamina + Time.deltaTime * amount, 0f, _maxStamina);
+        CurrentStamina = Mathf.Clamp(CurrentStamina + Time.deltaTime * _recoveryStamina, 0f, _maxStamina);
         UiManager.Instance.RefreshStamina(CurrentStamina);
     }
 }
