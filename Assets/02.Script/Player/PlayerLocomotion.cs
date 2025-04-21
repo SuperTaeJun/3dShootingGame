@@ -93,7 +93,7 @@ public class PlayerLocomotion : MonoBehaviour
     {
         if (player.CurrentStamina < player.MaxStamina && !_isRunning && player.CharacterController.isGrounded)
         {
-            player.RecoverStamina(10f);
+            player.RecoverStamina();
         }
     }
 
