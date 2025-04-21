@@ -273,14 +273,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8511a0686b6071f4ab0156c123f04c0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _walkSpeed: 5
-  _runSpeed: 12
-  _dashSpeed: 50
-  _climbSpeed: 2
-  _rotationSpeed: 180
-  _jumpPower: 10
-  _maxJumpCount: 2
-  _maxStamina: 100
+  _PlayerData: {fileID: 11400000, guid: 839d0e137784a144d91de63bc289785c, type: 2}
   _wallCheck: {fileID: 1411465308}
   _wallCheckDistance: 1
   _wallLayer:

@@ -4,22 +4,7 @@ using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class Player : MonoBehaviour
 {
-    [Header("Movement Settings")]
-    [SerializeField] private float _walkSpeed = 5f;
-    [SerializeField] private float _runSpeed = 12f;
-    [SerializeField] private float _dashSpeed = 50f;
-    [SerializeField] private float _climbSpeed = 2f;
-    [SerializeField] private float _rotationSpeed = 180f;
-    [SerializeField] private float _jumpPower = 10f;
-    [SerializeField] private int _maxJumpCount = 2;
-
-
-    [Header("Stamina Settings")]
-    [SerializeField] private float _maxStamina = 100f;
-    [SerializeField] private float _useDashStamina = 10f;
-    [SerializeField] private float _useClimbStamina = 20f;
-    [SerializeField] private float _useRunStamina = 4f;
-    [SerializeField] private float _recoveryStamina = 5f;
+    [SerializeField] private SO_PlayerData _PlayerData;
 
 
     [Header("Wall Check Settings")]
@@ -30,21 +15,24 @@ public class Player : MonoBehaviour
     public float CurrentStamina { get; private set; }
     public CharacterController CharacterController { get; private set; }
 
-    public float WalkSpeed => _walkSpeed;
-    public float RunSpeed => _runSpeed;
-    public float DashSpeed => _dashSpeed;
-    public float ClimbSpeed => _climbSpeed;
-    public float RotationSpeed => _rotationSpeed;
-    public float JumpPower => _jumpPower;
-    public int MaxJumpCount => _maxJumpCount;
-    public float MaxStamina => _maxStamina;
-    public float UseDashStamina => _useDashStamina;
-    public float UseRunStamina => _useRunStamina;
-    public float UseClimbStamina => _useClimbStamina;
+    #region Getter
+    public float WalkSpeed => _PlayerData._walkSpeed;
+    public float RunSpeed => _PlayerData._runSpeed;
+    public float DashSpeed => _PlayerData._dashSpeed;
+    public float ClimbSpeed => _PlayerData._climbSpeed;
+    public float RotationSpeed => _PlayerData._rotationSpeed;
+    public float JumpPower => _PlayerData._jumpPower;
+    public int MaxJumpCount => _PlayerData._maxJumpCount;
+    public float MaxStamina => _PlayerData._maxStamina;
+    public float UseDashStamina => _PlayerData._useDashStamina;
+    public float UseRunStamina => _PlayerData._useRunStamina;
+    public float UseClimbStamina => _PlayerData._useClimbStamina;
+#endregion
+
     private void Awake()
     {
         CharacterController = GetComponent<CharacterController>();
-        CurrentStamina = _maxStamina;
+        CurrentStamina = _PlayerData._maxStamina;
     }
 
     private void Start()
@@ -63,18 +51,18 @@ public class Player : MonoBehaviour
 
     public void UseStamina(float amount)
     {
-        CurrentStamina = Mathf.Clamp(CurrentStamina - Time.deltaTime * amount, 0f, _maxStamina);
+        CurrentStamina = Mathf.Clamp(CurrentStamina - Time.deltaTime * amount, 0f, _PlayerData._maxStamina);
         UiManager.Instance.RefreshStamina(CurrentStamina);
     }
     // 한번에 달게하기
     public void ReduceStamina(float amount)
     {
-        CurrentStamina = Mathf.Clamp(CurrentStamina - amount, 0f, _maxStamina);
+        CurrentStamina = Mathf.Clamp(CurrentStamina - amount, 0f, _PlayerData._maxStamina);
         UiManager.Instance.RefreshStamina(CurrentStamina);
     }
     public void RecoverStamina()
     {
-        CurrentStamina = Mathf.Clamp(CurrentStamina + Time.deltaTime * _recoveryStamina, 0f, _maxStamina);
+        CurrentStamina = Mathf.Clamp(CurrentStamina + Time.deltaTime * _PlayerData._recoveryStamina, 0f, _PlayerData._maxStamina);
         UiManager.Instance.RefreshStamina(CurrentStamina);
     }
 }
