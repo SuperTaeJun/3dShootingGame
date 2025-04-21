@@ -17,7 +17,7 @@ public class UiManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
-            Debug.LogWarning("½Ì±ÛÅæ ¿©·¯°³ÀÓ");
+            Debug.LogWarning("ì‹±ê¸€í†¤ ì—¬ëŸ¬ê°œìž„");
         }
     }
 
