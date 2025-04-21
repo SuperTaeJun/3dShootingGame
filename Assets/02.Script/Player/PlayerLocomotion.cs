@@ -54,7 +54,7 @@ public class PlayerLocomotion : MonoBehaviour
         if (canClimb)
         {
             _isClimbing = true;
-            player.UseStamina(20f);
+            player.UseStamina(player.UseClimbStamina);
             _yVelocity = player.ClimbSpeed;
         }
         else
@@ -80,7 +80,7 @@ public class PlayerLocomotion : MonoBehaviour
         {
             _currentSpeed = player.RunSpeed;
             _isRunning = true;
-            player.UseStamina(4f);
+            player.UseStamina(player.UseRunStamina);
         }
         else if (Input.GetKeyUp(KeyCode.LeftShift))
         {
@@ -102,7 +102,7 @@ public class PlayerLocomotion : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.E) && player.CurrentStamina > 0)
         {
             _currentSpeed = player.DashSpeed;
-            player.ReduceStamina(10f);
+            player.ReduceStamina(player.UseDashStamina);
             StartCoroutine(FinishDash(0.2f));
         }
     }

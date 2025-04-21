@@ -13,8 +13,12 @@ public class Player : MonoBehaviour
     [SerializeField] private float _jumpPower = 10f;
     [SerializeField] private int _maxJumpCount = 2;
 
+
     [Header("Stamina Settings")]
     [SerializeField] private float _maxStamina = 100f;
+    [SerializeField] private float _useDashStamina = 10f;
+    [SerializeField] private float _useClimbStamina = 20f;
+    [SerializeField] private float _useRunStamina = 4f;
 
     [Header("Wall Check Settings")]
     [SerializeField] private Transform _wallCheck;
@@ -32,7 +36,9 @@ public class Player : MonoBehaviour
     public float JumpPower => _jumpPower;
     public int MaxJumpCount => _maxJumpCount;
     public float MaxStamina => _maxStamina;
-
+    public float UseDashStamina => _useDashStamina;
+    public float UseRunStamina => _useRunStamina;
+    public float UseClimbStamina => _useClimbStamina;
     private void Awake()
     {
         CharacterController = GetComponent<CharacterController>();
