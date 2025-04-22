@@ -50,7 +50,7 @@ public class CameraRotate : MonoBehaviour
 
         _rotationX += mouseX * _rotSpeed * Time.deltaTime;
         _rotationY += mouseY * _rotSpeed * Time.deltaTime;
-        _rotationY = Mathf.Clamp(_rotationY, -90f, 90f);
+        _rotationY = Mathf.Clamp(_rotationY, -60f, 60f);
 
         transform.eulerAngles = new Vector3(-_rotationY, _rotationX);
     }

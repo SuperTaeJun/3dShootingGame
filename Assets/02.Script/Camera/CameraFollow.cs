@@ -27,6 +27,7 @@ public class CameraFollow : MonoBehaviour
                 break;
             case ECameraType.ThirdPerson:
                 //transform.position = Target.position + _camera.ThirdPersonOffset.PositionOffset;
+                //공전해야해서 카메라 로테이션에서 같이 처리
                 break;
             case ECameraType.QuarterView:
                 transform.position = Target.position + _camera.QuarterViewOffset.PositionOffset;
