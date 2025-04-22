@@ -468,7 +468,11 @@ MonoBehaviour:
   MaxThrowPower: 30
   FireRange: 20
   DistanceToSphere: 10
-  ScatterRadius: 0.5
+  ScatterRadius: 1
+  Roughness: 0.1
+  Magnitude: 0.05
+  originPos: {x: 0, y: 0, z: 0}
+  TrailPrefab: {fileID: 5647491800028916136, guid: 823ee430818e4434c8a2f88137473f99, type: 3}
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0

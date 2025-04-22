@@ -17,6 +17,15 @@ public class PlayerFire : MonoBehaviour
     public float ScatterRadius = 2f;
 
     private Coroutine _fireCoroutine;
+
+
+    [Header("Camera")]
+    public float Roughness;
+    public float Magnitude;
+    public Vector3 originPos;
+
+    [Header("Trail")]
+    public GameObject TrailPrefab;
     private void Awake()
     {
         player = GetComponent<Player>();
@@ -31,6 +40,8 @@ public class PlayerFire : MonoBehaviour
     {
         FireBomb();
         FireBullet();
+
+        originPos = Camera.main.transform.localPosition;
     }
 
     private void FireBullet()
@@ -41,7 +52,7 @@ public class PlayerFire : MonoBehaviour
             player.IsFiring = true;
         }
 
-        if(Input.GetMouseButtonUp(0))
+        if (Input.GetMouseButtonUp(0))
         {
             StopCoroutine(_fireCoroutine);
             player.IsFiring = false;
@@ -51,20 +62,31 @@ public class PlayerFire : MonoBehaviour
     {
         while (player.CurrentBulletNum > 0)
         {
+            GameObject Trail=GameObject.Instantiate(TrailPrefab);
+            Trail.transform.position = FirePos.position;
+            TrailRenderer trailRenderer = Trail.GetComponent<TrailRenderer>();
+
             player.UseBullet();
 
             Vector3 rotationWithScatter = TraceEndWithScatter(FirePos.position);
 
             Ray ray = new Ray(FirePos.position, rotationWithScatter);
             RaycastHit hit = new RaycastHit();
-
+            Vector3 hitPoint = new Vector3();
             bool isHit = Physics.Raycast(ray, out hit, FireRange);
             if (isHit)
             {
                 GameObject hitvfx = Instantiate(HitVfxPrefab);
                 hitvfx.transform.position = hit.point;
                 hitvfx.transform.forward = hit.normal;
+
+                hitPoint = hit.point;
             }
+            else
+            {
+                hitPoint = rotationWithScatter * FireRange;
+            }
+            StartCoroutine(SpawnTrail(trailRenderer, hitPoint));
             //디버그 시각화
             Color rayColor = isHit ? Color.red : Color.green;
             Debug.DrawRay(ray.origin, ray.direction * FireRange, rayColor, 1.0f);
@@ -124,11 +146,11 @@ public class PlayerFire : MonoBehaviour
 
 
         // 디버그 시각화
-        Debug.DrawLine(startPos, SphereCenter, Color.yellow, 2.0f); 
-        Debug.DrawLine(SphereCenter, finalPos, Color.red, 2.0f); 
-        Debug.DrawLine(startPos, startPos + finalDirection * 10.0f, Color.cyan, 2.0f); 
+        Debug.DrawLine(startPos, SphereCenter, Color.yellow, 2.0f);
+        Debug.DrawLine(SphereCenter, finalPos, Color.red, 2.0f);
+        Debug.DrawLine(startPos, startPos + finalDirection * 10.0f, Color.cyan, 2.0f);
         Debug.DrawRay(SphereCenter, Vector3.zero, Color.green, 2.0f);
-        Debug.DrawRay(finalPos, Vector3.up * 0.1f, Color.magenta, 2.0f); 
+        Debug.DrawRay(finalPos, Vector3.up * 0.1f, Color.magenta, 2.0f);
         DrawDebugSphere(SphereCenter, ScatterRadius);
 
         return finalDirection;
@@ -169,4 +191,20 @@ public class PlayerFire : MonoBehaviour
             UiManager.Instance.RefreshBombCharging(CurrentThrowPower);
         }
     }
+
+
+    private IEnumerator SpawnTrail(TrailRenderer trail, Vector3 hitPoint)
+    {
+        float alpa = 0;
+        Vector3 startPos = trail.transform.position;
+
+        while(alpa < 2)
+        {
+            trail.transform.position = Vector3.Lerp(startPos, hitPoint, alpa);
+            alpa += Time.deltaTime / trail.time;
+
+            yield return null;
+        }
+    }
+
 }
