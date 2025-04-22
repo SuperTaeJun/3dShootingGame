@@ -1,35 +1,79 @@
+using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEditor.Experimental.GraphView.GraphView;
+using static UnityEngine.GraphicsBuffer;
 
 public class CameraRotate : MonoBehaviour
 {
-    //Ä«¸Ş¶ó È¸Àü ½ºÅ©¸³Æ®
-    // ¸ñÇ¥ : ¸¶¿ì½º¸¦ Á¶ÀÛÇÏ¸é Ä«¸Ş¶ó¸¦ ±× ¹æÇâÀ¸·Î È¸Àü½ÃÅ°°í ½Í´ç.
-
+    //ì¹´ë©”ë¼ íšŒì „ ìŠ¤í¬ë¦½íŠ¸
+    // ëª©í‘œ : ë§ˆìš°ìŠ¤ë¥¼ ì¡°ì‘í•˜ë©´ ì¹´ë©”ë¼ë¥¼ ê·¸ ë°©í–¥ìœ¼ë¡œ íšŒì „ì‹œí‚¤ê³  ì‹¶ë‹¹.
+    private MyCamera _camera;
     [SerializeField] private float _rotSpeed = 300f;
 
-    //0µµ¿¡¼­ ½ÃÀÛÇÑ´Ù°í ±âÁØÀ»¼¼¿ò
+    //0ë„ì—ì„œ ì‹œì‘í•œë‹¤ê³  ê¸°ì¤€ì„ì„¸ì›€
     private float _rotationX = 0;
     private float _rotationY = 0;
 
+    private void Awake()
+    {
+        _camera = GetComponent<MyCamera>();
+    }
     void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        //  ±¸Çö ¼ø¼­
-        //  1. ¸¶¿ì½º ÀÔ·ÂÀ¸ ¹Ş´Â´Ù.(¸¶¿ì½ºÀÇ Ä¿¼­ÀÇ ¿òÁ÷ÀÓ ¹æÇâ)
-        float mouseX = Input.GetAxis("Mouse X"); 
+        ChangeCamera();
+    }
+    private void ChangeCamera()
+    {
+        switch (_camera.CurrentCameraType)
+        {
+            case ECameraType.FirstPerson:
+                FirstPersonRotate();
+                break;
+            case ECameraType.ThirdPerson:
+                ThirdPersonRotate();
+                break;
+            case ECameraType.QuarterView:
+                QuarterViewRotate();
+                break;
+        }
+    }
+    private void FirstPersonRotate()
+    {
+        float mouseX = Input.GetAxis("Mouse X");
         float mouseY = Input.GetAxis("Mouse Y");
 
-        //  2. ¸¶¿ì½º ÀÔ·ÂÀ¸·ÎºÎÅÍ È¸Àü½ÃÅ³ ¹æÇâÀ» ¸¸µç´Ù.
         _rotationX += mouseX * _rotSpeed * Time.deltaTime;
         _rotationY += mouseY * _rotSpeed * Time.deltaTime;
         _rotationY = Mathf.Clamp(_rotationY, -90f, 90f);
 
-        // 3. È¸Àü ½ÃÅ²´Ù
         transform.eulerAngles = new Vector3(-_rotationY, _rotationX);
+    }
+    private void ThirdPersonRotate()
+    {
+        float mouseX = Input.GetAxis("Mouse X");
+        float mouseY = Input.GetAxis("Mouse Y");
+
+        _rotationX += mouseX * _rotSpeed * Time.deltaTime;
+        _rotationY -= mouseY * _rotSpeed * Time.deltaTime;
+        _rotationY = Mathf.Clamp(_rotationY, -40f, 40f); // ìœ„ì•„ë˜ ì œí•œ
+
+        // íšŒì „ ê³„ì‚°
+        Quaternion rotation = Quaternion.Euler(_rotationY, _rotationX, 0);
+        // ì˜¤í”„ì…‹ëœ ì¹´ë©”ë¼ ìœ„ì¹˜ ë”í•´ì¤Œ
+        Vector3 offset = rotation * new Vector3(0, _camera.ThirdPersonOffset.PositionOffset.y, _camera.ThirdPersonOffset.PositionOffset.z);
+        //ê³µì „
+        transform.position = _camera._player.transform.position + offset;
+
+        transform.LookAt(_camera._player.transform.position + Vector3.up * _camera.ThirdPersonOffset.PositionOffset.y);
+    }
+    private void QuarterViewRotate()
+    {
+        transform.eulerAngles = _camera.QuarterViewOffset.RotationOffset;
     }
 }
