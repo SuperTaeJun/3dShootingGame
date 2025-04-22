@@ -5,6 +5,7 @@ using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class Player : MonoBehaviour
 {
+    [Header("Data")]
     [SerializeField] private SO_PlayerData _playerData;
     public SO_PlayerData PlayerData => _playerData;
 
@@ -17,14 +18,12 @@ public class Player : MonoBehaviour
     public int CurrentBombNum { get; private set; }
     public int CurrentBulletNum { get; private set; }
     public CharacterController CharacterController { get; private set; }
-
     public bool IsFiring = false;
-    public bool _isReloading = false;
-
-    private float _reloadTimer = 0;
+    private bool _isReloading = false;
+    private float _reloadTimer = 0f;
     private Coroutine _reloadCoroutine;
-
-    #region Getter
+    public MyCamera Camera;
+    #region Getter (Data)
     public float WalkSpeed => _playerData._walkSpeed;
     public float RunSpeed => _playerData._runSpeed;
     public float DashSpeed => _playerData._dashSpeed;
@@ -36,7 +35,7 @@ public class Player : MonoBehaviour
     public float UseDashStamina => _playerData._useDashStamina;
     public float UseRunStamina => _playerData._useRunStamina;
     public float UseClimbStamina => _playerData._useClimbStamina;
-#endregion
+    #endregion
 
     private void Awake()
     {
@@ -48,69 +47,70 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
-        UiManager.Instance.RefreshStamina(CurrentStamina);
-        UiManager.Instance.RefreshBomb(CurrentBombNum, _playerData._MaxBombNum);
-        UiManager.Instance.RefreshBullet(CurrentBulletNum, _playerData._MaxBulletNum);
+        InitUi();
     }
+
     private void Update()
     {
-        Reload();
+        HandleReloadInput();
     }
+
     public bool IsWallInFront()
     {
-        Vector3 origin = _wallCheck.position;
-        Vector3 direction = _wallCheck.forward;
-        bool hitWall = Physics.Raycast(origin, direction, _wallCheckDistance, _wallLayer);
-
-        return hitWall;
+        return Physics.Raycast(_wallCheck.position, _wallCheck.forward, _wallCheckDistance, _wallLayer);
     }
 
+    #region Stamina
     public void UseStamina(float amount)
     {
-        CurrentStamina = Mathf.Clamp(CurrentStamina - Time.deltaTime * amount, 0f, _playerData._maxStamina);
-        UiManager.Instance.RefreshStamina(CurrentStamina);
+        CurrentStamina = Mathf.Clamp(CurrentStamina - Time.deltaTime * amount, 0f, MaxStamina);
+        UpdateStaminaUI();
     }
-    // 한번에 달게하기
+
     public void ReduceStamina(float amount)
     {
-        CurrentStamina = Mathf.Clamp(CurrentStamina - amount, 0f, _playerData._maxStamina);
-        UiManager.Instance.RefreshStamina(CurrentStamina);
+        CurrentStamina = Mathf.Clamp(CurrentStamina - amount, 0f, MaxStamina);
+        UpdateStaminaUI();
     }
+
     public void RecoverStamina()
     {
-        CurrentStamina = Mathf.Clamp(CurrentStamina + Time.deltaTime * _playerData._recoveryStamina, 0f, _playerData._maxStamina);
-        UiManager.Instance.RefreshStamina(CurrentStamina);
+        CurrentStamina = Mathf.Clamp(CurrentStamina + Time.deltaTime * _playerData._recoveryStamina, 0f, MaxStamina);
+        UpdateStaminaUI();
     }
+    #endregion
 
+    #region Ammo
     public void UseBomb()
     {
-        CurrentBombNum -= 1;
-        UiManager.Instance.RefreshBomb(CurrentBombNum, _playerData._MaxBombNum);
+        CurrentBombNum--;
+        UpdateBombUI();
     }
+
     public void UseBullet()
     {
-        CurrentBulletNum -= 1;
-        UiManager.Instance.RefreshBullet(CurrentBulletNum, _playerData._MaxBulletNum);
+        CurrentBulletNum--;
+        UpdateBulletUI();
     }
+    #endregion
 
-
-    private void Reload()
+    #region Reload
+    private void HandleReloadInput()
     {
         if (Input.GetKeyDown(KeyCode.R) && !_isReloading)
         {
             UiManager.Instance.SetActiveReloadBar(true);
-            _reloadCoroutine = StartCoroutine(ReloadStart(_playerData.ReloadTime));
+            _reloadCoroutine = StartCoroutine(ReloadRoutine(_playerData.ReloadTime));
         }
     }
 
-    private IEnumerator ReloadStart(float reloadTime)
+    private IEnumerator ReloadRoutine(float reloadTime)
     {
         _isReloading = true;
         _reloadTimer = 0f;
 
         while (_reloadTimer < reloadTime)
         {
-            // 만약 사격이 발생하면 중단
             if (IsFiring)
             {
                 CancelReload();
@@ -123,7 +123,7 @@ public class Player : MonoBehaviour
         }
 
         CurrentBulletNum = _playerData._MaxBulletNum;
-        UiManager.Instance.RefreshBullet(CurrentBulletNum, _playerData._MaxBulletNum);
+        UpdateBulletUI();
         UiManager.Instance.SetActiveReloadBar(false);
         _reloadTimer = 0f;
         _isReloading = false;
@@ -141,4 +141,29 @@ public class Player : MonoBehaviour
         _reloadTimer = 0f;
         UiManager.Instance.SetActiveReloadBar(false);
     }
+    #endregion
+
+    #region UI
+    private void InitUi()
+    {
+        UpdateStaminaUI();
+        UpdateBombUI();
+        UpdateBulletUI();
+    }
+
+    private void UpdateStaminaUI()
+    {
+        UiManager.Instance.RefreshStamina(CurrentStamina);
+    }
+
+    private void UpdateBombUI()
+    {
+        UiManager.Instance.RefreshBomb(CurrentBombNum, _playerData._MaxBombNum);
+    }
+
+    private void UpdateBulletUI()
+    {
+        UiManager.Instance.RefreshBullet(CurrentBulletNum, _playerData._MaxBulletNum);
+    }
+    #endregion
 }

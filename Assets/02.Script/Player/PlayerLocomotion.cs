@@ -4,9 +4,9 @@ using UnityEngine.UI;
 
 public class PlayerLocomotion : MonoBehaviour
 {
-    private Player player;
+    private Player _player;
 
-    private const float GRAVITY = -9.8f;
+    private const float Gravity = -9.8f;
     private float _yVelocity;
     private float _currentSpeed;
     private int _jumpCount;
@@ -17,99 +17,116 @@ public class PlayerLocomotion : MonoBehaviour
 
     private void Awake()
     {
-        player = GetComponent<Player>();
-        _currentSpeed = player.WalkSpeed;
+        _player = GetComponent<Player>();
+        _currentSpeed = _player.WalkSpeed;
     }
 
     private void Update()
     {
-        float h = Input.GetAxisRaw("Horizontal");
-        float v = Input.GetAxisRaw("Vertical");
-        Vector3 dir = new Vector3(h, 0, v);
-        dir = dir.normalized;
-        dir = Camera.main.transform.TransformDirection(dir);
+        HandleInput();
+        ApplyMovement();
+        RecoveryStamina();
+    }
 
-        if (player.CharacterController.isGrounded)
-        {
-            _jumpCount = 0;
-            if (_yVelocity < 0f)
-                _yVelocity = -1f;
-        }
-
-        Jump();
+    private void HandleInput()
+    {
         Run();
         Dash();
+        Jump();
         Climb();
+    }
 
-        Vector3 move = dir * _currentSpeed;
+    private void ApplyMovement()
+    {
+        Vector3 inputDir = GetInputDirection();
+        Vector3 move = inputDir * _currentSpeed;
         move.y = _yVelocity;
-        player.CharacterController.Move(move * Time.deltaTime);
-        RecoverStamina();
+        _player.CharacterController.Move(move * Time.deltaTime);
+    }
+
+    private Vector3 GetInputDirection()
+    {
+        float h = Input.GetAxisRaw("Horizontal");
+        float v = Input.GetAxisRaw("Vertical");
+
+        Vector3 dir = new Vector3(h, 0, v).normalized;
+        dir = Camera.main.transform.TransformDirection(dir);
+        dir.y = 0; // 수평 이동만 반영
+
+        return dir;
     }
 
     private void Climb()
     {
-        bool canClimb = player.IsWallInFront() && Input.GetKey(KeyCode.W) && player.CurrentStamina > 0;
+        bool canClimb = _player.IsWallInFront() && Input.GetKey(KeyCode.W) && _player.CurrentStamina > 0;
 
         if (canClimb)
         {
             _isClimbing = true;
-            player.UseStamina(player.UseClimbStamina);
-            _yVelocity = player.ClimbSpeed;
+            _player.UseStamina(_player.UseClimbStamina);
+            _yVelocity = _player.ClimbSpeed;
         }
         else
         {
             _isClimbing = false;
-            _yVelocity += GRAVITY * Time.deltaTime;
+            _yVelocity += Gravity * Time.deltaTime;
         }
     }
 
     private void Jump()
     {
-        bool canJump = _jumpCount < player.MaxJumpCount && !_isClimbing;
+        bool canJump = _jumpCount < _player.MaxJumpCount && !_isClimbing;
+
         if (Input.GetKeyDown(KeyCode.Space) && canJump)
         {
-            _yVelocity = player.JumpPower;
+            _yVelocity = _player.JumpPower;
             _jumpCount++;
+        }
+
+        if (_player.CharacterController.isGrounded)
+        {
+            _jumpCount = 0;
+            if (_yVelocity < 0f)
+                _yVelocity = -1f; // 살짝 눌러서 붙게 하기
         }
     }
 
     private void Run()
     {
-        if (Input.GetKey(KeyCode.LeftShift) && player.CurrentStamina > 0)
+        if (Input.GetKey(KeyCode.LeftShift) && _player.CurrentStamina > 0)
         {
-            _currentSpeed = player.RunSpeed;
+            _currentSpeed = _player.RunSpeed;
             _isRunning = true;
-            player.UseStamina(player.UseRunStamina);
+            _player.UseStamina(_player.UseRunStamina);
         }
         else if (Input.GetKeyUp(KeyCode.LeftShift))
         {
-            _currentSpeed = player.WalkSpeed;
+            _currentSpeed = _player.WalkSpeed;
             _isRunning = false;
-        }
-    }
-
-    private void RecoverStamina()
-    {
-        if (player.CurrentStamina < player.MaxStamina && !_isRunning && player.CharacterController.isGrounded)
-        {
-            player.RecoverStamina();
         }
     }
 
     private void Dash()
     {
-        if (Input.GetKeyDown(KeyCode.E) && player.CurrentStamina > 0)
+        if (Input.GetKeyDown(KeyCode.E) && _player.CurrentStamina > 0)
         {
-            _currentSpeed = player.DashSpeed;
-            player.ReduceStamina(player.UseDashStamina);
-            StartCoroutine(FinishDash(0.2f));
+            _currentSpeed = _player.DashSpeed;
+            _player.ReduceStamina(_player.UseDashStamina);
+            StartCoroutine(ResetSpeedAfterDelay(0.2f));
         }
     }
 
-    private IEnumerator FinishDash(float delay)
+    private IEnumerator ResetSpeedAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
-        _currentSpeed = player.WalkSpeed;
+        _currentSpeed = _player.WalkSpeed;
+    }
+
+    private void RecoveryStamina()
+    {
+        if (_player.CurrentStamina < _player.MaxStamina && !_isRunning && _player.CharacterController.isGrounded)
+        {
+            _player.RecoverStamina();
+        }
     }
 }

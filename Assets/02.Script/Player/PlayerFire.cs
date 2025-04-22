@@ -3,208 +3,147 @@ using UnityEngine;
 
 public class PlayerFire : MonoBehaviour
 {
-    private Player player;
+    [Header("Fire Settings")]
+    [SerializeField] private Transform _firePos;
+    [SerializeField] private GameObject _trailPrefab;
+    [SerializeField] private GameObject _hitVfxPrefab;
+    [SerializeField] private GameObject _bombPrefab;
+    [SerializeField] private float _fireRange = 20f;
 
-    public Transform FirePos;
-    public GameObject BombPrefab;
-    public GameObject HitVfxPrefab;
-    public float BaseThrowPower = 5f;
-    public float CurrentThrowPower = 5f;
-    public float MaxThrowPower = 30f;
-    public float FireRange = 20f;
+    [Header("Bomb Settings")]
+    [SerializeField] private float _baseThrowPower = 5f;
+    [SerializeField] private float _maxThrowPower = 30f;
+    [SerializeField] private float _bombChargeRate = 10f;
 
-    public float DistanceToSphere = 0.5f;
-    public float ScatterRadius = 2f;
+    [Header("Scatter Settings")]
+    [SerializeField] private float _scatterRadius = 2f;
+    private float _distanceToSphere;
 
+    private float _currentThrowPower;
+    private Player _player;
     private Coroutine _fireCoroutine;
 
-
-    [Header("Camera")]
-    public float Roughness;
-    public float Magnitude;
-    public Vector3 originPos;
-
-    [Header("Trail")]
-    public GameObject TrailPrefab;
     private void Awake()
     {
-        player = GetComponent<Player>();
-    }
-    void Start()
-    {
+        _player = GetComponent<Player>();
+        _currentThrowPower = _baseThrowPower;
 
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        FireBomb();
-        FireBullet();
-
-        originPos = Camera.main.transform.localPosition;
+        _distanceToSphere = _fireRange;
     }
 
-    private void FireBullet()
+    private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        HandleBulletInput();
+        HandleBombInput();
+    }
+
+    #region Bullet
+    private void HandleBulletInput()
+    {
+        if (Input.GetMouseButtonDown(0)) StartFiring();
+        if (Input.GetMouseButtonUp(0)) StopFiring();
+    }
+
+    private void StartFiring()
+    {
+        if (_fireCoroutine == null && _player.CurrentBulletNum > 0)
         {
-            _fireCoroutine = StartCoroutine(FireLoop(player.PlayerData.FireRate));
-            player.IsFiring = true;
+            _fireCoroutine = StartCoroutine(FireLoop(_player.PlayerData.FireRate));
+            _player.IsFiring = true;
         }
+    }
 
-        if (Input.GetMouseButtonUp(0))
+    private void StopFiring()
+    {
+        if (_fireCoroutine != null)
         {
             StopCoroutine(_fireCoroutine);
-            player.IsFiring = false;
+            _fireCoroutine = null;
+            _player.IsFiring = false;
         }
     }
+
     private IEnumerator FireLoop(float fireRate)
     {
-        while (player.CurrentBulletNum > 0)
+        while (_player.CurrentBulletNum > 0)
         {
-            GameObject Trail=GameObject.Instantiate(TrailPrefab);
-            Trail.transform.position = FirePos.position;
-            TrailRenderer trailRenderer = Trail.GetComponent<TrailRenderer>();
+            GameObject trail = Instantiate(_trailPrefab, _firePos.position, Quaternion.identity);
+            TrailRenderer trailRenderer = trail.GetComponent<TrailRenderer>();
 
-            player.UseBullet();
+            _player.UseBullet();
+            Vector3 scatterDir = CalculateScatterDirection(_firePos.position);
 
-            Vector3 rotationWithScatter = TraceEndWithScatter(FirePos.position);
-
-            Ray ray = new Ray(FirePos.position, rotationWithScatter);
-            RaycastHit hit = new RaycastHit();
-            Vector3 hitPoint = new Vector3();
-            bool isHit = Physics.Raycast(ray, out hit, FireRange);
-            if (isHit)
+            if (Physics.Raycast(_firePos.position, scatterDir, out RaycastHit hit, _fireRange))
             {
-                GameObject hitvfx = Instantiate(HitVfxPrefab);
-                hitvfx.transform.position = hit.point;
-                hitvfx.transform.forward = hit.normal;
-
-                hitPoint = hit.point;
+                Instantiate(_hitVfxPrefab, hit.point, Quaternion.LookRotation(hit.normal));
+                StartCoroutine(SpawnTrail(trailRenderer, hit.point));
             }
             else
             {
-                hitPoint = rotationWithScatter * FireRange;
+                Vector3 endPoint = _firePos.position + scatterDir * _fireRange;
+                StartCoroutine(SpawnTrail(trailRenderer, endPoint));
             }
-            StartCoroutine(SpawnTrail(trailRenderer, hitPoint));
-            //디버그 시각화
-            Color rayColor = isHit ? Color.red : Color.green;
-            Debug.DrawRay(ray.origin, ray.direction * FireRange, rayColor, 1.0f);
 
             yield return new WaitForSeconds(fireRate);
         }
     }
 
-    private void DrawDebugSphere(Vector3 center, float radius, int segments = 20)
+    private IEnumerator SpawnTrail(TrailRenderer trail, Vector3 hitPoint)
     {
-        float angleStep = 360f / segments;
+        float alpha = 0f;
+        Vector3 startPos = trail.transform.position;
 
-        // XY 평면 원
-        for (int i = 0; i < segments; i++)
+        while (alpha < 2f)
         {
-            float angleA = Mathf.Deg2Rad * i * angleStep;
-            float angleB = Mathf.Deg2Rad * (i + 1) * angleStep;
-
-            Vector3 pointA = center + new Vector3(Mathf.Cos(angleA), Mathf.Sin(angleA), 0) * radius;
-            Vector3 pointB = center + new Vector3(Mathf.Cos(angleB), Mathf.Sin(angleB), 0) * radius;
-            Debug.DrawLine(pointA, pointB, Color.green, 2.0f);
-        }
-
-        // XZ 평면 원
-        for (int i = 0; i < segments; i++)
-        {
-            float angleA = Mathf.Deg2Rad * i * angleStep;
-            float angleB = Mathf.Deg2Rad * (i + 1) * angleStep;
-
-            Vector3 pointA = center + new Vector3(Mathf.Cos(angleA), 0, Mathf.Sin(angleA)) * radius;
-            Vector3 pointB = center + new Vector3(Mathf.Cos(angleB), 0, Mathf.Sin(angleB)) * radius;
-            Debug.DrawLine(pointA, pointB, Color.green, 2.0f);
-        }
-
-        // YZ 평면 원
-        for (int i = 0; i < segments; i++)
-        {
-            float angleA = Mathf.Deg2Rad * i * angleStep;
-            float angleB = Mathf.Deg2Rad * (i + 1) * angleStep;
-
-            Vector3 pointA = center + new Vector3(0, Mathf.Cos(angleA), Mathf.Sin(angleA)) * radius;
-            Vector3 pointB = center + new Vector3(0, Mathf.Cos(angleB), Mathf.Sin(angleB)) * radius;
-            Debug.DrawLine(pointA, pointB, Color.green, 2.0f);
+            trail.transform.position = Vector3.Lerp(startPos, hitPoint, alpha);
+            alpha += Time.deltaTime / trail.time;
+            yield return null;
         }
     }
-    private Vector3 TraceEndWithScatter(Vector3 startPos)
+
+    private Vector3 CalculateScatterDirection(Vector3 startPos)
     {
-        Vector3 DirectionToTarget = Camera.main.transform.forward;
-        // 시작 위치에서 목표 방향으로 DistanceToSphere만큼 이동한 지점을 구의 중심으로 설정합니다.
-        Vector3 SphereCenter = startPos + DirectionToTarget * DistanceToSphere;
-        // 구의 내부에서 난수로 생성된 벡터를 계산하여 랜덤 위치를 만듭니다.
-        Vector3 randomOffset = Random.insideUnitSphere * ScatterRadius;
-        // 구의 중심에 난수 벡터를 추가하여 최종 위치를 계산합니다.
-        Vector3 finalPos = SphereCenter + randomOffset;
-        // 시작 위치에서 최종 위치까지의 벡터를 계산합니다.
-        Vector3 finalDirection = (finalPos - startPos).normalized;
-
-
-        // 디버그 시각화
-        Debug.DrawLine(startPos, SphereCenter, Color.yellow, 2.0f);
-        Debug.DrawLine(SphereCenter, finalPos, Color.red, 2.0f);
-        Debug.DrawLine(startPos, startPos + finalDirection * 10.0f, Color.cyan, 2.0f);
-        Debug.DrawRay(SphereCenter, Vector3.zero, Color.green, 2.0f);
-        Debug.DrawRay(finalPos, Vector3.up * 0.1f, Color.magenta, 2.0f);
-        DrawDebugSphere(SphereCenter, ScatterRadius);
-
-        return finalDirection;
+        Vector3 forward = Camera.main.transform.forward;
+        Vector3 sphereCenter = startPos + forward * _distanceToSphere;
+        Vector3 randomOffset = Random.insideUnitSphere * _scatterRadius;
+        Vector3 finalPos = sphereCenter + randomOffset;
+        return (finalPos - startPos).normalized;
     }
-    private void FireBomb()
+    #endregion
+
+    #region Bomb
+    private void HandleBombInput()
     {
-        if (player.CurrentBombNum > 0)
-        {
-            BombCharging();
+        if (_player.CurrentBombNum <= 0) return;
 
-            if (Input.GetMouseButtonUp(1))
-            {
-                GameObject bomb = ObjectPool.Instance.GetObject(BombPrefab);
-                bomb.transform.position = FirePos.position;
-
-                Rigidbody rigidbody = bomb.GetComponent<Rigidbody>();
-                rigidbody.AddForce(Camera.main.transform.forward * CurrentThrowPower, ForceMode.Impulse);
-                rigidbody.AddTorque(Vector3.one);
-
-                CurrentThrowPower = BaseThrowPower;
-
-                player.UseBomb();
-
-                UiManager.Instance.SetActiveBombChargingBar(false);
-            }
-        }
-    }
-    private void BombCharging()
-    {
         if (Input.GetMouseButtonDown(1))
             UiManager.Instance.SetActiveBombChargingBar(true);
 
         if (Input.GetMouseButton(1))
         {
-            if (CurrentThrowPower < MaxThrowPower)
-                CurrentThrowPower += Time.deltaTime * 10;
-
-            UiManager.Instance.RefreshBombCharging(CurrentThrowPower);
+            _currentThrowPower = Mathf.Min(_currentThrowPower + Time.deltaTime * _bombChargeRate, _maxThrowPower);
+            UiManager.Instance.RefreshBombCharging(_currentThrowPower);
         }
-    }
 
-
-    private IEnumerator SpawnTrail(TrailRenderer trail, Vector3 hitPoint)
-    {
-        float alpa = 0;
-        Vector3 startPos = trail.transform.position;
-
-        while(alpa < 2)
+        if (Input.GetMouseButtonUp(1))
         {
-            trail.transform.position = Vector3.Lerp(startPos, hitPoint, alpa);
-            alpa += Time.deltaTime / trail.time;
-
-            yield return null;
+            ThrowBomb();
         }
     }
+
+    private void ThrowBomb()
+    {
+        GameObject bomb = ObjectPool.Instance.GetObject(_bombPrefab);
+        bomb.transform.position = _firePos.position;
+
+        Rigidbody rb = bomb.GetComponent<Rigidbody>();
+        rb.AddForce(Camera.main.transform.forward * _currentThrowPower, ForceMode.Impulse);
+        rb.AddTorque(Vector3.one);
+
+        _currentThrowPower = _baseThrowPower;
+        _player.UseBomb();
+        UiManager.Instance.SetActiveBombChargingBar(false);
+    }
+    #endregion
 
 }

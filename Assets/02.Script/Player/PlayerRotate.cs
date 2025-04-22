@@ -2,18 +2,25 @@ using UnityEngine;
 
 public class PlayerRotate : MonoBehaviour
 {
-    private Player player;
-    private float rotationX;
+    private Player _player;
+    private float _rotationX;
+
+    private MyCamera _myCamera;
 
     private void Awake()
     {
-        player = GetComponent<Player>();
+        _player = GetComponent<Player>();
+        _myCamera = _player.Camera;
     }
 
     private void Update()
     {
+        if (_myCamera == null || _myCamera.CurrentCameraType == ECameraType.QuarterView)
+            return;
+
+
         float mouseX = Input.GetAxis("Mouse X");
-        rotationX += mouseX * player.RotationSpeed * Time.deltaTime;
-        transform.rotation = Quaternion.Euler(0, rotationX, 0);
+        _rotationX += mouseX * _player.RotationSpeed * Time.deltaTime;
+        transform.rotation = Quaternion.Euler(0, _rotationX, 0);
     }
 }

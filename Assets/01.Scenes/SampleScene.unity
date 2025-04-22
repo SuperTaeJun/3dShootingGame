@@ -447,7 +447,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   IsFiring: 0
-  _isReloading: 0
+  Camera: {fileID: 330585550}
 --- !u!114 &330561222
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -460,19 +460,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39e4961f778714946adeb9eb01ef9ef1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FirePos: {fileID: 1583844434}
-  BombPrefab: {fileID: 1413227311257359281, guid: 1ced79175ea67b4408f863d3b4b7def1, type: 3}
-  HitVfxPrefab: {fileID: 100002, guid: 54dd9cb5740188a488b8baebbf19207c, type: 3}
-  BaseThrowPower: 5
-  CurrentThrowPower: 5
-  MaxThrowPower: 30
-  FireRange: 20
-  DistanceToSphere: 10
-  ScatterRadius: 1
-  Roughness: 0.1
-  Magnitude: 0.05
-  originPos: {x: 0, y: 0, z: 0}
-  TrailPrefab: {fileID: 5647491800028916136, guid: 823ee430818e4434c8a2f88137473f99, type: 3}
+  _firePos: {fileID: 1583844434}
+  _trailPrefab: {fileID: 5647491800028916136, guid: 823ee430818e4434c8a2f88137473f99, type: 3}
+  _hitVfxPrefab: {fileID: 100002, guid: 54dd9cb5740188a488b8baebbf19207c, type: 3}
+  _bombPrefab: {fileID: 1413227311257359281, guid: 1ced79175ea67b4408f863d3b4b7def1, type: 3}
+  _fireRange: 20
+  _baseThrowPower: 5
+  _maxThrowPower: 30
+  _bombChargeRate: 10
+  _scatterRadius: 2
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -485,8 +481,6 @@ GameObject:
   - component: {fileID: 330585545}
   - component: {fileID: 330585544}
   - component: {fileID: 330585547}
-  - component: {fileID: 330585548}
-  - component: {fileID: 330585549}
   - component: {fileID: 330585550}
   m_Layer: 0
   m_Name: Main Camera
@@ -613,32 +607,6 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
---- !u!114 &330585548
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 330585543}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3ac4b53499d17c34aa97cdac490f1085, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _rotSpeed: 180
---- !u!114 &330585549
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 330585543}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f544cf5f51afd147b71d98f56694c64, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Target: {fileID: 620588707}
 --- !u!114 &330585550
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -651,9 +619,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0201979f74db34e47b1a4e8c53357020, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _player: {fileID: 330561221}
+  _target: {fileID: 330561217}
   _firstPersonOffset:
-    PositionOffset: {x: 0, y: -0.5, z: 0}
+    PositionOffset: {x: 0, y: 0.5, z: 0}
     RotationOffset: {x: 0, y: 0, z: 0}
   _thirdPersonOffset:
     PositionOffset: {x: 0, y: 1, z: -5}
@@ -661,6 +629,7 @@ MonoBehaviour:
   _quarterViewOffset:
     PositionOffset: {x: 0, y: 15, z: -14}
     RotationOffset: {x: 45, y: 0, z: 0}
+  _rotationSpeed: 300
 --- !u!1 &350617953
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using static UnityEditor.SceneView;
 
 public enum ECameraType
 {
@@ -16,55 +17,53 @@ public struct CameraOffset
 
 public class MyCamera : MonoBehaviour
 {
-    public Player _player;
+    [SerializeField] private Transform _target;
+    [SerializeField] private CameraOffset _firstPersonOffset;
+    [SerializeField] private CameraOffset _thirdPersonOffset;
+    [SerializeField] private CameraOffset _quarterViewOffset;
+    [SerializeField] private float _rotationSpeed = 300f;
 
     private ECameraType _currentCameraType = ECameraType.FirstPerson;
     public ECameraType CurrentCameraType => _currentCameraType;
 
-    [SerializeField]
-    private CameraOffset _firstPersonOffset;
-    [SerializeField]
-    private CameraOffset _thirdPersonOffset;
-    [SerializeField]
-    private CameraOffset _quarterViewOffset;
+    private FirstPersonCameraMode _firstPerson;
+    private ThirdPersonCameraMode _thirdPerson;
+    private QuarterViewCameraMode _quarterView;
 
-    #region Getter
-    public CameraOffset FirstPersonOffset => _firstPersonOffset;
-    public CameraOffset ThirdPersonOffset => _thirdPersonOffset;
-    public CameraOffset QuarterViewOffset => _quarterViewOffset;
-
-    #endregion
+    private float _rotationX;
+    private float _rotationY;
 
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
+
+        _firstPerson = new FirstPersonCameraMode(_firstPersonOffset.PositionOffset, _rotationSpeed);
+        _thirdPerson = new ThirdPersonCameraMode(_thirdPersonOffset, ref _rotationX, ref _rotationY, _rotationSpeed);
+        _quarterView = new QuarterViewCameraMode(_quarterViewOffset);
     }
+
     private void Update()
     {
-        CameraChangeInputHandle();
+        HandleInput();
+
+        switch (_currentCameraType)
+        {
+            case ECameraType.FirstPerson:
+                _firstPerson.UpdateCamera(transform, _target);
+                break;
+            case ECameraType.ThirdPerson:
+                _thirdPerson.UpdateCamera(transform, _target);
+                break;
+            case ECameraType.QuarterView:
+                _quarterView.UpdateCamera(transform, _target);
+                break;
+        }
     }
 
-    private void CameraChangeInputHandle()
+    private void HandleInput()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha8))
-        {
-            ChangeCamera(ECameraType.FirstPerson);
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha9))
-        {
-            ChangeCamera(ECameraType.ThirdPerson);
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha0))
-        {
-            ChangeCamera(ECameraType.QuarterView);
-        }
+        if (Input.GetKeyDown(KeyCode.Alpha8)) _currentCameraType = ECameraType.FirstPerson;
+        if (Input.GetKeyDown(KeyCode.Alpha9)) _currentCameraType = ECameraType.ThirdPerson;
+        if (Input.GetKeyDown(KeyCode.Alpha0)) _currentCameraType = ECameraType.QuarterView;
     }
-
-    private void ChangeCamera(ECameraType eCameraType)
-    {
-        _currentCameraType = eCameraType;
-    }
-
-
-
 }

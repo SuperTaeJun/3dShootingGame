@@ -16,7 +16,7 @@ MonoBehaviour:
   _runSpeed: 12
   _dashSpeed: 50
   _climbSpeed: 2
-  _rotationSpeed: 180
+  _rotationSpeed: 300
   _jumpPower: 10
   _maxJumpCount: 2
   _maxStamina: 100
@@ -24,3 +24,7 @@ MonoBehaviour:
   _useClimbStamina: 20
   _useRunStamina: 4
   _recoveryStamina: 5
+  _MaxBombNum: 3
+  _MaxBulletNum: 50
+  FireRate: 0.2
+  ReloadTime: 2
