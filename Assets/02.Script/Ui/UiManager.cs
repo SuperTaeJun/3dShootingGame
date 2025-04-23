@@ -31,7 +31,7 @@ public class UiManager : MonoBehaviour
     }
     public void RefreshBomb(int curBombNum, int maxBombNum)
     {
-        BombText.text = $"폭탄 수 : {curBombNum} / {maxBombNum}";
+        BombText.text = $"Bomb : {curBombNum} / {maxBombNum}";
     }
     public void RefreshBombCharging(float curPower)
     {
@@ -43,7 +43,7 @@ public class UiManager : MonoBehaviour
     }
     public void RefreshBullet(int curBulletNum, int maxBulletNum)
     {
-        BulletText.text = $"총알 : {curBulletNum} / {maxBulletNum}";
+        BulletText.text = $"Bullet : {curBulletNum} / {maxBulletNum}";
     }
     public void SetActiveReloadBar(bool isActive)
     {

@@ -9,6 +9,7 @@ public class EnemyIdleState : EnemyState
     public override void Enter()
     {
         base.Enter();
+        _stateTimer = _enemy.PatrolTime;
     }
 
     public override void Exit()
@@ -20,10 +21,14 @@ public class EnemyIdleState : EnemyState
     {
         base.Update();
 
-        if(Vector3.Distance(_enemy.transform.position, _enemy.Player.transform.position) < _enemy.DetectRange)
+        if (Vector3.Distance(_enemy.Player.transform.position, _enemy.transform.position) < _enemy.DetectRange)
         {
             _stateMachine.ChangeState(_enemy.TraceState);
         }
 
+        if (_stateTimer < 0)
+        {
+            _stateMachine.ChangeState(_enemy.PatrolState);
+        }
     }
 }

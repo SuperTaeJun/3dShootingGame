@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class EnemyReturnState : EnemyState
 {
-    Transform _startPosition;
-    public EnemyReturnState(EnemyStateMachine stateMachine, CharacterController characterController, Enemy enemy, string animBoolName,Transform startPosition) : base(stateMachine, characterController, enemy, animBoolName)
+    Vector3 _startPosition;
+    public EnemyReturnState(EnemyStateMachine stateMachine, CharacterController characterController, Enemy enemy, string animBoolName, Vector3 startPosition) : base(stateMachine, characterController, enemy, animBoolName)
     {
         _startPosition = startPosition;
     }
@@ -22,9 +22,9 @@ public class EnemyReturnState : EnemyState
     {
         base.Update();
 
-        if (Vector3.Distance(_enemy.transform.position, _startPosition.position) <= _characterController.minMoveDistance)
+        if (Vector3.Distance(_enemy.transform.position, _startPosition) <= _characterController.minMoveDistance)
         {
-            _enemy.transform.position = _startPosition.position;
+            _enemy.transform.position = _startPosition;
             _stateMachine.ChangeState(_enemy.IdleState);
         }
 
@@ -33,7 +33,7 @@ public class EnemyReturnState : EnemyState
             _stateMachine.ChangeState(_enemy.TraceState);
         }
 
-        Vector3 dir = _startPosition.position - _enemy.transform.position;
+        Vector3 dir = _startPosition - _enemy.transform.position;
         _characterController.Move(dir * _enemy.MoveSpeed * Time.deltaTime);
 
 

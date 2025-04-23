@@ -24,5 +24,5 @@ public class SO_PlayerData : ScriptableObject
     public int _MaxBulletNum = 50;
     public float FireRate = 0.2f;
     public float ReloadTime = 2f;
-
+    public int Damage = 5;
 }

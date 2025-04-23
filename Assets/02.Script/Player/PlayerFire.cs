@@ -15,6 +15,8 @@ public class PlayerFire : MonoBehaviour
     [SerializeField] private float _baseThrowPower = 5f;
     [SerializeField] private float _maxThrowPower = 30f;
     [SerializeField] private float _bombChargeRate = 10f;
+    [SerializeField] private GameObject ChargingParticle;
+
 
     [Header("Scatter Settings")]
     [SerializeField] private float _scatterRadius = 2f;
@@ -77,6 +79,11 @@ public class PlayerFire : MonoBehaviour
 
             if (Physics.Raycast(_firePos.position, scatterDir, out RaycastHit hit, _fireRange))
             {
+                if(hit.collider.CompareTag("Enemy"))
+                {
+                    Enemy enemy = hit.collider.GetComponent<Enemy>();
+                    enemy.TakeDamage(new Damage(_player.PlayerData.Damage, _player.gameObject, 20f,transform.forward));
+                }
                 Instantiate(_hitVfxPrefab, hit.point, Quaternion.LookRotation(hit.normal));
                 StartCoroutine(SpawnTrail(trail, hit.point));
             }
@@ -122,7 +129,11 @@ public class PlayerFire : MonoBehaviour
         if (_player.CurrentBombNum <= 0) return;
 
         if (Input.GetMouseButtonDown(1))
+        {
             UiManager.Instance.SetActiveBombChargingBar(true);
+            ChargingParticle.SetActive(true);
+            ChargingParticle.transform.position = _firePos.position;
+        }
 
         if (Input.GetMouseButton(1))
         {
@@ -132,6 +143,7 @@ public class PlayerFire : MonoBehaviour
 
         if (Input.GetMouseButtonUp(1))
         {
+            ChargingParticle.SetActive(false);
             ThrowBomb();
         }
     }
@@ -140,6 +152,7 @@ public class PlayerFire : MonoBehaviour
     {
         GameObject bomb = ObjectPool.Instance.GetObject(_bombPrefab);
         bomb.transform.position = _firePos.position;
+        bomb.transform.rotation = _player.transform.rotation;
 
         Rigidbody rb = bomb.GetComponent<Rigidbody>();
         rb.AddForce(Camera.main.transform.forward * _currentThrowPower, ForceMode.Impulse);

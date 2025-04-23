@@ -9,6 +9,7 @@ public class EnemyDeadState : EnemyState
     public override void Enter()
     {
         base.Enter();
+        _stateTimer = _enemy.DeadTime;
     }
 
     public override void Exit()
@@ -19,5 +20,12 @@ public class EnemyDeadState : EnemyState
     public override void Update()
     {
         base.Update();
+        if(_stateTimer<0)
+        {
+            _enemy.gameObject.SetActive(false);
+        }
+
     }
+
+    
 }

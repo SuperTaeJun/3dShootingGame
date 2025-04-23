@@ -17,5 +17,11 @@ public class Bomb : MonoBehaviour
         GameObject vfx = GameObject.Instantiate(ExplotionVfxPrefab);
         vfx.transform.position = gameObject.transform.position;
         ObjectPool.Instance.ReturnToPool(gameObject);
+
+        bool hit = Physics.CheckSphere(transform.position, 3,LayerMask.GetMask("Enemy"));
+        if(hit)
+        {
+            collision.gameObject.GetComponent<Enemy>().TakeDamage(new Damage(10, gameObject, 40f, transform.forward));
+        }
     }
 }
