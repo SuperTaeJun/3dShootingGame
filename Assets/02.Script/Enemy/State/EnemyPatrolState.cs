@@ -4,12 +4,12 @@ using static UnityEngine.UI.Image;
 
 public class EnemyPatrolState : EnemyState
 {
-    public float patrolRadius = 5f;
-    public float waitTime = 2f;
+    private float _patrolRadius = 5f;
+    private float _waitTime = 2f;
 
     private Vector3 targetPosition;
     private bool isMoving = false;
-    private float waitTimer = 0f;
+
     public EnemyPatrolState(EnemyStateMachine stateMachine, CharacterController characterController, Enemy enemy, string animBoolName) : base(stateMachine, characterController, enemy, animBoolName)
     {
     }
@@ -17,6 +17,7 @@ public class EnemyPatrolState : EnemyState
     public override void Enter()
     {
         base.Enter();
+        _stateTimer = _waitTime;
     }
 
     public override void Exit()
@@ -38,17 +39,16 @@ public class EnemyPatrolState : EnemyState
         }
         else
         {
-            waitTimer += Time.deltaTime;
-            if (waitTimer >= waitTime)
+            if (_stateTimer <= 0)
             {
                 PickNewDestination();
-                waitTimer = 0f;
+                _stateTimer = _waitTime;
             }
         }
     }
     void PickNewDestination()
     {
-        Vector2 randomOffset = Random.insideUnitCircle * patrolRadius;
+        Vector2 randomOffset = Random.insideUnitCircle * _patrolRadius;
         targetPosition = _enemy.StartPos + new Vector3(randomOffset.x, 0, randomOffset.y);
         isMoving = true;
     }

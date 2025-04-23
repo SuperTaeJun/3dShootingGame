@@ -30,7 +30,6 @@ public class Enemy : MonoBehaviour
     [Header("Knockback")]
     public float knockbackPower = 10f;
     public float knockbackDuration = 0.3f;
-
     private Vector3 knockbackDirection;
     private float knockbackTimer;
     private bool isKnockbacking = false;
@@ -58,7 +57,6 @@ public class Enemy : MonoBehaviour
         AttackState = new EnemyAttackState(_stateMachine, _characterController, this, "Attack");
         DeadState = new EnemyDeadState(_stateMachine, _characterController, this, "Dead");
         PatrolState = new EnemyPatrolState(_stateMachine, _characterController, this, "Patrol");
-
     }
     void Start()
     {
@@ -74,6 +72,7 @@ public class Enemy : MonoBehaviour
     public void TakeDamage(Damage damage)
     {
         Health -= damage.Value;
+        knockbackPower = damage.Power;
         //_characterController.Move(-transform.forward * damage.Power);
         StartCoroutine(KnockbackCoroutine(damage.ForwardDir));
         _stateMachine.ChangeState(DamagedState);

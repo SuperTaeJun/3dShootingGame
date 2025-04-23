@@ -20,7 +20,6 @@ public class EnemyTraceState : EnemyState
     {
         base.Update();
 
-
         //공격범위에 들어오면 어택
         if (Vector3.Distance(_enemy.transform.position, _enemy.Player.transform.position) <= _enemy.AttackRange)
         {
