@@ -1,6 +1,17 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem.XR;
+public enum EEnemyState
+{
+    Idle,
+    Trace,
+    Return,
+    Damaged,
+    Attack,
+    Dead,
+    Patrol
+}
 
 public class Enemy : MonoBehaviour
 {
@@ -34,33 +45,29 @@ public class Enemy : MonoBehaviour
     private float knockbackTimer;
     private bool isKnockbacking = false;
 
-    #region Staties
-    public EnemyIdleState IdleState;
-    public EnemyTraceState TraceState;
-    public EnemyReturnState ReturnState;
-    public EnemyDamagedState DamagedState;
-    public EnemyAttackState AttackState;
-    public EnemyDeadState DeadState;
-    public EnemyPatrolState PatrolState;
-    #endregion
-
+    private Dictionary<EEnemyState, EnemyState> _statesMap;
     private void Awake()
     {
         _characterController = GetComponent<CharacterController>();
         _stateMachine = new EnemyStateMachine();
 
         _startPosition = transform.position;
-        IdleState = new EnemyIdleState(_stateMachine, _characterController, this, "Idle");
-        TraceState = new EnemyTraceState(_stateMachine, _characterController, this, "Trace");
-        ReturnState = new EnemyReturnState(_stateMachine, _characterController, this, "Retrun", _startPosition);
-        DamagedState = new EnemyDamagedState(_stateMachine, _characterController, this, "Damaged");
-        AttackState = new EnemyAttackState(_stateMachine, _characterController, this, "Attack");
-        DeadState = new EnemyDeadState(_stateMachine, _characterController, this, "Dead");
-        PatrolState = new EnemyPatrolState(_stateMachine, _characterController, this, "Patrol");
+
+        _statesMap = new Dictionary<EEnemyState, EnemyState>
+    {
+        { EEnemyState.Idle, new EnemyIdleState(_stateMachine, _characterController, this, "Idle") },
+        { EEnemyState.Trace, new EnemyTraceState(_stateMachine, _characterController, this, "Trace") },
+        { EEnemyState.Return, new EnemyReturnState(_stateMachine, _characterController, this, "Return", _startPosition) },
+        { EEnemyState.Damaged, new EnemyDamagedState(_stateMachine, _characterController, this, "Damaged") },
+        { EEnemyState.Attack, new EnemyAttackState(_stateMachine, _characterController, this, "Attack") },
+        { EEnemyState.Dead, new EnemyDeadState(_stateMachine, _characterController, this, "Dead") },
+        { EEnemyState.Patrol, new EnemyPatrolState(_stateMachine, _characterController, this, "Patrol") },
+    };
+
     }
     void Start()
     {
-        _stateMachine.InitStateMachine(IdleState,this);
+        _stateMachine.InitStateMachine(_statesMap[EEnemyState.Idle], this, _statesMap);
         _player = GameObject.FindGameObjectWithTag("Player");
     }
 
@@ -75,7 +82,7 @@ public class Enemy : MonoBehaviour
         knockbackPower = damage.Power;
         //_characterController.Move(-transform.forward * damage.Power);
         StartCoroutine(KnockbackCoroutine(damage.ForwardDir));
-        _stateMachine.ChangeState(DamagedState);
+        _stateMachine.ChangeState(EEnemyState.Damaged);
     }
 
     private IEnumerator KnockbackCoroutine(Vector3 direction)

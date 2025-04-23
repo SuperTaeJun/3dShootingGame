@@ -24,12 +24,12 @@ public class EnemyTraceState : EnemyState
         if (Vector3.Distance(_enemy.transform.position, _enemy.Player.transform.position) <= _enemy.AttackRange)
         {
             Debug.Log("공격");
-            _stateMachine.ChangeState(_enemy.AttackState);
+            _stateMachine.ChangeState(EEnemyState.Attack);
         }
         //플레이어와 멀어지면 리턴
         if (Vector3.Distance(_enemy.transform.position, _enemy.Player.transform.position) >= _enemy.ReturnRange)
         {
-            _stateMachine.ChangeState(_enemy.ReturnState);
+            _stateMachine.ChangeState(EEnemyState.Return);
         }
 
         Vector3 dir = _enemy.Player.transform.position - _enemy.transform.position;

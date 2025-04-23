@@ -25,12 +25,12 @@ public class EnemyReturnState : EnemyState
         if (Vector3.Distance(_enemy.transform.position, _startPosition) <= _characterController.minMoveDistance)
         {
             _enemy.transform.position = _startPosition;
-            _stateMachine.ChangeState(_enemy.IdleState);
+            _stateMachine.ChangeState(EEnemyState.Idle);
         }
 
         if(Vector3.Distance(_enemy.transform.position, _enemy.Player.transform.position) < _enemy.DetectRange)
         {
-            _stateMachine.ChangeState(_enemy.TraceState);
+            _stateMachine.ChangeState(EEnemyState.Trace);
         }
 
         Vector3 dir = _startPosition - _enemy.transform.position;

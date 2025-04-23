@@ -23,12 +23,12 @@ public class EnemyIdleState : EnemyState
 
         if (Vector3.Distance(_enemy.Player.transform.position, _enemy.transform.position) < _enemy.DetectRange)
         {
-            _stateMachine.ChangeState(_enemy.TraceState);
+            _stateMachine.ChangeState(EEnemyState.Trace);
         }
 
         if (_stateTimer < 0)
         {
-            _stateMachine.ChangeState(_enemy.PatrolState);
+            _stateMachine.ChangeState(EEnemyState.Patrol);
         }
     }
 }

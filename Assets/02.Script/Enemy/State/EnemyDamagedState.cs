@@ -26,12 +26,12 @@ public class EnemyDamagedState : EnemyState
 
         if (_stateTimer <= 0)
         {
-            _stateMachine.ChangeState(_enemy.TraceState);
+            _stateMachine.ChangeState(EEnemyState.Trace);
         }
 
         if(_enemy.Health <=0)
         {
-            _stateMachine.ChangeState(_enemy.DeadState);
+            _stateMachine.ChangeState(EEnemyState.Dead);
         }
     }
 }

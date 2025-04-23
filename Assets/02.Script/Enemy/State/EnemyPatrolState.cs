@@ -30,7 +30,7 @@ public class EnemyPatrolState : EnemyState
         base.Update();
         if (Vector3.Distance(_enemy.Player.transform.position, _enemy.transform.position) < _enemy.DetectRange)
         {
-            _stateMachine.ChangeState(_enemy.TraceState);
+            _stateMachine.ChangeState(EEnemyState.Trace);
         }
 
         if (isMoving)
