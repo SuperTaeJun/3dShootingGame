@@ -7,9 +7,10 @@ public class ObjectPool : MonoBehaviour
     public static ObjectPool Instance;
     [Header("Prefabs")]
     public GameObject BombPrefab;
-
+    public GameObject TrailPrefab;
     [Header("Size")]
     public int BombSize = 3;
+    public int TrailSize = 50;
     public int DefaultSize = 50;
 
     private Dictionary<GameObject, Queue<GameObject>> poolDictionary = new Dictionary<GameObject, Queue<GameObject>>();
@@ -31,9 +32,9 @@ public class ObjectPool : MonoBehaviour
     private void Start()
     {
         objSizeDictionary.Add(BombPrefab, BombSize);
-
+        objSizeDictionary.Add(TrailPrefab, TrailSize);
         InitPool(BombPrefab);
-
+        InitPool(TrailPrefab);
 
     }
     private void InitPool(GameObject prefab)

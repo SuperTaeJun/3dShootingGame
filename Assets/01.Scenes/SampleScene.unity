@@ -461,7 +461,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _firePos: {fileID: 1583844434}
-  _trailPrefab: {fileID: 5647491800028916136, guid: 823ee430818e4434c8a2f88137473f99, type: 3}
+  _trailPrefab: {fileID: 8378503196372639160, guid: 8ee3e5d905829e4489da11f3b7f01458, type: 3}
   _hitVfxPrefab: {fileID: 100002, guid: 54dd9cb5740188a488b8baebbf19207c, type: 3}
   _bombPrefab: {fileID: 1413227311257359281, guid: 1ced79175ea67b4408f863d3b4b7def1, type: 3}
   _fireRange: 20
@@ -2759,7 +2759,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BombPrefab: {fileID: 1413227311257359281, guid: 1ced79175ea67b4408f863d3b4b7def1, type: 3}
+  TrailPrefab: {fileID: 8378503196372639160, guid: 8ee3e5d905829e4489da11f3b7f01458, type: 3}
   BombSize: 3
+  TrailSize: 50
   DefaultSize: 50
 --- !u!4 &1846351160
 Transform:

@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerFire : MonoBehaviour
@@ -67,8 +68,9 @@ public class PlayerFire : MonoBehaviour
     {
         while (_player.CurrentBulletNum > 0)
         {
-            GameObject trail = Instantiate(_trailPrefab, _firePos.position, Quaternion.identity);
-            TrailRenderer trailRenderer = trail.GetComponent<TrailRenderer>();
+            GameObject trail = ObjectPool.Instance.GetObject(_trailPrefab);
+            trail.transform.position = _firePos.position;
+            trail.transform.rotation = gameObject.transform.rotation;
 
             _player.UseBullet();
             Vector3 scatterDir = CalculateScatterDirection(_firePos.position);
@@ -76,19 +78,19 @@ public class PlayerFire : MonoBehaviour
             if (Physics.Raycast(_firePos.position, scatterDir, out RaycastHit hit, _fireRange))
             {
                 Instantiate(_hitVfxPrefab, hit.point, Quaternion.LookRotation(hit.normal));
-                StartCoroutine(SpawnTrail(trailRenderer, hit.point));
+                StartCoroutine(SpawnTrail(trail, hit.point));
             }
             else
             {
                 Vector3 endPoint = _firePos.position + scatterDir * _fireRange;
-                StartCoroutine(SpawnTrail(trailRenderer, endPoint));
+                StartCoroutine(SpawnTrail(trail, endPoint));
             }
 
             yield return new WaitForSeconds(fireRate);
         }
     }
 
-    private IEnumerator SpawnTrail(TrailRenderer trail, Vector3 hitPoint)
+    private IEnumerator SpawnTrail(GameObject trail, Vector3 hitPoint)
     {
         float alpha = 0f;
         Vector3 startPos = trail.transform.position;
@@ -96,7 +98,10 @@ public class PlayerFire : MonoBehaviour
         while (alpha < 2f)
         {
             trail.transform.position = Vector3.Lerp(startPos, hitPoint, alpha);
-            alpha += Time.deltaTime / trail.time;
+            alpha += Time.deltaTime / 0.2f;//trailRenderer.time;
+
+
+            if (alpha >= 2) ObjectPool.Instance.ReturnToPool(trail);
             yield return null;
         }
     }
