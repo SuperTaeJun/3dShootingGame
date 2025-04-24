@@ -50,12 +50,15 @@ public class MyCamera : MonoBehaviour
         {
             case ECameraType.FirstPerson:
                 _firstPerson.UpdateCamera(transform, _target);
+                PlayerUiManager.Instance.SetActiveUI(EUiType.CrossHair, true);
                 break;
             case ECameraType.ThirdPerson:
                 _thirdPerson.UpdateCamera(transform, _target);
+                PlayerUiManager.Instance.SetActiveUI(EUiType.CrossHair, true);
                 break;
             case ECameraType.QuarterView:
                 _quarterView.UpdateCamera(transform, _target);
+                PlayerUiManager.Instance.SetActiveUI(EUiType.CrossHair, false);
                 break;
         }
     }
@@ -65,5 +68,8 @@ public class MyCamera : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha8)) _currentCameraType = ECameraType.FirstPerson;
         if (Input.GetKeyDown(KeyCode.Alpha9)) _currentCameraType = ECameraType.ThirdPerson;
         if (Input.GetKeyDown(KeyCode.Alpha0)) _currentCameraType = ECameraType.QuarterView;
+
+        if(Input.GetKeyDown(KeyCode.F1)) Cursor.lockState = CursorLockMode.Locked;
+        if (Input.GetKeyDown(KeyCode.F2)) Cursor.lockState = CursorLockMode.None;
     }
 }

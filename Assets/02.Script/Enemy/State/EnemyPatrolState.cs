@@ -28,7 +28,7 @@ public class EnemyPatrolState : EnemyState
     public override void Update()
     {
         base.Update();
-        if (Vector3.Distance(_enemy.Player.transform.position, _enemy.transform.position) < _enemy.DetectRange)
+        if (Vector3.Distance(_enemy.Player.transform.position, _enemy.transform.position) < _enemy.EnemyData.DetectRange)
         {
             _stateMachine.ChangeState(EEnemyState.Trace);
         }
@@ -55,9 +55,10 @@ public class EnemyPatrolState : EnemyState
 
     void MoveToTarget()
     {
-        Vector3 direction = (targetPosition - _enemy.transform.position).normalized;
+        //Vector3 direction = (targetPosition - _enemy.transform.position).normalized;
+        //_characterController.Move(direction * _enemy.EnemyData.MoveSpeed * Time.deltaTime);
+        _enemy._agent.SetDestination(targetPosition);
 
-        _characterController.Move(direction * _enemy.MoveSpeed * Time.deltaTime);
         if (Vector3.Distance(_enemy.transform.position, targetPosition) < 0.1f)
         {
             isMoving = false;

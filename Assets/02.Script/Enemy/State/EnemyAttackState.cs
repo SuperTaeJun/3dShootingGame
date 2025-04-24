@@ -9,7 +9,7 @@ public class EnemyAttackState : EnemyState
     public override void Enter()
     {
         base.Enter();
-        _stateTimer = _enemy.AttackRate;
+        _stateTimer = _enemy.EnemyData.AttackRange;
     }
 
     public override void Exit()
@@ -24,12 +24,12 @@ public class EnemyAttackState : EnemyState
         if (_stateTimer < 0)
         {
             Debug.Log("공격");
-            _stateTimer = _enemy.AttackRate;
+            _stateTimer = _enemy.EnemyData.AttackRange;
         }
 
 
         //공격범위보다 멀어지면 추격
-        if (Vector3.Distance(_enemy.transform.position, _enemy.Player.transform.position) > _enemy.AttackRange)
+        if (Vector3.Distance(_enemy.transform.position, _enemy.Player.transform.position) > _enemy.EnemyData.AttackRange)
         {
             _stateMachine.ChangeState(EEnemyState.Trace);
         }

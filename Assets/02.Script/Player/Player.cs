@@ -1,14 +1,15 @@
 using System.Collections;
 using Unity.VisualScripting;
+using UnityEditorInternal;
 using UnityEngine;
 using static UnityEditor.Experimental.GraphView.GraphView;
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, IDamageable
 {
     [Header("Data")]
     [SerializeField] private SO_PlayerData _playerData;
     public SO_PlayerData PlayerData => _playerData;
-
+    float Health;
     [Header("Wall Check Settings")]
     [SerializeField] private Transform _wallCheck;
     [SerializeField] private float _wallCheckDistance = 1.0f;
@@ -22,37 +23,39 @@ public class Player : MonoBehaviour
     private bool _isReloading = false;
     private float _reloadTimer = 0f;
     private Coroutine _reloadCoroutine;
-    public MyCamera Camera;
+    public MyCamera MyCamera;
     #region Getter (Data)
-    public float WalkSpeed => _playerData._walkSpeed;
-    public float RunSpeed => _playerData._runSpeed;
-    public float DashSpeed => _playerData._dashSpeed;
-    public float ClimbSpeed => _playerData._climbSpeed;
-    public float RotationSpeed => _playerData._rotationSpeed;
-    public float JumpPower => _playerData._jumpPower;
-    public int MaxJumpCount => _playerData._maxJumpCount;
-    public float MaxStamina => _playerData._maxStamina;
-    public float UseDashStamina => _playerData._useDashStamina;
-    public float UseRunStamina => _playerData._useRunStamina;
-    public float UseClimbStamina => _playerData._useClimbStamina;
+    public float WalkSpeed => _playerData.WalkSpeed;
+    public float RunSpeed => _playerData.RunSpeed;
+    public float DashSpeed => _playerData.DashSpeed;
+    public float ClimbSpeed => _playerData.ClimbSpeed;
+    public float RotationSpeed => _playerData.RotationSpeed;
+    public float JumpPower => _playerData.JumpPower;
+    public int MaxJumpCount => _playerData.MaxJumpCount;
+    public float MaxStamina => _playerData.MaxStamina;
+    public float UseDashStamina => _playerData.UseDashStamina;
+    public float UseRunStamina => _playerData.UseRunStamina;
+    public float UseClimbStamina => _playerData.UseClimbStamina;
     #endregion
 
     private void Awake()
     {
         CharacterController = GetComponent<CharacterController>();
-        CurrentStamina = _playerData._maxStamina;
-        CurrentBombNum = _playerData._MaxBombNum;
-        CurrentBulletNum = _playerData._MaxBulletNum;
+        CurrentStamina = _playerData.MaxStamina;
+        CurrentBombNum = _playerData.MaxBombNum;
+        CurrentBulletNum = _playerData.MaxBulletNum;
     }
 
     private void Start()
     {
+        Health = 100;
         InitUi();
     }
 
     private void Update()
     {
         HandleReloadInput();
+
     }
 
     public bool IsWallInFront()
@@ -64,19 +67,19 @@ public class Player : MonoBehaviour
     public void UseStamina(float amount)
     {
         CurrentStamina = Mathf.Clamp(CurrentStamina - Time.deltaTime * amount, 0f, MaxStamina);
-        UpdateStaminaUI();
+        PlayerUiManager.Instance.RefreshPlayer();
     }
 
     public void ReduceStamina(float amount)
     {
         CurrentStamina = Mathf.Clamp(CurrentStamina - amount, 0f, MaxStamina);
-        UpdateStaminaUI();
+        PlayerUiManager.Instance.RefreshPlayer();
     }
 
     public void RecoverStamina()
     {
-        CurrentStamina = Mathf.Clamp(CurrentStamina + Time.deltaTime * _playerData._recoveryStamina, 0f, MaxStamina);
-        UpdateStaminaUI();
+        CurrentStamina = Mathf.Clamp(CurrentStamina + Time.deltaTime * _playerData.RecoveryStamina, 0f, MaxStamina);
+        PlayerUiManager.Instance.RefreshPlayer();
     }
     #endregion
 
@@ -84,13 +87,13 @@ public class Player : MonoBehaviour
     public void UseBomb()
     {
         CurrentBombNum--;
-        UpdateBombUI();
+        PlayerUiManager.Instance.RefreshWeaponUi();
     }
 
     public void UseBullet()
     {
         CurrentBulletNum--;
-        UpdateBulletUI();
+        PlayerUiManager.Instance.RefreshWeaponUi();
     }
     #endregion
 
@@ -99,7 +102,7 @@ public class Player : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.R) && !_isReloading)
         {
-            UiManager.Instance.SetActiveReloadBar(true);
+            PlayerUiManager.Instance.SetActiveUI(EUiType.ReloadBar, true);
             _reloadCoroutine = StartCoroutine(ReloadRoutine(_playerData.ReloadTime));
         }
     }
@@ -118,13 +121,13 @@ public class Player : MonoBehaviour
             }
 
             _reloadTimer += Time.deltaTime;
-            UiManager.Instance.RefreshReloadBar(_reloadTimer);
+            PlayerUiManager.Instance.RefreshReloadBar(_reloadTimer);
             yield return null;
         }
 
-        CurrentBulletNum = _playerData._MaxBulletNum;
-        UpdateBulletUI();
-        UiManager.Instance.SetActiveReloadBar(false);
+        CurrentBulletNum = _playerData.MaxBulletNum;
+        PlayerUiManager.Instance.RefreshWeaponUi();
+        PlayerUiManager.Instance.SetActiveUI(EUiType.ReloadBar, false);
         _reloadTimer = 0f;
         _isReloading = false;
     }
@@ -139,31 +142,20 @@ public class Player : MonoBehaviour
 
         _isReloading = false;
         _reloadTimer = 0f;
-        UiManager.Instance.SetActiveReloadBar(false);
+        PlayerUiManager.Instance.SetActiveUI(EUiType.ReloadBar, false);
     }
     #endregion
 
-    #region UI
     private void InitUi()
     {
-        UpdateStaminaUI();
-        UpdateBombUI();
-        UpdateBulletUI();
+        PlayerUiManager.Instance.RefreshPlayer();
+        PlayerUiManager.Instance.RefreshWeaponUi();
     }
 
-    private void UpdateStaminaUI()
+    public void TakeDamage(Damage damage)
     {
-        UiManager.Instance.RefreshStamina(CurrentStamina);
+        Health -= damage.Value;
     }
 
-    private void UpdateBombUI()
-    {
-        UiManager.Instance.RefreshBomb(CurrentBombNum, _playerData._MaxBombNum);
-    }
 
-    private void UpdateBulletUI()
-    {
-        UiManager.Instance.RefreshBullet(CurrentBulletNum, _playerData._MaxBulletNum);
-    }
-    #endregion
 }

@@ -10,17 +10,25 @@ public class PlayerRotate : MonoBehaviour
     private void Awake()
     {
         _player = GetComponent<Player>();
-        _myCamera = _player.Camera;
+        _myCamera = _player.MyCamera;
     }
 
     private void Update()
     {
-        if (_myCamera == null || _myCamera.CurrentCameraType == ECameraType.QuarterView)
-            return;
+        Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
 
-
-        float mouseX = Input.GetAxis("Mouse X");
-        _rotationX += mouseX * _player.RotationSpeed * Time.deltaTime;
-        transform.rotation = Quaternion.Euler(0, _rotationX, 0);
+        if (Physics.Raycast(ray, out RaycastHit hit, 100f))
+        {
+            Vector3 lookPos = hit.point;
+            //lookPos.y = transform.position.y;
+            transform.LookAt(lookPos);
+        }
+        else
+        {
+            Vector3 lookDir = ray.direction;
+            lookDir.y = 0;
+            if (lookDir != Vector3.zero)
+                transform.rotation = Quaternion.LookRotation(lookDir);
+        }
     }
 }

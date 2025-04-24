@@ -28,14 +28,14 @@ public class EnemyReturnState : EnemyState
             _stateMachine.ChangeState(EEnemyState.Idle);
         }
 
-        if(Vector3.Distance(_enemy.transform.position, _enemy.Player.transform.position) < _enemy.DetectRange)
+        if(Vector3.Distance(_enemy.transform.position, _enemy.Player.transform.position) < _enemy.EnemyData.DetectRange)
         {
             _stateMachine.ChangeState(EEnemyState.Trace);
         }
 
-        Vector3 dir = _startPosition - _enemy.transform.position;
-        _characterController.Move(dir * _enemy.MoveSpeed * Time.deltaTime);
-
+        //Vector3 dir = _startPosition - _enemy.transform.position;
+        //_characterController.Move(dir * _enemy.EnemyData.MoveSpeed * Time.deltaTime);
+        _enemy._agent.SetDestination(_startPosition);
 
     }
 }

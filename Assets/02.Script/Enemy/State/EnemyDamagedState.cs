@@ -11,8 +11,10 @@ public class EnemyDamagedState : EnemyState
         base.Enter();
 
         _characterController.Move(Vector3.zero);
+        _stateTimer = _enemy.EnemyData.SturnTime;
 
-        _stateTimer = _enemy.SturnTime;
+        _enemy._agent.isStopped = true;
+        _enemy._agent.ResetPath();
     }
 
     public override void Exit()
@@ -29,7 +31,7 @@ public class EnemyDamagedState : EnemyState
             _stateMachine.ChangeState(EEnemyState.Trace);
         }
 
-        if(_enemy.Health <=0)
+        if(_enemy.EnemyData.Health <=0)
         {
             _stateMachine.ChangeState(EEnemyState.Dead);
         }

@@ -4,8 +4,9 @@
 TagManager:
   serializedVersion: 3
   tags:
-  - FxTemporaire
   - Enemy
+  - Projectile
+  - Prop
   layers:
   - Default
   - TransparentFX
@@ -16,9 +17,9 @@ TagManager:
   - Player
   - Projectile
   - Enemy
-  - 
-  - 
-  - 
+  - Ground
+  - Minimap
+  - Prop
   - 
   - 
   - 

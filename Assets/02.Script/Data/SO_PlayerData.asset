@@ -12,19 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 680dfb2841f81f74e9cbcb0a02eb9e1e, type: 3}
   m_Name: SO_PlayerData
   m_EditorClassIdentifier: 
-  _walkSpeed: 5
-  _runSpeed: 12
-  _dashSpeed: 50
-  _climbSpeed: 2
-  _rotationSpeed: 300
-  _jumpPower: 10
-  _maxJumpCount: 2
-  _maxStamina: 100
-  _useDashStamina: 10
-  _useClimbStamina: 20
-  _useRunStamina: 4
-  _recoveryStamina: 5
-  _MaxBombNum: 3
-  _MaxBulletNum: 50
+  WalkSpeed: 5
+  RunSpeed: 12
+  DashSpeed: 50
+  ClimbSpeed: 2
+  RotationSpeed: 180
+  JumpPower: 10
+  MaxJumpCount: 2
+  MaxStamina: 100
+  UseDashStamina: 10
+  UseClimbStamina: 20
+  UseRunStamina: 4
+  RecoveryStamina: 5
+  MaxBombNum: 3
+  MaxBulletNum: 50
   FireRate: 0.2
   ReloadTime: 2
+  Damage: 30

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.InputSystem.XR;
 public enum EEnemyState
 {
@@ -13,41 +14,39 @@ public enum EEnemyState
     Patrol
 }
 
-public class Enemy : MonoBehaviour
+public class Enemy : MonoBehaviour,IDamageable
 {
-    private GameObject _player;
-    public GameObject Player => _player;
+    [Header("Data")]
+    [SerializeField] protected SO_EnemyData _enemyData;
 
+    //넉백
+    protected float knockbackPower;
+    protected float knockbackDuration = 0.1f;
+    //
+
+    protected GameObject _player;
     protected EnemyStateMachine _stateMachine;
     protected CharacterController _characterController;
+    public NavMeshAgent _agent;
     protected Animator _animator;
+    protected Vector3 _startPosition;
+    protected Dictionary<EEnemyState, EnemyState> _statesMap;
+
+    protected float _currentHealth;
+
+    #region Getter
+    public GameObject Player => _player;
     public Animator Animator => _animator;
-
-    private Vector3 _startPosition;
+    public SO_EnemyData EnemyData => _enemyData;
     public Vector3 StartPos => _startPosition;
-    [Header("Stat")]
-    public float DetectRange = 7f;
-    public float AttackRange = 3f;
-    public float ReturnRange = 10;
-    public float _moveSpeed = 2;
-    public float MoveSpeed => _moveSpeed;
-    public float AttackRate = 2f;
-    public int Health = 100;
-    public float SturnTime = 0.5f;
-    public float DeadTime = 1f;
-    public float PatrolTime = 4f;
+    #endregion
 
 
-    [Header("Knockback")]
-    public float knockbackPower = 10f;
-    public float knockbackDuration = 0.3f;
-    private Vector3 knockbackDirection;
-    private float knockbackTimer;
-    private bool isKnockbacking = false;
-
-    private Dictionary<EEnemyState, EnemyState> _statesMap;
-    private void Awake()
+    protected virtual void Awake()
     {
+        _agent = GetComponent<NavMeshAgent>();
+        _agent.speed = EnemyData.MoveSpeed;
+
         _characterController = GetComponent<CharacterController>();
         _stateMachine = new EnemyStateMachine();
 
@@ -55,30 +54,31 @@ public class Enemy : MonoBehaviour
 
         _statesMap = new Dictionary<EEnemyState, EnemyState>
     {
-        { EEnemyState.Idle, new EnemyIdleState(_stateMachine, _characterController, this, "Idle") },
-        { EEnemyState.Trace, new EnemyTraceState(_stateMachine, _characterController, this, "Trace") },
-        { EEnemyState.Return, new EnemyReturnState(_stateMachine, _characterController, this, "Return", _startPosition) },
-        { EEnemyState.Damaged, new EnemyDamagedState(_stateMachine, _characterController, this, "Damaged") },
-        { EEnemyState.Attack, new EnemyAttackState(_stateMachine, _characterController, this, "Attack") },
-        { EEnemyState.Dead, new EnemyDeadState(_stateMachine, _characterController, this, "Dead") },
-        { EEnemyState.Patrol, new EnemyPatrolState(_stateMachine, _characterController, this, "Patrol") },
+        { EEnemyState.Idle,     new EnemyIdleState(_stateMachine, _characterController, this, "Idle") },
+        { EEnemyState.Trace,    new EnemyTraceState(_stateMachine, _characterController, this, "Trace") },
+        { EEnemyState.Return,   new EnemyReturnState(_stateMachine, _characterController, this, "Return", _startPosition) },
+        { EEnemyState.Damaged,  new EnemyDamagedState(_stateMachine, _characterController, this, "Damaged") },
+        { EEnemyState.Attack,   new EnemyAttackState(_stateMachine, _characterController, this, "Attack") },
+        { EEnemyState.Dead,     new EnemyDeadState(_stateMachine, _characterController, this, "Dead") },
+        { EEnemyState.Patrol,   new EnemyPatrolState(_stateMachine, _characterController, this, "Patrol") },
     };
 
+        _currentHealth = EnemyData.Health;
     }
-    void Start()
+    protected virtual void Start()
     {
         _stateMachine.InitStateMachine(_statesMap[EEnemyState.Idle], this, _statesMap);
         _player = GameObject.FindGameObjectWithTag("Player");
     }
 
-    void Update()
+    protected virtual void Update()
     {
         _stateMachine.Update();
     }
 
     public void TakeDamage(Damage damage)
     {
-        Health -= damage.Value;
+        _currentHealth -= damage.Value;
         knockbackPower = damage.Power;
         //_characterController.Move(-transform.forward * damage.Power);
         StartCoroutine(KnockbackCoroutine(damage.ForwardDir));
@@ -87,18 +87,13 @@ public class Enemy : MonoBehaviour
 
     private IEnumerator KnockbackCoroutine(Vector3 direction)
     {
-        isKnockbacking = true;
         float timer = 0f;
-
-        Vector3 knockbackDir = direction.normalized;
 
         while (timer < knockbackDuration)
         {
-            _characterController.Move(knockbackDir * knockbackPower * Time.deltaTime);
+            _characterController.Move(direction * knockbackPower * Time.deltaTime);
             timer += Time.deltaTime;
             yield return null;
         }
-
-        isKnockbacking = false;
     }
 }

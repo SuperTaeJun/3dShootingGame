@@ -9,7 +9,7 @@ public class EnemyDeadState : EnemyState
     public override void Enter()
     {
         base.Enter();
-        _stateTimer = _enemy.DeadTime;
+        _stateTimer = _enemy.EnemyData.DeadTime;
     }
 
     public override void Exit()
