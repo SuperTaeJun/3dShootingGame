@@ -37,7 +37,6 @@ public class PlayerUiManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
-            Debug.LogWarning("싱글톤 여러개임");
         }
 
         uiElements = new Dictionary<EUiType, GameObject>
@@ -51,7 +50,7 @@ public class PlayerUiManager : MonoBehaviour
     }
     private void Start()
     {
-
+        MyCamera.OnCameraTypeChanged += HandleCameraTypeChanged;
     }
     public void RefreshWeaponUi()
     {
@@ -82,5 +81,11 @@ public class PlayerUiManager : MonoBehaviour
     public void RefreshReloadBar(float curReload)
     {
         ReloadBar.value = curReload;
+    }
+
+    private void HandleCameraTypeChanged(ECameraType cameraType)
+    {
+        bool showCrosshair = cameraType != ECameraType.QuarterView;
+        SetActiveUI(EUiType.CrossHair, showCrosshair);
     }
 }

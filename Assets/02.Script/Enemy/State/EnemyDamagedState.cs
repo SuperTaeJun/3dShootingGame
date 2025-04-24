@@ -31,7 +31,7 @@ public class EnemyDamagedState : EnemyState
             _stateMachine.ChangeState(EEnemyState.Trace);
         }
 
-        if(_enemy.EnemyData.Health <=0)
+        if (_enemy.CurrentHealth <= 0)
         {
             _stateMachine.ChangeState(EEnemyState.Dead);
         }

@@ -44,5 +44,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a50677cdcb8835e4ea662ea7e092a0b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _nomalEnemyPrefab: {fileID: 51679174134685541, guid: 9d91f4334d9109b4b994efa7832f9ad9, type: 3}
-  _chaseEnemyPrefab: {fileID: 51679174134685541, guid: 8c8d2a72ef9dd9a4b83a12a0cdb4c2c2, type: 3}
+  _enemyTypes:
+  - prefab: {fileID: 51679174134685541, guid: 9d91f4334d9109b4b994efa7832f9ad9, type: 3}
+    spawnWeight: 10
+  - prefab: {fileID: 51679174134685541, guid: 8c8d2a72ef9dd9a4b83a12a0cdb4c2c2, type: 3}
+    spawnWeight: 5
+  _spawnInterval: 8

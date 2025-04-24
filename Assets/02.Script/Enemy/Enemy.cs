@@ -39,6 +39,7 @@ public class Enemy : MonoBehaviour,IDamageable
     public Animator Animator => _animator;
     public SO_EnemyData EnemyData => _enemyData;
     public Vector3 StartPos => _startPosition;
+    public float CurrentHealth => _currentHealth;
     #endregion
 
 
@@ -80,7 +81,7 @@ public class Enemy : MonoBehaviour,IDamageable
     {
         _currentHealth -= damage.Value;
         knockbackPower = damage.Power;
-        //_characterController.Move(-transform.forward * damage.Power);
+    
         StartCoroutine(KnockbackCoroutine(damage.ForwardDir));
         _stateMachine.ChangeState(EEnemyState.Damaged);
     }
@@ -96,4 +97,10 @@ public class Enemy : MonoBehaviour,IDamageable
             yield return null;
         }
     }
+
+    public float GetDistanceToPlayer()
+    {
+        return Vector3.Distance(transform.position, _player.transform.position);
+    }
+
 }

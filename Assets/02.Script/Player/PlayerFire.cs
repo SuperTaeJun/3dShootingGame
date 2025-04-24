@@ -28,6 +28,9 @@ public class PlayerFire : MonoBehaviour
 
     private RaycastHit _traceHitResult;
 
+    private ECameraType _currentCameraType;
+
+
     private void Awake()
     {
         _player = GetComponent<Player>();
@@ -36,6 +39,10 @@ public class PlayerFire : MonoBehaviour
         _distanceToSphere = _fireRange;
     }
 
+    private void Start()
+    {
+        MyCamera.OnCameraTypeChanged += HandleCameraTypeChanged;
+    }
     private void Update()
     {
         //크로스헤어에서 발사체가 날아가는 방향으로 레이캐스트를 하여 무엇을 조준 중인지 확인
@@ -43,6 +50,10 @@ public class PlayerFire : MonoBehaviour
 
         HandleBulletInput();
         HandleBombInput();
+    }
+    private void HandleCameraTypeChanged(ECameraType type)
+    {
+        _currentCameraType = type;
     }
 
     #region Bullet
@@ -81,32 +92,27 @@ public class PlayerFire : MonoBehaviour
 
             _player.UseBullet();
 
-            // 총기 반동 계산 해서 방향 결정
-            Vector3 scatterDir = CalculateScatterDirection(_firePos.position);
+            Vector3 fireDir = GetFireDirection();
 
-            if (Physics.Raycast(_firePos.position, scatterDir, out RaycastHit hit, _fireRange))
+            if (Physics.Raycast(_firePos.position, fireDir, out RaycastHit hit, _fireRange))
             {
                 Debug.DrawLine(_firePos.position, hit.point, Color.red, 2f);
                 if (hit.collider.CompareTag("Enemy"))
                 {
                     Enemy enemy = hit.collider.GetComponent<Enemy>();
-                    enemy.TakeDamage(new Damage(_player.PlayerData.Damage, _player.gameObject, 20f,transform.forward));
+                    enemy.TakeDamage(new Damage(_player.PlayerData.Damage, _player.gameObject, 20f, transform.forward));
                 }
-                else if(hit.collider.CompareTag("Prop"))
+                else if (hit.collider.CompareTag("Prop"))
                 {
-                    if (hit.collider.gameObject != null)
-                    {
-
-                        Drum drum = hit.collider.GetComponent<Drum>();
-                        drum.TakeDamage(new Damage(_player.PlayerData.Damage, _player.gameObject, 20f, transform.forward));
-                    }
+                    Drum drum = hit.collider.GetComponent<Drum>();
+                    drum.TakeDamage(new Damage(_player.PlayerData.Damage, _player.gameObject, 20f, transform.forward));
                 }
                 Instantiate(_hitVfxPrefab, hit.point, Quaternion.LookRotation(hit.normal));
                 StartCoroutine(SpawnTrail(trail, hit.point));
             }
             else
             {
-                Vector3 endPoint = _firePos.position + scatterDir * _fireRange;
+                Vector3 endPoint = _firePos.position + fireDir * _fireRange;
                 Debug.DrawLine(_firePos.position, endPoint, Color.red, 2f);
                 StartCoroutine(SpawnTrail(trail, endPoint));
             }
@@ -131,16 +137,7 @@ public class PlayerFire : MonoBehaviour
         }
     }
 
-    private Vector3 CalculateScatterDirection(Vector3 startPos)
-    {
-        //정규화
-        Vector3 forward = (_traceHitResult.point - startPos).normalized;
 
-        Vector3 sphereCenter = startPos + forward * _distanceToSphere;
-        Vector3 randomOffset = Random.insideUnitSphere * _scatterRadius;
-        Vector3 finalPos = sphereCenter + randomOffset;
-        return (finalPos - startPos).normalized;
-    }
     #endregion
 
     #region Bomb
@@ -174,8 +171,8 @@ public class PlayerFire : MonoBehaviour
         bomb.transform.position = _firePos.position;
         bomb.transform.rotation = _player.transform.rotation;
 
-        Vector3 scatterDir = CalculateScatterDirection(_firePos.position);
-        bomb.Initialize(scatterDir, _currentThrowPower, _player.gameObject);
+        Vector3 throwDir = GetFireDirection(); // ← 변경된 방향 사용
+        bomb.Initialize(throwDir, _currentThrowPower, _player.gameObject);
 
         _currentThrowPower = _baseThrowPower;
         _player.UseBomb();
@@ -184,7 +181,7 @@ public class PlayerFire : MonoBehaviour
     #endregion
 
 
-
+    // 화면중앙으로 레이저를쏴서 헤어라인에 맞는 녀석을 구함 없으면 공격사거리 최대에 맞았다고침
     public void TraceUnderCrosshair(out RaycastHit hitInfo, float distance)
     {
         Camera cam = Camera.main;
@@ -212,5 +209,36 @@ public class PlayerFire : MonoBehaviour
             Debug.DrawLine(start, end, Color.green, 1f);
             return;
         }
+    }
+    // 지금 카메라 모드에따라서 다른 방식으로 방향을구해줌 + 반동도 추가됨
+    private Vector3 GetFireDirection()
+    {
+        if (_currentCameraType == ECameraType.QuarterView)
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit hit, 100f, LayerMask.GetMask("Ground")))
+            {
+                Vector3 targetPos = hit.point;
+                Vector3 dir = (targetPos - _firePos.position).normalized;
+                return dir;
+            }
+            return _firePos.forward; // fallback
+        }
+        else
+        {
+            TraceUnderCrosshair(out _traceHitResult, _fireRange);
+            return CalculateScatterDirection(_firePos.position);
+        }
+    }
+    //반동 함수
+    private Vector3 CalculateScatterDirection(Vector3 startPos)
+    {
+        //정규화
+        Vector3 forward = (_traceHitResult.point - startPos).normalized;
+
+        Vector3 sphereCenter = startPos + forward * _distanceToSphere;
+        Vector3 randomOffset = Random.insideUnitSphere * _scatterRadius;
+        Vector3 finalPos = sphereCenter + randomOffset;
+        return (finalPos - startPos).normalized;
     }
 }

@@ -29,7 +29,7 @@ public class EnemyAttackState : EnemyState
 
 
         //공격범위보다 멀어지면 추격
-        if (Vector3.Distance(_enemy.transform.position, _enemy.Player.transform.position) > _enemy.EnemyData.AttackRange)
+        if (_enemy.GetDistanceToPlayer() > _enemy.EnemyData.AttackRange)
         {
             _stateMachine.ChangeState(EEnemyState.Trace);
         }

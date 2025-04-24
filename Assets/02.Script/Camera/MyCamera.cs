@@ -33,6 +33,7 @@ public class MyCamera : MonoBehaviour
     private float _rotationX;
     private float _rotationY;
 
+    public static event Action<ECameraType> OnCameraTypeChanged;
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -50,26 +51,41 @@ public class MyCamera : MonoBehaviour
         {
             case ECameraType.FirstPerson:
                 _firstPerson.UpdateCamera(transform, _target);
-                PlayerUiManager.Instance.SetActiveUI(EUiType.CrossHair, true);
                 break;
             case ECameraType.ThirdPerson:
                 _thirdPerson.UpdateCamera(transform, _target);
-                PlayerUiManager.Instance.SetActiveUI(EUiType.CrossHair, true);
                 break;
             case ECameraType.QuarterView:
                 _quarterView.UpdateCamera(transform, _target);
-                PlayerUiManager.Instance.SetActiveUI(EUiType.CrossHair, false);
                 break;
         }
     }
 
     private void HandleInput()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha8)) _currentCameraType = ECameraType.FirstPerson;
-        if (Input.GetKeyDown(KeyCode.Alpha9)) _currentCameraType = ECameraType.ThirdPerson;
-        if (Input.GetKeyDown(KeyCode.Alpha0)) _currentCameraType = ECameraType.QuarterView;
+        if (Input.GetKeyDown(KeyCode.Alpha8)) 
+        {
+            SetCameraType(ECameraType.FirstPerson);
+            Cursor.lockState = CursorLockMode.Locked;
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha9))
+        {
+            SetCameraType(ECameraType.ThirdPerson);
+            Cursor.lockState = CursorLockMode.Locked;
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha0))
+        {
+            SetCameraType(ECameraType.QuarterView);
+            Cursor.lockState = CursorLockMode.None;
+        }
 
-        if(Input.GetKeyDown(KeyCode.F1)) Cursor.lockState = CursorLockMode.Locked;
+        if (Input.GetKeyDown(KeyCode.F1)) Cursor.lockState = CursorLockMode.Locked;
         if (Input.GetKeyDown(KeyCode.F2)) Cursor.lockState = CursorLockMode.None;
+    }
+
+    private void SetCameraType(ECameraType newType)
+    {
+        _currentCameraType = newType;
+        OnCameraTypeChanged?.Invoke(newType); // 이벤트 발행
     }
 }
