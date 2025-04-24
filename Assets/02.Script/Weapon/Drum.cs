@@ -30,7 +30,6 @@ public class Drum : MonoBehaviour, IDamageable
         _health -= damage.Value;
         if (_health <= 0 && !isDestroyed)
         {
-            Debug.Log("파괴");
 
             isDestroyed = true;
 
@@ -44,8 +43,8 @@ public class Drum : MonoBehaviour, IDamageable
 
 
             //시각화
-            Debug.DrawLine(center, center + Vector3.up * 0.1f, Color.red, 1.0f); // 중심점 표시
-            DebugExtension.DrawSphere(center, Color.red, radius, 10); // ※ 아래에 유틸 제공
+            Debug.DrawLine(center, center + Vector3.up * 0.1f, Color.red, 1.0f); 
+            DebugExtension.DrawSphere(center, Color.red, radius, 10);
 
 
             Collider[] hitObjects = Physics.OverlapSphere(center, radius, LayerMask.GetMask("Enemy", "Player", "Prop"));
@@ -66,10 +65,9 @@ public class Drum : MonoBehaviour, IDamageable
 
     private void RandAddForce()
     {
-        // 랜덤 방향 + 위쪽 힘 섞기
         Vector3 randomDir = new Vector3(
             Random.Range(-1f, 1f),
-            Random.Range(0.5f, 1f), // 위쪽으로 좀 더
+            Random.Range(0.5f, 1f),
             Random.Range(-1f, 1f)
         ).normalized;
 

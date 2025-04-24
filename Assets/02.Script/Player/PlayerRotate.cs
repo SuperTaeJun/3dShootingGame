@@ -15,20 +15,12 @@ public class PlayerRotate : MonoBehaviour
 
     private void Update()
     {
-        Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+        Vector3 forward = Camera.main.transform.forward;
+        //forward.y = 0;
 
-        if (Physics.Raycast(ray, out RaycastHit hit, 100f))
-        {
-            Vector3 lookPos = hit.point;
-            //lookPos.y = transform.position.y;
-            transform.LookAt(lookPos);
-        }
-        else
-        {
-            Vector3 lookDir = ray.direction;
-            lookDir.y = 0;
-            if (lookDir != Vector3.zero)
-                transform.rotation = Quaternion.LookRotation(lookDir);
-        }
+        //화면중앙에 고정
+        if (forward != Vector3.zero)
+            transform.rotation = Quaternion.LookRotation(forward);
+
     }
 }
