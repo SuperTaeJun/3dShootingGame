@@ -2,7 +2,7 @@ using UnityEngine;
 
 public abstract class WeaponBase : MonoBehaviour
 {
-    [SerializeField] protected Transform _firePos;
+    [SerializeField] protected Transform _attackPos;
     [SerializeField] protected GameObject _hitVfxPrefab;
     [SerializeField] protected float _attackRange = 20f;
 

@@ -18,7 +18,7 @@ public class PlayerUiManager : MonoBehaviour
     public static PlayerUiManager Instance;
 
     [Header("GameState")]
-    public  TextMeshProUGUI StartText;
+    public  TextMeshProUGUI ReadyText;
     public  TextMeshProUGUI RunText;
     public  TextMeshProUGUI OverText;
 
@@ -110,10 +110,10 @@ public class PlayerUiManager : MonoBehaviour
     }
     IEnumerator ReadyRoutine()
     {
-        StartText.gameObject.SetActive(true);
+        ReadyText.gameObject.SetActive(true);
         Time.timeScale = 0;
         yield return new WaitForSecondsRealtime(8f);
-        StartText.gameObject.SetActive(false);
+        ReadyText.gameObject.SetActive(false);
         GameManager.Instance.ChanageState(EGameState.Run);
     }
 

@@ -119,6 +119,11 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!4 &48140101 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6561839322914426789, guid: 582ac77b7b39139478a304300a05ccb0, type: 3}
+  m_PrefabInstance: {fileID: 950552660}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &69624436
 GameObject:
   m_ObjectHideFlags: 0
@@ -3192,6 +3197,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1898860996653436124, guid: 582ac77b7b39139478a304300a05ccb0, type: 3}
+      propertyPath: _attackPos
+      value: 
+      objectReference: {fileID: 48140101}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3422,7 +3431,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18e9c99dd966a284db932407695f4da7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartText: {fileID: 395838719}
+  ReadyText: {fileID: 395838719}
   RunText: {fileID: 264728948}
   OverText: {fileID: 1486270010}
   HealthBar: {fileID: 537890016}
@@ -4999,6 +5008,10 @@ PrefabInstance:
     - target: {fileID: 1359913290528636189, guid: c017d777e6869764685b07055dc6d8a9, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4354405915169555611, guid: c017d777e6869764685b07055dc6d8a9, type: 3}
+      propertyPath: _attackRange
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6128475711937207570, guid: c017d777e6869764685b07055dc6d8a9, type: 3}
       propertyPath: m_Name

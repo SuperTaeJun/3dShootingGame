@@ -63,16 +63,16 @@ public class Rifle : WeaponBase
         while (_player.CurrentBulletNum > 0)
         {
             GameObject trail = ObjectPool.Instance.GetObject(_trailPrefab);
-            trail.transform.position = _firePos.position;
+            trail.transform.position = _attackPos.position;
             trail.transform.rotation = gameObject.transform.rotation;
 
             _player.UseBullet();
 
             Vector3 fireDir = GetFireDirection();
 
-            if (Physics.Raycast(_firePos.position, fireDir, out RaycastHit hit, _attackRange))
+            if (Physics.Raycast(_attackPos.position, fireDir, out RaycastHit hit, _attackRange))
             {
-                Debug.DrawLine(_firePos.position, hit.point, Color.red, 2f);
+                Debug.DrawLine(_attackPos.position, hit.point, Color.red, 2f);
 
                 if (hit.collider.TryGetComponent<IDamageable>(out IDamageable damageable))
                 {
@@ -84,8 +84,8 @@ public class Rifle : WeaponBase
             }
             else
             {
-                Vector3 endPoint = _firePos.position + fireDir * _attackRange;
-                Debug.DrawLine(_firePos.position, endPoint, Color.red, 2f);
+                Vector3 endPoint = _attackPos.position + fireDir * _attackRange;
+                Debug.DrawLine(_attackPos.position, endPoint, Color.red, 2f);
                 StartCoroutine(SpawnTrail(trail, endPoint));
             }
 
@@ -120,15 +120,15 @@ public class Rifle : WeaponBase
             if (Physics.Raycast(ray, out RaycastHit hit, 100f, LayerMask.GetMask("Ground")))
             {
                 Vector3 targetPos = hit.point;
-                Vector3 dir = (targetPos - _firePos.position).normalized;
+                Vector3 dir = (targetPos - _attackPos.position).normalized;
                 return dir;
             }
-            return _firePos.forward; // fallback
+            return _attackPos.forward; // fallback
         }
         else
         {
             TraceUnderCrosshair(out _traceHitResult, _attackRange);
-            return CalculateScatterDirection(_firePos.position);
+            return CalculateScatterDirection(_attackPos.position);
         }
     }
     //반동 함수
@@ -152,7 +152,7 @@ public class Rifle : WeaponBase
         {
             PlayerUiManager.Instance.SetActiveUI(EUiType.BombChargingBar, true);
             ChargingParticle.SetActive(true);
-            ChargingParticle.transform.position = _firePos.position;
+            ChargingParticle.transform.position = _attackPos.position;
         }
 
         if (Input.GetMouseButton(1))
@@ -171,7 +171,7 @@ public class Rifle : WeaponBase
     private void ThrowBomb()
     {
         Bomb bomb = ObjectPool.Instance.GetObject(_bombPrefab).GetComponent<Bomb>();
-        bomb.transform.position = _firePos.position;
+        bomb.transform.position = _attackPos.position;
         bomb.transform.rotation = _player.transform.rotation;
 
         Vector3 throwDir = GetFireDirection(); // ← 변경된 방향 사용
