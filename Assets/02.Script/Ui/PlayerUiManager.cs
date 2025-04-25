@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -16,7 +17,14 @@ public class PlayerUiManager : MonoBehaviour
 
     public static PlayerUiManager Instance;
 
+    [Header("GameState")]
+    public  TextMeshProUGUI StartText;
+    public  TextMeshProUGUI RunText;
+    public  TextMeshProUGUI OverText;
+
+
     [Header("Components")]
+    public Slider           HealthBar;
     public Slider           StaminaBar;
     public Slider           BombChargingBar;
     public Slider           ReloadBar;
@@ -47,9 +55,15 @@ public class PlayerUiManager : MonoBehaviour
         };
 
         _player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+
+        GameManager.Instance.OnChangeGameToReady += GameReady;
+        GameManager.Instance.OnChangeGameToRun += GameRun;
+        GameManager.Instance.OnChangeGameToOver += GameOver;
     }
     private void Start()
     {
+
+
         MyCamera.OnCameraTypeChanged += HandleCameraTypeChanged;
     }
     public void RefreshWeaponUi()
@@ -59,6 +73,7 @@ public class PlayerUiManager : MonoBehaviour
     }
     public void RefreshPlayer()
     {
+        HealthBar.value = _player.CurrentHealth;
         StaminaBar.value = _player.CurrentStamina;
     }
 
@@ -88,4 +103,46 @@ public class PlayerUiManager : MonoBehaviour
         bool showCrosshair = cameraType != ECameraType.QuarterView;
         SetActiveUI(EUiType.CrossHair, showCrosshair);
     }
+
+    private void GameReady()
+    {
+        StartCoroutine(ReadyRoutine());
+    }
+    IEnumerator ReadyRoutine()
+    {
+        StartText.gameObject.SetActive(true);
+        Time.timeScale = 0;
+        yield return new WaitForSecondsRealtime(8f);
+        StartText.gameObject.SetActive(false);
+        GameManager.Instance.ChanageState(EGameState.Run);
+    }
+
+    private void GameRun()
+    {
+        StartCoroutine(RunRoutine());
+    }
+
+    IEnumerator RunRoutine()
+    {
+        RunText.gameObject.SetActive(true);
+        Time.timeScale = 0;
+        yield return new WaitForSecondsRealtime(1f);
+        Time.timeScale = 1;
+        RunText.gameObject.SetActive(false);
+    }
+    private void GameOver()
+    {
+        StartCoroutine(OverRoutine());
+    }
+
+    IEnumerator OverRoutine()
+    {
+        OverText.gameObject.SetActive(true);
+        Time.timeScale = 0;
+        yield return new WaitForSecondsRealtime(5f);
+
+        GameManager.Instance.ChanageState(EGameState.Ready);
+        OverText.gameObject.SetActive(false);
+    }
+
 }

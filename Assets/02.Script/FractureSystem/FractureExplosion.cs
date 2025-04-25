@@ -106,6 +106,8 @@ public class FractureExplosion : MonoBehaviour
             var rb = frag.GetComponent<Rigidbody>();
             if (rb)
             {
+                rb.mass = 1;
+                rb.useGravity = true;
                 rb.constraints = RigidbodyConstraints.None;
                 rb.AddExplosionForce(
                     explosionForce,

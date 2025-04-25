@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.InputSystem.XR;
 public enum EEnemyState
 {
     Idle,
@@ -25,6 +24,7 @@ public class Enemy : MonoBehaviour,IDamageable
     //
 
     protected GameObject _player;
+    protected EnemyUiController _uiController;
     protected EnemyStateMachine _stateMachine;
     protected CharacterController _characterController;
     public NavMeshAgent _agent;
@@ -46,9 +46,11 @@ public class Enemy : MonoBehaviour,IDamageable
     protected virtual void Awake()
     {
         _agent = GetComponent<NavMeshAgent>();
+        _characterController = GetComponent<CharacterController>();
+        _uiController = GetComponent<EnemyUiController>();
+
         _agent.speed = EnemyData.MoveSpeed;
 
-        _characterController = GetComponent<CharacterController>();
         _stateMachine = new EnemyStateMachine();
 
         _startPosition = transform.position;
@@ -66,6 +68,11 @@ public class Enemy : MonoBehaviour,IDamageable
 
         _currentHealth = EnemyData.Health;
     }
+    protected virtual void OnEnable()
+    {
+        _uiController.RefreshPlayer(_currentHealth);
+    }
+
     protected virtual void Start()
     {
         _stateMachine.InitStateMachine(_statesMap[EEnemyState.Idle], this, _statesMap);
@@ -82,8 +89,11 @@ public class Enemy : MonoBehaviour,IDamageable
         _currentHealth -= damage.Value;
         knockbackPower = damage.Power;
     
+        _uiController.RefreshPlayer(_currentHealth);
+
         StartCoroutine(KnockbackCoroutine(damage.ForwardDir));
         _stateMachine.ChangeState(EEnemyState.Damaged);
+
     }
 
     private IEnumerator KnockbackCoroutine(Vector3 direction)

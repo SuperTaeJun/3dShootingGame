@@ -9,11 +9,13 @@ public class Player : MonoBehaviour, IDamageable
     [Header("Data")]
     [SerializeField] private SO_PlayerData _playerData;
     public SO_PlayerData PlayerData => _playerData;
-    float Health;
+    float _currentHealth;
     [Header("Wall Check Settings")]
     [SerializeField] private Transform _wallCheck;
     [SerializeField] private float _wallCheckDistance = 1.0f;
     [SerializeField] private LayerMask _wallLayer;
+
+    private ScreenEffectController ScreenEffectController;
 
     public float CurrentStamina { get; private set; }
     public int CurrentBombNum { get; private set; }
@@ -25,6 +27,7 @@ public class Player : MonoBehaviour, IDamageable
     private Coroutine _reloadCoroutine;
     public MyCamera MyCamera;
     #region Getter (Data)
+    public float CurrentHealth => _currentHealth;
     public float WalkSpeed => _playerData.WalkSpeed;
     public float RunSpeed => _playerData.RunSpeed;
     public float DashSpeed => _playerData.DashSpeed;
@@ -44,11 +47,13 @@ public class Player : MonoBehaviour, IDamageable
         CurrentStamina = _playerData.MaxStamina;
         CurrentBombNum = _playerData.MaxBombNum;
         CurrentBulletNum = _playerData.MaxBulletNum;
+
+        ScreenEffectController = GetComponent<ScreenEffectController>();
     }
 
     private void Start()
     {
-        Health = 100;
+        _currentHealth = 100;
         InitUi();
     }
 
@@ -154,7 +159,11 @@ public class Player : MonoBehaviour, IDamageable
 
     public void TakeDamage(Damage damage)
     {
-        Health -= damage.Value;
+        if (ScreenEffectController)
+            ScreenEffectController.PlayHitEffect(100, 3);
+
+        _currentHealth -= damage.Value;
+        PlayerUiManager.Instance.RefreshPlayer();
     }
 
 

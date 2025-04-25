@@ -32,7 +32,6 @@ public class Drum : MonoBehaviour, IDamageable
 
             float radius = 6f;
             Vector3 center = transform.position;
-            LayerMask enemyMask = LayerMask.GetMask("Enemy");
 
             GameObject vfx = GameObject.Instantiate(ExplosionPrefab);
             vfx.transform.position = center;
@@ -45,27 +44,13 @@ public class Drum : MonoBehaviour, IDamageable
             foreach (var obj in hitObjects)
             {
                 obj.gameObject.GetComponent<IDamageable>().TakeDamage(new Damage(100, gameObject, 40f, transform.forward));
-
-                Drum drum = obj.gameObject.GetComponent<Drum>();
-                if(drum)
-                {
-                    drum.RandAddForce();
-                }
             }
-            RandAddForce();
+            DestroyAll();
         }
     }
 
-    private void RandAddForce()
+    private void DestroyAll()
     {
-        Vector3 randomDir = new Vector3(
-            Random.Range(-1f, 1f),
-            Random.Range(0.2f, 1f),
-            Random.Range(-1f, 1f)
-        ).normalized;
-
-        _rigidbody.AddForce(randomDir * _power, ForceMode.Impulse);
-
         //오브젝트 풀에 넣으셈
         Destroy(gameObject, destroyTime);
         foreach (var frag in fragments)

@@ -17,7 +17,7 @@ MonoBehaviour:
   ReturnRange: 20
   MoveSpeed: 2
   AttackRate: 2
-  Health: 80
+  Health: 100
   SturnTime: 0.5
   DeadTime: 1
   PatrolTime: 4

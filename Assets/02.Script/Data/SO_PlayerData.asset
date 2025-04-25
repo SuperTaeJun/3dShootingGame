@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 680dfb2841f81f74e9cbcb0a02eb9e1e, type: 3}
   m_Name: SO_PlayerData
   m_EditorClassIdentifier: 
+  MaxHealth: 100
   WalkSpeed: 5
   RunSpeed: 12
   DashSpeed: 50
@@ -28,4 +29,4 @@ MonoBehaviour:
   MaxBulletNum: 50
   FireRate: 0.2
   ReloadTime: 2
-  Damage: 30
+  Damage: 20

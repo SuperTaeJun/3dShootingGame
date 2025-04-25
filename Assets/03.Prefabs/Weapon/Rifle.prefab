@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4000012351921782}
   - component: {fileID: 33000012431441244}
   - component: {fileID: 23000010741180374}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Bottom_Part_04(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -95,13 +95,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4000012828216092}
-  m_Layer: 0
-  m_Name: Your Weapon Example 1
+  - component: {fileID: 1898860996653436124}
+  m_Layer: 6
+  m_Name: Rifle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4000012828216092
 Transform:
   m_ObjectHideFlags: 0
@@ -125,6 +126,28 @@ Transform:
   - {fileID: 6561839322914426789}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1898860996653436124
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000010964463682}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afa7653f1b7aad44a82938dfc250873f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _firePos: {fileID: 6561839322914426789}
+  _hitVfxPrefab: {fileID: 8172394614802003838, guid: 3b0b674a3a9daac4daf2e4445e62d2a9, type: 3}
+  _attackRange: 20
+  _trailPrefab: {fileID: 8378503196372639160, guid: 69cc072cb0ed7344c8ed765f4f9efd17, type: 3}
+  _bombPrefab: {fileID: 879731797590016981, guid: 87ad805c9e0b30d4fb9b19b88e98bc3e, type: 3}
+  _baseThrowPower: 5
+  _maxThrowPower: 30
+  _bombChargeRate: 10
+  ChargingParticle: {fileID: 5732568103209889489, guid: e23741b3f14f27e46a31d8d542a2033e, type: 3}
+  _scatterRadius: 2
 --- !u!1 &1000011705015594
 GameObject:
   m_ObjectHideFlags: 0
@@ -136,7 +159,7 @@ GameObject:
   - component: {fileID: 4000013088770132}
   - component: {fileID: 33000012306548136}
   - component: {fileID: 23000011799653696}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Top_Part_01(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -222,7 +245,7 @@ GameObject:
   - component: {fileID: 4000010212994712}
   - component: {fileID: 33000013237168480}
   - component: {fileID: 23000011818482860}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Middle_Part_02(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -308,7 +331,7 @@ GameObject:
   - component: {fileID: 4000010539639080}
   - component: {fileID: 33000013487036940}
   - component: {fileID: 23000010034938228}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Muzzle_04(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -394,7 +417,7 @@ GameObject:
   - component: {fileID: 4000010247703026}
   - component: {fileID: 33000013805913446}
   - component: {fileID: 23000013074651844}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Handle_02(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -480,7 +503,7 @@ GameObject:
   - component: {fileID: 4000012396537236}
   - component: {fileID: 33000012406039276}
   - component: {fileID: 23000013843396650}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Aim_04(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -566,7 +589,7 @@ GameObject:
   - component: {fileID: 4000014070692058}
   - component: {fileID: 33000011849361598}
   - component: {fileID: 23000013537172168}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Back_Part_03(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -650,7 +673,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6561839322914426789}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: FireMuzzle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -666,7 +689,7 @@ Transform:
   m_GameObject: {fileID: 1076719146232316066}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 4.87}
+  m_LocalPosition: {x: 0, y: 0, z: 3.73}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
