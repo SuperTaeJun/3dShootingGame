@@ -97,16 +97,12 @@ public class PlayerFire : MonoBehaviour
             if (Physics.Raycast(_firePos.position, fireDir, out RaycastHit hit, _fireRange))
             {
                 Debug.DrawLine(_firePos.position, hit.point, Color.red, 2f);
-                if (hit.collider.CompareTag("Enemy"))
+
+                if(hit.collider.TryGetComponent<IDamageable>(out IDamageable damageable))
                 {
-                    Enemy enemy = hit.collider.GetComponent<Enemy>();
-                    enemy.TakeDamage(new Damage(_player.PlayerData.Damage, _player.gameObject, 20f, transform.forward));
+                    damageable.TakeDamage(new Damage(_player.PlayerData.Damage, _player.gameObject, 20f, transform.forward));
                 }
-                else if (hit.collider.CompareTag("Prop"))
-                {
-                    Drum drum = hit.collider.GetComponent<Drum>();
-                    drum.TakeDamage(new Damage(_player.PlayerData.Damage, _player.gameObject, 20f, transform.forward));
-                }
+
                 Instantiate(_hitVfxPrefab, hit.point, Quaternion.LookRotation(hit.normal));
                 StartCoroutine(SpawnTrail(trail, hit.point));
             }

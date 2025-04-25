@@ -1,23 +1,23 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-[RequireComponent(typeof(MeshFilter), typeof(MeshRenderer), typeof(Collider))]
+
 public class FractureExplosion : MonoBehaviour
 {
     [Header("Prefracture Reference")]
-    public Prefracture prefracture;
+    private Prefracture prefracture;
 
     [Header("Fracture Settings")]
-    public int fragmentCount = 10;
-    public Material insideMaterial;
-    public bool detectFloatingFragments = false;
-    public Vector2 textureScale = Vector2.one;
-    public Vector2 textureOffset = Vector2.zero;
+    [SerializeField] private int fragmentCount = 10;
+    [SerializeField] private Material insideMaterial;
+    [SerializeField] private bool detectFloatingFragments = false;
+    [SerializeField] private Vector2 textureScale = Vector2.one;
+    [SerializeField] private Vector2 textureOffset = Vector2.zero;
 
     [Header("Explosion Settings")]
-    public float explosionForce = 500f;
-    public float explosionRadius = 5f;
-    public float upwardsModifier = 0f;
+    [SerializeField] private float explosionForce = 500f;
+    [SerializeField] private float explosionRadius = 5f;
+    [SerializeField] private float upwardsModifier = 0f;
 
     private List<GameObject> fragments = new List<GameObject>();
     private Transform fragmentParent;
@@ -30,22 +30,20 @@ public class FractureExplosion : MonoBehaviour
         GenerateFragments();
     }
 
-    /// 메쉬를 파편화하여 fragmentParent 아래에 생성 후, fragments 리스트에 저장하고 비활성화합니다.
+    ///메쉬를 파편화하여 fragmentParent 아래에 생성 후, fragments 리스트에 저장하고 비활성
     void GenerateFragments()
     {
         var mesh = GetComponent<MeshFilter>().sharedMesh;
         if (mesh == null)
         {
-            Debug.LogError("FractureExplosion: MeshFilter에 메쉬가 없습니다.");
             return;
         }
 
         // 파편 루트 생성
-        var root = new GameObject(name + "_Fragments");
+        var root = new GameObject(name + "Fragments");
         root.transform.SetParent(transform.parent);
         root.transform.SetPositionAndRotation(transform.position, transform.rotation);
         fragmentParent = root.transform;
-
         // Prefracture 옵션 구성
         prefracture.fractureOptions.fragmentCount = fragmentCount;
         prefracture.fractureOptions.insideMaterial = insideMaterial;
@@ -55,11 +53,11 @@ public class FractureExplosion : MonoBehaviour
         prefracture.prefractureOptions.saveFragmentsToDisk = false;
         prefracture.prefractureOptions.saveLocation = string.Empty;
 
-        // 임시 템플릿 생성 (Prefracture(CreateFragmentTemplate)와 동일)
+        //Prefracture - OpenFreacture - CreateFragmentTemplate 코드 사용
         var template = new GameObject("FragmentTemplate") { tag = tag };
         template.AddComponent<MeshFilter>();
-        var mr = template.AddComponent<MeshRenderer>();
-        mr.sharedMaterials = new[]
+        var meshRenderer = template.AddComponent<MeshRenderer>();
+        meshRenderer.sharedMaterials = new[]
         {
             GetComponent<MeshRenderer>().sharedMaterial,
             insideMaterial
@@ -79,7 +77,7 @@ public class FractureExplosion : MonoBehaviour
             rbTemp.useGravity = rbSrc.useGravity;
         }
 
-        // 파편화 실행 (원본 비활성화 없음)
+        //파편화
         Fragmenter.Fracture(
             gameObject,
             prefracture.fractureOptions,
@@ -91,7 +89,7 @@ public class FractureExplosion : MonoBehaviour
 
         DestroyImmediate(template);
 
-        // 파편 저장 및 비활성화
+        // 파편 저장
         foreach (Transform t in fragmentParent)
         {
             var frag = t.gameObject;
@@ -100,9 +98,6 @@ public class FractureExplosion : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// fragments에 저장된 각 파편을 활성화하고 Rigidbody에 폭발력을 줍니다.
-    /// </summary>
     public List<GameObject> Explode()
     {
         foreach (var frag in fragments)
@@ -121,8 +116,6 @@ public class FractureExplosion : MonoBehaviour
                 );
             }
         }
-
-
         return fragments;
     }
 }

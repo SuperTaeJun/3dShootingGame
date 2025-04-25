@@ -13,5 +13,4 @@ public struct Damage
     public GameObject From;
     public float Power;
     public Vector3 ForwardDir;
-
 }

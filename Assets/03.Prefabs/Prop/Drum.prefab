@@ -205,10 +205,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d267c5cc28fa24d43a4c02dec7d1ae06, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prefracture: {fileID: 5685393321974803882}
-  fragmentCount: 10
+  fragmentCount: 20
   insideMaterial: {fileID: 2100000, guid: 7df33e0f310509e4dafd4ed3ec1846fc, type: 2}
-  detectFloatingFragments: 0
+  detectFloatingFragments: 1
   textureScale: {x: 1, y: 1}
   textureOffset: {x: 0, y: 0}
   explosionForce: 15
