@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Drum : MonoBehaviour, IDamageable
@@ -13,16 +14,12 @@ public class Drum : MonoBehaviour, IDamageable
     [Header("Prefabs")]
     [SerializeField] private GameObject ExplosionPrefab;
 
+    FractureExplosion explosion;
+    private List<GameObject> fragments = new List<GameObject>();
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
-    }
-    private IEnumerator DestoryRoutin(float time)
-    {
-        yield return new WaitForSeconds(time);
-
-        Destroy(gameObject);
-
+        explosion = GetComponent<FractureExplosion>();
     }
 
     public void TakeDamage(Damage damage)
@@ -30,6 +27,10 @@ public class Drum : MonoBehaviour, IDamageable
         _health -= damage.Value;
         if (_health <= 0 && !isDestroyed)
         {
+
+            fragments = explosion.Explode();
+
+
 
             isDestroyed = true;
 
@@ -67,11 +68,16 @@ public class Drum : MonoBehaviour, IDamageable
     {
         Vector3 randomDir = new Vector3(
             Random.Range(-1f, 1f),
-            Random.Range(0.5f, 1f),
+            Random.Range(0.2f, 1f),
             Random.Range(-1f, 1f)
         ).normalized;
 
         _rigidbody.AddForce(randomDir * _power, ForceMode.Impulse);
-        StartCoroutine(DestoryRoutin(destroyTime));
+        Destroy(gameObject, destroyTime);
+        foreach (var frag in fragments)
+        {
+            Destroy(frag, destroyTime);
+        }
+        gameObject.SetActive(false);
     }
 }

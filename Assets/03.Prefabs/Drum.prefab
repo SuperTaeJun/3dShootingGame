@@ -14,6 +14,8 @@ GameObject:
   - component: {fileID: 8138823821450352664}
   - component: {fileID: 2913502396464333770}
   - component: {fileID: 1936716889745020446}
+  - component: {fileID: 5685393321974803882}
+  - component: {fileID: 5647685663375000589}
   m_Layer: 11
   m_Name: Drum
   m_TagString: Prop
@@ -152,3 +154,63 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &5685393321974803882
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1142534262408957685}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 605444303d16d4544bb76342ce272af3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  triggerOptions:
+    triggerType: 0
+    minimumCollisionForce: 0
+    filterCollisionsByTag: 0
+    triggerAllowedTags: []
+    triggerKey: 0
+  fractureOptions:
+    fragmentCount: 10
+    xAxis: 1
+    yAxis: 1
+    zAxis: 1
+    detectFloatingFragments: 0
+    asynchronous: 0
+    insideMaterial: {fileID: 2100000, guid: 7df33e0f310509e4dafd4ed3ec1846fc, type: 2}
+    textureScale: {x: 1, y: 1}
+    textureOffset: {x: 0, y: 0}
+  callbackOptions:
+    onFracture:
+      m_PersistentCalls:
+        m_Calls: []
+    onCompleted:
+      m_PersistentCalls:
+        m_Calls: []
+  prefractureOptions:
+    unfreezeAll: 1
+    saveFragmentsToDisk: 0
+    saveLocation: Assets/03.Prefabs/Fracture
+--- !u!114 &5647685663375000589
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1142534262408957685}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d267c5cc28fa24d43a4c02dec7d1ae06, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefracture: {fileID: 5685393321974803882}
+  fragmentCount: 10
+  insideMaterial: {fileID: 2100000, guid: 7df33e0f310509e4dafd4ed3ec1846fc, type: 2}
+  detectFloatingFragments: 0
+  textureScale: {x: 1, y: 1}
+  textureOffset: {x: 0, y: 0}
+  explosionForce: 15
+  explosionRadius: 5
+  upwardsModifier: 0
