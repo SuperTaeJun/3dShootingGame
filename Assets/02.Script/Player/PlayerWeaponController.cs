@@ -14,7 +14,6 @@ public class PlayerWeaponController : MonoBehaviour
 
     EWeaponType CurrentWeaponType;
     [SerializeField] private WeaponBase[] _weapons;
-
     public WeaponBase CurrentWeapon;
 
 

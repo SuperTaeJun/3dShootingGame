@@ -2,14 +2,17 @@ using UnityEngine;
 
 public class EnemyDeadState : EnemyState
 {
-    public EnemyDeadState(EnemyStateMachine stateMachine, CharacterController characterController, Enemy enemy, string animBoolName) : base(stateMachine, characterController, enemy, animBoolName)
+    RagdolllController ragdolllController;
+    public EnemyDeadState(EnemyStateMachine stateMachine, CharacterController characterController, Enemy enemy, string animBoolName, RagdolllController ragdolllController) : base(stateMachine, characterController, enemy, animBoolName)
     {
+        this.ragdolllController = ragdolllController;
     }
 
     public override void Enter()
     {
         base.Enter();
         _stateTimer = _enemy.Data.DeadTime;
+        ragdolllController.EnableRagdoll();
     }
 
     public override void Exit()
@@ -22,7 +25,8 @@ public class EnemyDeadState : EnemyState
         base.Update();
         if(_stateTimer<0)
         {
-            _enemy.gameObject.SetActive(false);
+            ragdolllController.DisableRagdoll();
+            ObjectPool.Instance.ReturnToPool(_enemy.gameObject);
         }
 
     }

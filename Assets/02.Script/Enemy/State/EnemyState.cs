@@ -24,8 +24,8 @@ public class EnemyState
     //나중에 애니메이션 생기면 string이랑 맞춰서 쓰셈
     protected virtual void SetAnimation(bool value)
     {
-        //if (!string.IsNullOrEmpty(_animBoolName))
-        //    _enemy.Animator.SetBool(_animBoolName, value);
+        if (!string.IsNullOrEmpty(_animBoolName))
+            _enemy.Animator.SetBool(_animBoolName, value);
     }
 
     public virtual void Enter()
@@ -34,7 +34,6 @@ public class EnemyState
         SetAnimation(true);
         _triggerCalled = false;
 
-        Debug.Log(_animBoolName);
     }
     public virtual void Update()
     {

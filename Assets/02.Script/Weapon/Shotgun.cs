@@ -40,6 +40,7 @@ public class Shotgun : WeaponBase
     {
         if (_fireCoroutine != null)
         {
+            OnTriggerFireEnd.Invoke();
             StopCoroutine(_fireCoroutine);
             _fireCoroutine = null;
             _player.IsFiring = false;
@@ -51,8 +52,7 @@ public class Shotgun : WeaponBase
         {
             for (int i = 0; i < _numOfPill; ++i)
             {
-
-
+                OnTriggerFireStart.Invoke();
                 GameObject trail = ObjectPool.Instance.GetObject(_trailPrefab);
                 trail.transform.position = _attackPos.position;
                 trail.transform.rotation = gameObject.transform.rotation;

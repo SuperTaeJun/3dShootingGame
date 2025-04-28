@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public abstract class WeaponBase : MonoBehaviour
@@ -15,6 +16,10 @@ public abstract class WeaponBase : MonoBehaviour
     protected RaycastHit _traceHitResult;
     protected ECameraType _currentCameraType;
     public SO_WeaponData Data => _data;
+
+    public static Action OnTriggerFireStart;
+    public static Action OnTriggerFireEnd;
+
     public abstract void Attack();
     protected virtual void Start()
     {

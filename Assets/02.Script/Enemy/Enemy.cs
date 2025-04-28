@@ -27,6 +27,7 @@ public class Enemy : MonoBehaviour,IDamageable
     protected EnemyUiController _uiController;
     protected EnemyStateMachine _stateMachine;
     protected CharacterController _characterController;
+    protected RagdolllController _ragdolllController;
     public NavMeshAgent _agent;
     protected Animator _animator;
     protected Vector3 _startPosition;
@@ -42,12 +43,17 @@ public class Enemy : MonoBehaviour,IDamageable
     public float CurrentHealth => _currentHealth;
     #endregion
 
-
+   //protected void OnEnable()
+   // {
+   //     _ragdolllController.DisableRagdoll();
+   // }
     protected virtual void Awake()
     {
         _agent = GetComponent<NavMeshAgent>();
         _characterController = GetComponent<CharacterController>();
+        _ragdolllController = GetComponent<RagdolllController>();
         _uiController = GetComponent<EnemyUiController>();
+        _animator = GetComponent<Animator>();
 
         _agent.speed = Data.MoveSpeed;
 
@@ -62,15 +68,11 @@ public class Enemy : MonoBehaviour,IDamageable
         { EEnemyState.Return,   new EnemyReturnState(_stateMachine, _characterController, this, "Return", _startPosition) },
         { EEnemyState.Damaged,  new EnemyDamagedState(_stateMachine, _characterController, this, "Damaged") },
         { EEnemyState.Attack,   new EnemyAttackState(_stateMachine, _characterController, this, "Attack") },
-        { EEnemyState.Dead,     new EnemyDeadState(_stateMachine, _characterController, this, "Dead") },
+        { EEnemyState.Dead,     new EnemyDeadState(_stateMachine, _characterController, this, "Dead",_ragdolllController) },
         { EEnemyState.Patrol,   new EnemyPatrolState(_stateMachine, _characterController, this, "Patrol") },
     };
 
         _currentHealth = Data.Health;
-    }
-    protected virtual void OnEnable()
-    {
-        _uiController.RefreshPlayer(_currentHealth);
     }
 
     protected virtual void Start()

@@ -42,6 +42,7 @@ public class Rifle : WeaponBase
     {
         if (_fireCoroutine == null && _player.CurrentBulletNum > 0)
         {
+
             _fireCoroutine = StartCoroutine(FireLoop(_data.FireRate));
             _player.IsFiring = true;
         }
@@ -51,6 +52,7 @@ public class Rifle : WeaponBase
     {
         if (_fireCoroutine != null)
         {
+            OnTriggerFireEnd.Invoke();
             StopCoroutine(_fireCoroutine);
             _fireCoroutine = null;
             _player.IsFiring = false;
@@ -61,6 +63,7 @@ public class Rifle : WeaponBase
     {
         while (_player.CurrentBulletNum > 0)
         {
+            OnTriggerFireStart.Invoke();
             GameObject trail = ObjectPool.Instance.GetObject(_trailPrefab);
             trail.transform.position = _attackPos.position;
             trail.transform.rotation = gameObject.transform.rotation;

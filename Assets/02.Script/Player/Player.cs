@@ -17,8 +17,6 @@ public class Player : MonoBehaviour, IDamageable
     [SerializeField] private LayerMask _wallLayer;
 
     private ScreenEffectController ScreenEffectController;
-
-
     public float CurrentStamina { get; private set; }
     public int CurrentBombNum { get; private set; }
     public int CurrentBulletNum { get; private set; }

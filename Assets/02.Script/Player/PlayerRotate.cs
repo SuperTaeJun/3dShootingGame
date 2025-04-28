@@ -43,7 +43,7 @@ public class PlayerRotate : MonoBehaviour
     private void RotateTowardCrosshair()
     {
         Vector3 forward = Camera.main.transform.forward;
-        //forward.y = 0;
+        forward.y = 0;
 
         if (forward != Vector3.zero)
             transform.rotation = Quaternion.LookRotation(forward);
