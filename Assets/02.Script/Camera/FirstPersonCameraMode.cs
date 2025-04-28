@@ -21,7 +21,8 @@ public class FirstPersonCameraMode
         _rotationX += mouseX * _rotationSpeed * Time.deltaTime;
         _rotationY = Mathf.Clamp(_rotationY + mouseY * _rotationSpeed * Time.deltaTime, -60f, 60f);
 
-        cameraTransform.position = target.position + _positionOffset;
+        cameraTransform.position = target.position + target.rotation * _positionOffset;
+        //cameraTransform.position = target.position + _positionOffset;
         cameraTransform.eulerAngles = new Vector3(-_rotationY, _rotationX, 0);
     }
 }

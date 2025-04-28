@@ -19,5 +19,6 @@ MonoBehaviour:
   AttackRate: 2
   Health: 100
   SturnTime: 0.5
-  DeadTime: 1
+  DeadTime: 5
   PatrolTime: 4
+  Damage: 5

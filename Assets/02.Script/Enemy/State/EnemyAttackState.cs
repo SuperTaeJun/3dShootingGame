@@ -9,12 +9,14 @@ public class EnemyAttackState : EnemyState
     public override void Enter()
     {
         base.Enter();
-        _stateTimer = _enemy.Data.AttackRange;
+        _enemy.Animator.SetLayerWeight(1, 1.0f);
+        _stateTimer = _enemy.Data.AttackRate;
     }
 
     public override void Exit()
     {
         base.Exit();
+        _enemy.Animator.SetLayerWeight(1, 0.0f);
     }
 
     public override void Update()
@@ -23,6 +25,7 @@ public class EnemyAttackState : EnemyState
 
         if (_stateTimer < 0)
         {
+ 
             FireRay();
             Debug.Log("공격");
             _stateTimer = _enemy.Data.AttackRange;
