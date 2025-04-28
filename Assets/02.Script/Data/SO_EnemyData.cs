@@ -12,4 +12,5 @@ public class SO_EnemyData : ScriptableObject
     public float SturnTime = 0.5f;
     public float DeadTime = 1f;
     public float PatrolTime = 4f;
+    public int Damage = 5;
 }

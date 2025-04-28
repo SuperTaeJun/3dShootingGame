@@ -68,8 +68,8 @@ public class PlayerUiManager : MonoBehaviour
     }
     public void RefreshWeaponUi()
     {
-        BombText.text = $"Bomb : {_player.CurrentBombNum} / {_player.PlayerData.MaxBombNum}";
-        BulletText.text = $"Bullet : {_player.CurrentBulletNum} / {_player.PlayerData.MaxBulletNum}";
+        BombText.text = $"Bomb : {_player.CurrentBombNum} / {_player.WeaponController.CurrentWeapon.Data.MaxBombNum}";
+        BulletText.text = $"Bullet : {_player.CurrentBulletNum} / {_player.WeaponController.CurrentWeapon.Data.MaxBulletNum}";
     }
     public void RefreshPlayer()
     {

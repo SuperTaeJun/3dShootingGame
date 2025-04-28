@@ -5,6 +5,7 @@ using UnityEngine;
 public enum EWeaponType
 {
     Rifle,
+    Shotgun,
     Soward
 }
 
@@ -12,15 +13,15 @@ public class PlayerWeaponController : MonoBehaviour
 {
 
     EWeaponType CurrentWeaponType;
-    public WeaponBase[] Weapons;
-    private Player _player;
+    [SerializeField] private WeaponBase[] _weapons;
 
+    public WeaponBase CurrentWeapon;
 
 
     private void Awake()
     {
-        _player = GetComponent<Player>();
         CurrentWeaponType = EWeaponType.Rifle;
+        CurrentWeapon = _weapons[(int)CurrentWeaponType];
     }
 
     private void Start()
@@ -28,8 +29,10 @@ public class PlayerWeaponController : MonoBehaviour
     }
     private void Update()
     {
+        if (GameManager.Instance.CurrentState != EGameState.Run) return;
+
         WeaponChangeHandler();
-        Weapons[(int)CurrentWeaponType].Attack();
+        CurrentWeapon.Attack();
     }
     private void WeaponChangeHandler()
     {
@@ -40,6 +43,11 @@ public class PlayerWeaponController : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
+            CurrentWeaponType = EWeaponType.Shotgun;
+            SetCurrentWeapon();
+        }
+        if(Input.GetKeyDown(KeyCode.Alpha3))
+        {
             CurrentWeaponType = EWeaponType.Soward;
             SetCurrentWeapon();
         }
@@ -47,10 +55,11 @@ public class PlayerWeaponController : MonoBehaviour
 
     private void SetCurrentWeapon()
     {
-        foreach (var weapon in Weapons)
+        foreach (var weapon in _weapons)
         {
             weapon.gameObject.SetActive(false);
         }
-        Weapons[(int)CurrentWeaponType].gameObject.SetActive(true);
+        CurrentWeapon = _weapons[(int)CurrentWeaponType];
+        CurrentWeapon.gameObject.SetActive(true);
     }
 }

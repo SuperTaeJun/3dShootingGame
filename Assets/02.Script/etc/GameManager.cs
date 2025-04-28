@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
     private EGameState _currentState;
-
+    public EGameState CurrentState => _currentState;
     public Action OnChangeGameToReady;
     public Action OnChangeGameToRun;
     public Action OnChangeGameToOver;
@@ -25,7 +25,7 @@ public class GameManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(Instance);
+            DontDestroyOnLoad(gameObject);
         }
         else
         {

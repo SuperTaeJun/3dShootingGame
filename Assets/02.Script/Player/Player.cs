@@ -8,8 +8,9 @@ public class Player : MonoBehaviour, IDamageable
 {
     [Header("Data")]
     [SerializeField] private SO_PlayerData _playerData;
+    
     public SO_PlayerData PlayerData => _playerData;
-    float _currentHealth;
+    private float _currentHealth;
     [Header("Wall Check Settings")]
     [SerializeField] private Transform _wallCheck;
     [SerializeField] private float _wallCheckDistance = 1.0f;
@@ -17,10 +18,12 @@ public class Player : MonoBehaviour, IDamageable
 
     private ScreenEffectController ScreenEffectController;
 
+
     public float CurrentStamina { get; private set; }
     public int CurrentBombNum { get; private set; }
     public int CurrentBulletNum { get; private set; }
     public CharacterController CharacterController { get; private set; }
+    public PlayerWeaponController WeaponController { get; private set; }
     public bool IsFiring = false;
     private bool _isReloading = false;
     private float _reloadTimer = 0f;
@@ -44,16 +47,17 @@ public class Player : MonoBehaviour, IDamageable
     private void Awake()
     {
         CharacterController = GetComponent<CharacterController>();
-        CurrentStamina = _playerData.MaxStamina;
-        CurrentBombNum = _playerData.MaxBombNum;
-        CurrentBulletNum = _playerData.MaxBulletNum;
-
+        WeaponController = GetComponent<PlayerWeaponController>();
         ScreenEffectController = GetComponent<ScreenEffectController>();
     }
 
     private void Start()
     {
         _currentHealth = 100;
+        CurrentStamina = _playerData.MaxStamina;
+        CurrentBombNum = WeaponController.CurrentWeapon.Data.MaxBombNum;
+        CurrentBulletNum = WeaponController.CurrentWeapon.Data.MaxBulletNum;
+
         InitUi();
     }
 
@@ -108,7 +112,7 @@ public class Player : MonoBehaviour, IDamageable
         if (Input.GetKeyDown(KeyCode.R) && !_isReloading)
         {
             PlayerUiManager.Instance.SetActiveUI(EUiType.ReloadBar, true);
-            _reloadCoroutine = StartCoroutine(ReloadRoutine(_playerData.ReloadTime));
+            _reloadCoroutine = StartCoroutine(ReloadRoutine(WeaponController.CurrentWeapon.Data.ReloadTime));
         }
     }
 
@@ -130,7 +134,7 @@ public class Player : MonoBehaviour, IDamageable
             yield return null;
         }
 
-        CurrentBulletNum = _playerData.MaxBulletNum;
+        CurrentBulletNum = WeaponController.CurrentWeapon.Data.MaxBulletNum;
         PlayerUiManager.Instance.RefreshWeaponUi();
         PlayerUiManager.Instance.SetActiveUI(EUiType.ReloadBar, false);
         _reloadTimer = 0f;

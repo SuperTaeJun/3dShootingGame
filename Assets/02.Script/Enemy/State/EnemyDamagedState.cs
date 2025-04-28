@@ -11,7 +11,7 @@ public class EnemyDamagedState : EnemyState
         base.Enter();
 
         _characterController.Move(Vector3.zero);
-        _stateTimer = _enemy.EnemyData.SturnTime;
+        _stateTimer = _enemy.Data.SturnTime;
 
         _enemy._agent.isStopped = true;
         _enemy._agent.ResetPath();

@@ -20,10 +20,4 @@ public class SO_PlayerData : ScriptableObject
     public float UseRunStamina = 4f;
     public float RecoveryStamina = 5f;
 
-    [Header("Weapon Settings")]
-    public int MaxBombNum = 3;
-    public int MaxBulletNum = 50;
-    public float FireRate = 0.2f;
-    public float ReloadTime = 2f;
-    public int Damage = 5;
 }

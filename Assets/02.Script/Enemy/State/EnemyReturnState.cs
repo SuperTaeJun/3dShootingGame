@@ -28,7 +28,7 @@ public class EnemyReturnState : EnemyState
             _stateMachine.ChangeState(EEnemyState.Idle);
         }
 
-        if(_enemy.GetDistanceToPlayer() < _enemy.EnemyData.DetectRange)
+        if(_enemy.GetDistanceToPlayer() < _enemy.Data.DetectRange)
         {
             _stateMachine.ChangeState(EEnemyState.Trace);
         }

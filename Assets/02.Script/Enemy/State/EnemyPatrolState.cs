@@ -28,7 +28,7 @@ public class EnemyPatrolState : EnemyState
     public override void Update()
     {
         base.Update();
-        if (_enemy.GetDistanceToPlayer() < _enemy.EnemyData.DetectRange)
+        if (_enemy.GetDistanceToPlayer() < _enemy.Data.DetectRange)
         {
             _stateMachine.ChangeState(EEnemyState.Trace);
         }

@@ -2,6 +2,11 @@ using UnityEngine;
 
 public abstract class WeaponBase : MonoBehaviour
 {
+    [Header("Data")]
+    [SerializeField] protected SO_WeaponData _data;
+    
+
+
     [SerializeField] protected Transform _attackPos;
     [SerializeField] protected GameObject _hitVfxPrefab;
     [SerializeField] protected float _attackRange = 20f;
@@ -9,7 +14,7 @@ public abstract class WeaponBase : MonoBehaviour
     protected Player _player;
     protected RaycastHit _traceHitResult;
     protected ECameraType _currentCameraType;
-
+    public SO_WeaponData Data => _data;
     public abstract void Attack();
     protected virtual void Start()
     {
@@ -54,4 +59,5 @@ public abstract class WeaponBase : MonoBehaviour
     {
         _currentCameraType = type;
     }
+
 }

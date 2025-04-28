@@ -28,7 +28,7 @@ public class Soward : WeaponBase
             
             if(target.TryGetComponent<IDamageable>(out IDamageable damageable))
             {
-                damageable.TakeDamage(new Damage(_player.PlayerData.Damage, _player.gameObject, 20f, _player.transform.forward));
+                damageable.TakeDamage(new Damage(_data.Damage, _player.gameObject, 20f, _player.transform.forward));
             }
         }
     }

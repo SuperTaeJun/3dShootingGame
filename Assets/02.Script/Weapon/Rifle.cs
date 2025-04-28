@@ -34,7 +34,6 @@ public class Rifle : WeaponBase
 
     private void HandleBulletInput()
     {
-
         if (Input.GetMouseButtonDown(0)) StartFiring();
         if (Input.GetMouseButtonUp(0)) StopFiring();
     }
@@ -43,7 +42,7 @@ public class Rifle : WeaponBase
     {
         if (_fireCoroutine == null && _player.CurrentBulletNum > 0)
         {
-            _fireCoroutine = StartCoroutine(FireLoop(_player.PlayerData.FireRate));
+            _fireCoroutine = StartCoroutine(FireLoop(_data.FireRate));
             _player.IsFiring = true;
         }
     }
@@ -76,7 +75,7 @@ public class Rifle : WeaponBase
 
                 if (hit.collider.TryGetComponent<IDamageable>(out IDamageable damageable))
                 {
-                    damageable.TakeDamage(new Damage(_player.PlayerData.Damage, _player.gameObject, 20f, transform.forward));
+                    damageable.TakeDamage(new Damage(_data.Damage, _player.gameObject, 20f, transform.forward));
                 }
 
                 Instantiate(_hitVfxPrefab, hit.point, Quaternion.LookRotation(hit.normal));
@@ -108,8 +107,6 @@ public class Rifle : WeaponBase
             yield return null;
         }
     }
-
-
 
     // 지금 카메라 모드에따라서 다른 방식으로 방향을구해줌 + 반동도 추가됨
     private Vector3 GetFireDirection()

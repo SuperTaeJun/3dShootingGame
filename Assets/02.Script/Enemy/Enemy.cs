@@ -37,7 +37,7 @@ public class Enemy : MonoBehaviour,IDamageable
     #region Getter
     public GameObject Player => _player;
     public Animator Animator => _animator;
-    public SO_EnemyData EnemyData => _enemyData;
+    public SO_EnemyData Data => _enemyData;
     public Vector3 StartPos => _startPosition;
     public float CurrentHealth => _currentHealth;
     #endregion
@@ -49,7 +49,7 @@ public class Enemy : MonoBehaviour,IDamageable
         _characterController = GetComponent<CharacterController>();
         _uiController = GetComponent<EnemyUiController>();
 
-        _agent.speed = EnemyData.MoveSpeed;
+        _agent.speed = Data.MoveSpeed;
 
         _stateMachine = new EnemyStateMachine();
 
@@ -66,7 +66,7 @@ public class Enemy : MonoBehaviour,IDamageable
         { EEnemyState.Patrol,   new EnemyPatrolState(_stateMachine, _characterController, this, "Patrol") },
     };
 
-        _currentHealth = EnemyData.Health;
+        _currentHealth = Data.Health;
     }
     protected virtual void OnEnable()
     {
