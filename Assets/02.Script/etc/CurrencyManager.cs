@@ -5,9 +5,9 @@ public class CurrencyManager : MonoBehaviour
 {
     public static CurrencyManager Instance { get; private set; }
 
-    private Currency _currency;
+    [SerializeField] private Currency _currency;
 
-    public Action OnChangedCurrency;
+    public  Action OnChangedCurrency;
 
     private void Awake()
     {

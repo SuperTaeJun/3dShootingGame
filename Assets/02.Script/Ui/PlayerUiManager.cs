@@ -62,13 +62,14 @@ public class PlayerUiManager : MonoBehaviour
         GameManager.Instance.OnChangeGameToRun += GameRun;
         GameManager.Instance.OnChangeGameToOver += GameOver;
 
-        CurrencyManager.Instance.OnChangedCurrency += RefreshCurrencyUi;
+
     }
     private void Start()
     {
 
         PlayerWeaponController.OnWeaponChange += OnChanageWeaponUi;
         MyCamera.OnCameraTypeChanged += HandleCameraTypeChanged;
+        CurrencyManager.Instance.OnChangedCurrency += RefreshCurrencyUi;
     }
     public void OnChanageWeaponUi(EWeaponType currentType)
     {
