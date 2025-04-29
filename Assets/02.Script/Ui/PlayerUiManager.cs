@@ -31,7 +31,9 @@ public class PlayerUiManager : MonoBehaviour
     public TextMeshProUGUI  BombText;
     public TextMeshProUGUI  BulletText;
     public Image            CrossHair;
-
+    public Image[]          WeaponIcons;
+    public TextMeshProUGUI GoldText;
+    public TextMeshProUGUI DiamondText;
     [Header("UiElementss")]
     [SerializeField] private Dictionary<EUiType, GameObject> uiElements;
 
@@ -59,12 +61,22 @@ public class PlayerUiManager : MonoBehaviour
         GameManager.Instance.OnChangeGameToReady += GameReady;
         GameManager.Instance.OnChangeGameToRun += GameRun;
         GameManager.Instance.OnChangeGameToOver += GameOver;
+
+        CurrencyManager.Instance.OnChangedCurrency += RefreshCurrencyUi;
     }
     private void Start()
     {
 
-
+        PlayerWeaponController.OnWeaponChange += OnChanageWeaponUi;
         MyCamera.OnCameraTypeChanged += HandleCameraTypeChanged;
+    }
+    public void OnChanageWeaponUi(EWeaponType currentType)
+    {
+        foreach(var icon in WeaponIcons)
+        {
+            icon.gameObject.SetActive(false);
+        }
+        WeaponIcons[(int)currentType].gameObject.SetActive(true);
     }
     public void RefreshWeaponUi()
     {
@@ -112,7 +124,7 @@ public class PlayerUiManager : MonoBehaviour
     {
         ReadyText.gameObject.SetActive(true);
         Time.timeScale = 0;
-        yield return new WaitForSecondsRealtime(8f);
+        yield return new WaitForSecondsRealtime(3f);
         ReadyText.gameObject.SetActive(false);
         GameManager.Instance.ChanageState(EGameState.Run);
     }
@@ -145,4 +157,9 @@ public class PlayerUiManager : MonoBehaviour
         OverText.gameObject.SetActive(false);
     }
 
+    private void RefreshCurrencyUi()
+    {
+        GoldText.text = $"Gold : {CurrencyManager.Instance.GetCurrency(ECurrencyType.Gold)}";
+        DiamondText.text = $"Diamond : {CurrencyManager.Instance.GetCurrency(ECurrencyType.Diamond)}";
+    }
 }

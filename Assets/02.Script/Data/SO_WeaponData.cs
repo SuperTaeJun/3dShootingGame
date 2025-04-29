@@ -9,4 +9,5 @@ public class SO_WeaponData : ScriptableObject
     public float FireRate = 0.2f;
     public float ReloadTime = 2f;
     public int Damage = 5;
+    public float AttackRange = 20f;
 }

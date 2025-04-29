@@ -18,15 +18,10 @@ MonoBehaviour:
   DashSpeed: 50
   ClimbSpeed: 2
   RotationSpeed: 180
-  JumpPower: 10
+  JumpPower: 15
   MaxJumpCount: 2
   MaxStamina: 100
   UseDashStamina: 10
   UseClimbStamina: 20
   UseRunStamina: 4
   RecoveryStamina: 5
-  MaxBombNum: 3
-  MaxBulletNum: 50
-  FireRate: 0.2
-  ReloadTime: 2
-  Damage: 20

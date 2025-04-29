@@ -17,6 +17,11 @@ public class Enemy : MonoBehaviour,IDamageable
 {
     [Header("Data")]
     [SerializeField] protected SO_EnemyData _enemyData;
+    [SerializeField] private Transform _ragdollCenterBone;
+    public Transform RagdollCenterBone => _ragdollCenterBone;
+
+
+    public GameObject CurrencyDropPrefab;
 
     //넉백
     protected float knockbackPower;
@@ -25,6 +30,7 @@ public class Enemy : MonoBehaviour,IDamageable
 
     protected GameObject _player;
     protected EnemyUiController _uiController;
+    public EnemyUiController UiController => _uiController;
     protected EnemyStateMachine _stateMachine;
     protected CharacterController _characterController;
     protected RagdolllController _ragdolllController;
@@ -33,20 +39,23 @@ public class Enemy : MonoBehaviour,IDamageable
     protected Vector3 _startPosition;
     protected Dictionary<EEnemyState, EnemyState> _statesMap;
 
-    protected float _currentHealth;
+    protected int _currentHealth;
 
     #region Getter
     public GameObject Player => _player;
     public Animator Animator => _animator;
     public SO_EnemyData Data => _enemyData;
     public Vector3 StartPos => _startPosition;
-    public float CurrentHealth => _currentHealth;
+    public int CurrentHealth => _currentHealth;
     #endregion
 
-   //protected void OnEnable()
-   // {
-   //     _ragdolllController.DisableRagdoll();
-   // }
+    protected void OnEnable()
+    {
+        //_ragdolllController.DisableRagdoll();
+        _currentHealth = Data.Health;
+        _uiController.SetActiveHealthBar(true);
+        _uiController.RefreshPlayer(_currentHealth);
+    }
     protected virtual void Awake()
     {
         _agent = GetComponent<NavMeshAgent>();
@@ -72,7 +81,6 @@ public class Enemy : MonoBehaviour,IDamageable
         { EEnemyState.Patrol,   new EnemyPatrolState(_stateMachine, _characterController, this, "Patrol") },
     };
 
-        _currentHealth = Data.Health;
     }
 
     protected virtual void Start()

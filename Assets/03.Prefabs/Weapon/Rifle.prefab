@@ -138,16 +138,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: afa7653f1b7aad44a82938dfc250873f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _firePos: {fileID: 6561839322914426789}
+  _data: {fileID: 0}
+  _attackPos: {fileID: 0}
   _hitVfxPrefab: {fileID: 8172394614802003838, guid: 3b0b674a3a9daac4daf2e4445e62d2a9, type: 3}
-  _attackRange: 20
   _trailPrefab: {fileID: 8378503196372639160, guid: 69cc072cb0ed7344c8ed765f4f9efd17, type: 3}
   _bombPrefab: {fileID: 879731797590016981, guid: 87ad805c9e0b30d4fb9b19b88e98bc3e, type: 3}
   _baseThrowPower: 5
   _maxThrowPower: 30
   _bombChargeRate: 10
   ChargingParticle: {fileID: 5732568103209889489, guid: e23741b3f14f27e46a31d8d542a2033e, type: 3}
-  _scatterRadius: 2
+  _scatterRadius: 1
 --- !u!1 &1000011705015594
 GameObject:
   m_ObjectHideFlags: 0

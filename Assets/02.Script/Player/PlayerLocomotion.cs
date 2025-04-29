@@ -12,7 +12,7 @@ public class PlayerLocomotion : MonoBehaviour
     private int _jumpCount;
     private bool _isClimbing;
     private bool _isRunning;
-
+    public float VerticalVelocity => _yVelocity;
     public bool IsRunning => _isRunning;
 
     private void Awake()
@@ -40,6 +40,18 @@ public class PlayerLocomotion : MonoBehaviour
     {
         Vector3 inputDir = GetInputDirection();
         Vector3 move = inputDir * _currentSpeed;
+
+        // 중력 적용
+        if (_player.CharacterController.isGrounded && _yVelocity < 0f)
+        {
+            _yVelocity = -1f;
+            _jumpCount = 0; // 땅에 닿았을 때 점프 카운트 초기화
+        }
+        else
+        {
+            _yVelocity += Gravity * Time.deltaTime;
+        }
+
         move.y = _yVelocity;
         _player.CharacterController.Move(move * Time.deltaTime);
     }
@@ -82,13 +94,20 @@ public class PlayerLocomotion : MonoBehaviour
             _yVelocity = _player.JumpPower;
             _jumpCount++;
         }
+        //bool canJump = _jumpCount < _player.MaxJumpCount && !_isClimbing;
 
-        if (_player.CharacterController.isGrounded)
-        {
-            _jumpCount = 0;
-            if (_yVelocity < 0f)
-                _yVelocity = -1f; // 살짝 눌러서 붙게 하기
-        }
+        //if (Input.GetKeyDown(KeyCode.Space) && canJump)
+        //{
+        //    _yVelocity = _player.JumpPower;
+        //    _jumpCount++;
+        //}
+
+        //if (_player.CharacterController.isGrounded)
+        //{
+        //    _jumpCount = 0;
+        //    if (_yVelocity < 0f)
+        //        _yVelocity = -1f; // 살짝 눌러서 붙게 하기
+        //}
     }
 
     private void Run()

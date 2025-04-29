@@ -157,6 +157,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _enemyData: {fileID: 11400000, guid: b62f0d14d0452c345a6b766f4fc60edd, type: 2}
+  _ragdollCenterBone: {fileID: 6194560747398674977}
+  CurrencyDropPrefab: {fileID: 1334438985897625269, guid: 6a4a94d363f33494ab1c8a7183d00a2e, type: 3}
   _agent: {fileID: 0}
 --- !u!95 &2341310717228390023
 Animator:

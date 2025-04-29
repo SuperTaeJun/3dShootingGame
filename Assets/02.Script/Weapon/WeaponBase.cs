@@ -10,7 +10,6 @@ public abstract class WeaponBase : MonoBehaviour
 
     [SerializeField] protected Transform _attackPos;
     [SerializeField] protected GameObject _hitVfxPrefab;
-    [SerializeField] protected float _attackRange = 20f;
 
     protected Player _player;
     protected RaycastHit _traceHitResult;
@@ -28,7 +27,7 @@ public abstract class WeaponBase : MonoBehaviour
     }
     protected virtual void Update()
     {
-        TraceUnderCrosshair(out _traceHitResult, _attackRange);
+        TraceUnderCrosshair(out _traceHitResult, _data.AttackRange);
     }
 
     // 화면중앙으로 레이저를쏴서 헤어라인에 맞는 녀석을 구함 없으면 공격사거리 최대에 맞았다고침

@@ -111,6 +111,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _enemyData: {fileID: 11400000, guid: b62f0d14d0452c345a6b766f4fc60edd, type: 2}
+  _ragdollCenterBone: {fileID: 4233955415581979304}
+  CurrencyDropPrefab: {fileID: 1334438985897625269, guid: 6a4a94d363f33494ab1c8a7183d00a2e, type: 3}
   _agent: {fileID: 0}
 --- !u!95 &2341310717228390023
 Animator:
@@ -1470,6 +1472,11 @@ CharacterJoint:
   m_EnablePreprocessing: 0
   m_MassScale: 1
   m_ConnectedMassScale: 1
+--- !u!4 &4233955415581979304 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5465940246521907071, guid: 33dd4c60fabe3ec46b0b63a4e0fdc23b, type: 3}
+  m_PrefabInstance: {fileID: 8149513893764003287}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &5176199926735937692 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3948933247560734027, guid: 33dd4c60fabe3ec46b0b63a4e0fdc23b, type: 3}

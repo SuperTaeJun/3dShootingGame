@@ -11,11 +11,11 @@ GameObject:
   - component: {fileID: 7162150697944425954}
   - component: {fileID: 2702694829910129155}
   - component: {fileID: 1309956846477522269}
-  - component: {fileID: 8138823821450352664}
   - component: {fileID: 2913502396464333770}
   - component: {fileID: 1936716889745020446}
   - component: {fileID: 5685393321974803882}
   - component: {fileID: 5647685663375000589}
+  - component: {fileID: 3989595155465521134}
   m_Layer: 11
   m_Name: Drum
   m_TagString: Prop
@@ -32,7 +32,7 @@ Transform:
   m_GameObject: {fileID: 1142534262408957685}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.1991487, y: 1.49, z: 4.2936954}
+  m_LocalPosition: {x: 1.1991487, y: 0, z: 4.2936954}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -45,7 +45,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1142534262408957685}
-  m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: 4300002, guid: b8892b07d6a3adc498546b6e104ca7d9, type: 3}
 --- !u!23 &1309956846477522269
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -66,10 +66,10 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
-  m_RenderingLayerMask: 1
+  m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 5561349426305759274, guid: 41a61adc4acecfb4b89b1aa0f6a42a04, type: 3}
+  - {fileID: 2100000, guid: 018298b78c264114c95d06a8e4acd965, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -81,7 +81,7 @@ MeshRenderer:
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
+  m_StitchLightmapSeams: 0
   m_SelectedEditorRenderState: 3
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
@@ -91,27 +91,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &8138823821450352664
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1142534262408957685}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1.0000001, y: 2, z: 1.0000002}
-  m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
 --- !u!114 &2913502396464333770
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -206,10 +185,31 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fragmentCount: 20
-  insideMaterial: {fileID: 2100000, guid: 7df33e0f310509e4dafd4ed3ec1846fc, type: 2}
+  insideMaterial: {fileID: 2100000, guid: 09003d41fd3ede54da00694bd038eb7c, type: 2}
   detectFloatingFragments: 1
   textureScale: {x: 1, y: 1}
   textureOffset: {x: 0, y: 0}
   explosionForce: 15
   explosionRadius: 5
   upwardsModifier: 0
+--- !u!65 &3989595155465521134
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1142534262408957685}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.2, y: 2, z: 1.2}
+  m_Center: {x: 0, y: 1, z: 0}

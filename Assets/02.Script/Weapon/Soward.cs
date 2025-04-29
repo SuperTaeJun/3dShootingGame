@@ -13,15 +13,14 @@ public class Soward : WeaponBase
     private void HandleSwoardInput()
     {
 
-        if (Input.GetMouseButtonDown(0)) TryAttack();
+        if (Input.GetMouseButtonDown(0)) OnTriggerFireStart.Invoke();
     }
-    void TryAttack()
+    public void TryAttack()
     {
-
 
         LayerMask targetLayer = LayerMask.GetMask("Enemy");
 
-        var hitTargets = GetTargetsInSector(_attackRange, angle,targetLayer);
+        var hitTargets = GetTargetsInSector(_data.AttackRange, angle,targetLayer);
 
         foreach (var target in hitTargets)
         {
@@ -41,7 +40,7 @@ public class Soward : WeaponBase
         List<Collider> result = new List<Collider>();
 
         Collider[] colliders = Physics.OverlapSphere(origin, radius, targetLayer);
-
+        DebugExtension.DrawSphere(_player.transform.position, Color.red, radius, 3);
         float cosHalfAngle = Mathf.Cos(angle * 0.5f * Mathf.Deg2Rad);
 
         foreach (var col in colliders)
@@ -59,26 +58,5 @@ public class Soward : WeaponBase
 
         return result;
     }
-    void OnDrawGizmosSelected()
-    {
-        Vector3 origin = _player.transform.position;
-        Vector3 forward = _player.transform.forward;
 
-        // 반경 시각화 (노란색)
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(origin, _attackRange);
-
-        // 부채꼴 경계선 계산
-        Vector3 rightDir = Quaternion.Euler(0, angle * 0.5f, 0) * forward;
-        Vector3 leftDir = Quaternion.Euler(0, -angle * 0.5f, 0) * forward;
-
-        // 경계선 시각화 (빨간색)
-        Gizmos.color = Color.red;
-        Gizmos.DrawLine(origin, origin + rightDir * _attackRange);
-        Gizmos.DrawLine(origin, origin + leftDir * _attackRange);
-
-        // 가운데 방향 시각화 (파란색)
-        Gizmos.color = Color.cyan;
-        Gizmos.DrawLine(origin, origin + forward.normalized * _attackRange);
-    }
 }

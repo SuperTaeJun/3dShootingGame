@@ -20,7 +20,7 @@ public class RagdolllController : MonoBehaviour
     public void EnableRagdoll()
     {
         _animator.enabled = false;
-        _characterController.enabled = false;
+        //_characterController.enabled = false;
         foreach (var rigid in _rigidbodies)
         {
             rigid.isKinematic = false;
@@ -35,7 +35,7 @@ public class RagdolllController : MonoBehaviour
     public void DisableRagdoll()
     {
         _animator.enabled = true;
-        _characterController.enabled = true;
+        //_characterController.enabled = true;
         foreach (var rigid in _rigidbodies)
         {
             rigid.isKinematic = true;

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -16,6 +17,7 @@ public class PlayerWeaponController : MonoBehaviour
     [SerializeField] private WeaponBase[] _weapons;
     public WeaponBase CurrentWeapon;
 
+    public static Action<EWeaponType> OnWeaponChange;
 
     private void Awake()
     {
@@ -39,16 +41,20 @@ public class PlayerWeaponController : MonoBehaviour
         {
             CurrentWeaponType = EWeaponType.Rifle;
             SetCurrentWeapon();
+            OnWeaponChange.Invoke(CurrentWeaponType);
         }
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
+
             CurrentWeaponType = EWeaponType.Shotgun;
             SetCurrentWeapon();
+            OnWeaponChange.Invoke(CurrentWeaponType);
         }
         if(Input.GetKeyDown(KeyCode.Alpha3))
         {
             CurrentWeaponType = EWeaponType.Soward;
             SetCurrentWeapon();
+            OnWeaponChange.Invoke(CurrentWeaponType);
         }
     }
 

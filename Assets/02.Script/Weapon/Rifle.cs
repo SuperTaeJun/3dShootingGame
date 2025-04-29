@@ -24,7 +24,7 @@ public class Rifle : WeaponBase
     protected override void Start()
     {
         base.Start();
-        _distanceToSphere = _attackRange;
+        _distanceToSphere = _data.AttackRange;
     }
     public override void Attack()
     {
@@ -52,7 +52,6 @@ public class Rifle : WeaponBase
     {
         if (_fireCoroutine != null)
         {
-            OnTriggerFireEnd.Invoke();
             StopCoroutine(_fireCoroutine);
             _fireCoroutine = null;
             _player.IsFiring = false;
@@ -72,7 +71,7 @@ public class Rifle : WeaponBase
 
             Vector3 fireDir = GetFireDirection();
 
-            if (Physics.Raycast(_attackPos.position, fireDir, out RaycastHit hit, _attackRange))
+            if (Physics.Raycast(_attackPos.position, fireDir, out RaycastHit hit, _data.AttackRange))
             {
                 Debug.DrawLine(_attackPos.position, hit.point, Color.red, 2f);
 
@@ -86,7 +85,7 @@ public class Rifle : WeaponBase
             }
             else
             {
-                Vector3 endPoint = _attackPos.position + fireDir * _attackRange;
+                Vector3 endPoint = _attackPos.position + fireDir * _data.AttackRange;
                 Debug.DrawLine(_attackPos.position, endPoint, Color.red, 2f);
                 StartCoroutine(SpawnTrail(trail, endPoint));
             }
@@ -127,7 +126,7 @@ public class Rifle : WeaponBase
         }
         else
         {
-            TraceUnderCrosshair(out _traceHitResult, _attackRange);
+            TraceUnderCrosshair(out _traceHitResult, _data.AttackRange);
             return CalculateScatterDirection(_attackPos.position);
         }
     }
@@ -146,26 +145,26 @@ public class Rifle : WeaponBase
     #region Bomb
     private void HandleBombInput()
     {
-        if (_player.CurrentBombNum <= 0) return;
+        //if (_player.CurrentBombNum <= 0) return;
 
-        if (Input.GetMouseButtonDown(1))
-        {
-            PlayerUiManager.Instance.SetActiveUI(EUiType.BombChargingBar, true);
-            ChargingParticle.SetActive(true);
-            ChargingParticle.transform.position = _attackPos.position;
-        }
+        //if (Input.GetMouseButtonDown(1))
+        //{
+        //    PlayerUiManager.Instance.SetActiveUI(EUiType.BombChargingBar, true);
+        //    ChargingParticle.SetActive(true);
+        //    ChargingParticle.transform.position = _attackPos.position;
+        //}
 
-        if (Input.GetMouseButton(1))
-        {
-            _currentThrowPower = Mathf.Min(_currentThrowPower + Time.deltaTime * _bombChargeRate, _maxThrowPower);
-            PlayerUiManager.Instance.RefreshBombCharging(_currentThrowPower);
-        }
+        //if (Input.GetMouseButton(1))
+        //{
+        //    _currentThrowPower = Mathf.Min(_currentThrowPower + Time.deltaTime * _bombChargeRate, _maxThrowPower);
+        //    PlayerUiManager.Instance.RefreshBombCharging(_currentThrowPower);
+        //}
 
-        if (Input.GetMouseButtonUp(1))
-        {
-            ChargingParticle.SetActive(false);
-            ThrowBomb();
-        }
+        //if (Input.GetMouseButtonUp(1))
+        //{
+        //    ChargingParticle.SetActive(false);
+        //    ThrowBomb();
+        //}
     }
 
     private void ThrowBomb()

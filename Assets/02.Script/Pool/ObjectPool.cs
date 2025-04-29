@@ -11,7 +11,7 @@ public class ObjectPool : MonoBehaviour
     [Header("Size")]
     public int BombSize = 3;
     public int TrailSize = 50;
-    public int DefaultSize = 50;
+    public int DefaultSize = 20;
 
     private Dictionary<GameObject, Queue<GameObject>> poolDictionary = new Dictionary<GameObject, Queue<GameObject>>();
     private Dictionary<GameObject, int> objSizeDictionary = new Dictionary<GameObject, int>();

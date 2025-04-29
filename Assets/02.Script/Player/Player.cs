@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEditorInternal;
 using UnityEngine;
@@ -47,10 +49,13 @@ public class Player : MonoBehaviour, IDamageable
         CharacterController = GetComponent<CharacterController>();
         WeaponController = GetComponent<PlayerWeaponController>();
         ScreenEffectController = GetComponent<ScreenEffectController>();
+
     }
 
     private void Start()
     {
+        MyCamera.OnCameraTypeChanged += OnCameraChanage;
+
         _currentHealth = 100;
         CurrentStamina = _playerData.MaxStamina;
         CurrentBombNum = WeaponController.CurrentWeapon.Data.MaxBombNum;
@@ -59,6 +64,11 @@ public class Player : MonoBehaviour, IDamageable
         InitUi();
     }
 
+    private void OnCameraChanage(ECameraType currentCamera)
+    {
+        
+    }
+    
     private void Update()
     {
         HandleReloadInput();

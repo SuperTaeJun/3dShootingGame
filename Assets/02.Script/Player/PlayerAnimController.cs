@@ -1,13 +1,16 @@
 using UnityEngine;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class PlayerAnimController : MonoBehaviour
 {
+    private Player _player;
     private Animator _animator;
     private PlayerLocomotion _locomotion;
 
     private int _upperBodyLayerIndex;
     private void Awake()
     {
+        _player = GetComponent<Player>();
         _animator = GetComponent<Animator>();
         _locomotion = GetComponent<PlayerLocomotion>();
     }
@@ -16,12 +19,14 @@ public class PlayerAnimController : MonoBehaviour
         _upperBodyLayerIndex = _animator.GetLayerIndex("UpperBody");
         UpdateMoveAnimation();
         WeaponBase.OnTriggerFireStart += PlayFire;
-        WeaponBase.OnTriggerFireEnd += StopFire;
+
+        PlayerWeaponController.OnWeaponChange += OnChangeWeaponType;
     }
 
     // Update is called once per frame
     void Update()
     {
+        UpdateJumpAnimation();
         UpdateMoveAnimation();
     }
     private void UpdateMoveAnimation()
@@ -39,18 +44,19 @@ public class PlayerAnimController : MonoBehaviour
 
         _animator.SetBool("IsRunning", _locomotion.IsRunning);
     }
-
+    private void UpdateJumpAnimation()
+    {
+        _animator.SetBool("IsGrounded", _player.CharacterController.isGrounded);
+        _animator.SetFloat("VerticalVelocity", _locomotion.VerticalVelocity);
+    }
     public void PlayFire()
     {
-        // UpperBody 레이어 Weight 1로 올리기
-        _animator.SetLayerWeight(_upperBodyLayerIndex, 1.0f);
         _animator.SetTrigger("Fire");
     }
 
-    public void StopFire()
-    {
-        // UpperBody 레이어 Weight 0으로 내리기
-        _animator.SetLayerWeight(_upperBodyLayerIndex, 0.0f);
-    }
 
+    private void OnChangeWeaponType(EWeaponType currentType)
+    {
+        _animator.SetInteger("WeaponType", (int)currentType);
+    }
 }

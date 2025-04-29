@@ -15,7 +15,7 @@ public class Shotgun : WeaponBase
     protected override void Start()
     {
         base.Start();
-        _distanceToSphere = _attackRange;
+        _distanceToSphere = _data.AttackRange;
     }
     public override void Attack()
     {
@@ -40,7 +40,6 @@ public class Shotgun : WeaponBase
     {
         if (_fireCoroutine != null)
         {
-            OnTriggerFireEnd.Invoke();
             StopCoroutine(_fireCoroutine);
             _fireCoroutine = null;
             _player.IsFiring = false;
@@ -61,7 +60,7 @@ public class Shotgun : WeaponBase
 
                 Vector3 fireDir = GetFireDirection();
 
-                if (Physics.Raycast(_attackPos.position, fireDir, out RaycastHit hit, _attackRange))
+                if (Physics.Raycast(_attackPos.position, fireDir, out RaycastHit hit, _data.AttackRange))
                 {
                     Debug.DrawLine(_attackPos.position, hit.point, Color.red, 2f);
 
@@ -75,7 +74,7 @@ public class Shotgun : WeaponBase
                 }
                 else
                 {
-                    Vector3 endPoint = _attackPos.position + fireDir * _attackRange;
+                    Vector3 endPoint = _attackPos.position + fireDir * _data.AttackRange;
                     Debug.DrawLine(_attackPos.position, endPoint, Color.red, 2f);
                     StartCoroutine(SpawnTrail(trail, endPoint));
                 }
@@ -99,7 +98,7 @@ public class Shotgun : WeaponBase
         }
         else
         {
-            TraceUnderCrosshair(out _traceHitResult, _attackRange);
+            TraceUnderCrosshair(out _traceHitResult, _data.AttackRange);
             return CalculateScatterDirection(_attackPos.position);
         }
     }
