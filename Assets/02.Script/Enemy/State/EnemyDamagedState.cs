@@ -13,8 +13,8 @@ public class EnemyDamagedState : EnemyState
         _characterController.Move(Vector3.zero);
         _stateTimer = _enemy.Data.SturnTime;
 
-        _enemy._agent.isStopped = true;
-        _enemy._agent.ResetPath();
+        _enemy.Agent.isStopped = true;
+        _enemy.Agent.ResetPath();
     }
 
     public override void Exit()

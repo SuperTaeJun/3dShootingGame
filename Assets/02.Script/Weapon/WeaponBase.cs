@@ -49,13 +49,13 @@ public abstract class WeaponBase : MonoBehaviour
 
         if (Physics.Raycast(start, ray.direction, out hitInfo, distance))
         {
-            Debug.DrawLine(start, hitInfo.point, Color.red, 1f);
+            //Debug.DrawLine(start, hitInfo.point, Color.red, 1f);
             return;
         }
         else
         {
             hitInfo.point = end;
-            Debug.DrawLine(start, end, Color.green, 1f);
+            //Debug.DrawLine(start, end, Color.green, 1f);
             return;
         }
     }

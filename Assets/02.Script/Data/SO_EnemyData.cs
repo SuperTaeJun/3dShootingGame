@@ -6,7 +6,11 @@ public class SO_EnemyData : ScriptableObject
     public float DetectRange = 7f;
     public float AttackRange = 3f;
     public float ReturnRange = 10;
+
+    public float TraceSpeed = 4;
     public float MoveSpeed = 2;
+    public float TrunSpeed = 5f;
+
     public float AttackRate = 2f;
     public int   Health = 100;
     public float SturnTime = 0.5f;

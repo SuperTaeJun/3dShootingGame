@@ -35,7 +35,7 @@ public class EnemyReturnState : EnemyState
 
         //Vector3 dir = _startPosition - _enemy.transform.position;
         //_characterController.Move(dir * _enemy.EnemyData.MoveSpeed * Time.deltaTime);
-        _enemy._agent.SetDestination(_startPosition);
+        _enemy.Agent.SetDestination(_startPosition);
 
     }
 }

@@ -31,6 +31,7 @@ public class EnemyState
     public virtual void Enter()
     {
         _stateTimer = 0;
+
         SetAnimation(true);
         _triggerCalled = false;
 
@@ -44,4 +45,6 @@ public class EnemyState
     {
         SetAnimation(false);
     }
+
+    public void AnimTrigger() => _triggerCalled = true;
 }

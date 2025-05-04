@@ -21,14 +21,15 @@ public class EnemyIdleState : EnemyState
     {
         base.Update();
 
-        if (_enemy.GetDistanceToPlayer() < _enemy.Data.DetectRange)
+        if (_enemy.CanDetect())
         {
-            _stateMachine.ChangeState(EEnemyState.Trace);
+            _stateMachine.ChangeState(EEnemyState.Recovery);
+            return;
         }
 
         if (_stateTimer < 0)
         {
-            _stateMachine.ChangeState(EEnemyState.Patrol);
+            _stateMachine.ChangeState(EEnemyState.Move);
         }
     }
 }

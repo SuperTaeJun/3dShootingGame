@@ -7,7 +7,7 @@ public class ChaserEnemy : Enemy
         base.Awake();
         // 불필요한 상태 제거
         _statesMap[EEnemyState.Idle] = new EnemyTraceState(_stateMachine, _characterController, this, "Trace");
-        _statesMap[EEnemyState.Patrol] = _statesMap[EEnemyState.Trace];
+        _statesMap[EEnemyState.Move] = _statesMap[EEnemyState.Trace];
         _statesMap[EEnemyState.Return] = _statesMap[EEnemyState.Trace];
     }
 

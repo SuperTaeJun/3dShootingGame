@@ -11,6 +11,7 @@ public class EnemyDeadState : EnemyState
     public override void Enter()
     {
         base.Enter();
+        _enemy.Agent.isStopped = true;
         _stateTimer = _enemy.Data.DeadTime;
         _enemy.UiController.SetActiveHealthBar(false);
         ragdolllController.EnableRagdoll();
