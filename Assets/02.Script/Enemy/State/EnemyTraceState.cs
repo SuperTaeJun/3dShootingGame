@@ -3,7 +3,7 @@ using UnityEngine;
 public class EnemyTraceState : EnemyState
 {
     private float LastTimeDestination;
-    public EnemyTraceState(EnemyStateMachine stateMachine, CharacterController characterController, Enemy enemy, string animBoolName) : base(stateMachine, characterController, enemy, animBoolName)
+    public EnemyTraceState(EnemyStateMachine stateMachine, Enemy enemy, string animBoolName) : base(stateMachine, enemy, animBoolName)
     {
     }
 
@@ -12,6 +12,7 @@ public class EnemyTraceState : EnemyState
         base.Enter();
         _enemy.Agent.isStopped = false;
         _enemy.Agent.speed = _enemy.Data.TraceSpeed;
+        _enemy.Agent.destination = _enemy.Player.transform.position;
     }
 
     public override void Exit()
@@ -29,10 +30,13 @@ public class EnemyTraceState : EnemyState
         {
             _enemy.Agent.destination = _enemy.Player.transform.position;
         }
-        if(!_enemy.CanDetect())
+        if (!_enemy.CanDetect())
         {
-            _enemy.Agent.isStopped = true;
-            _enemy.Agent.velocity = Vector3.zero;
+            if (!(_enemy.EnemyType == EEnemyType.Chase))
+            {
+                _enemy.Agent.isStopped = true;
+                _enemy.Agent.velocity = Vector3.zero;
+            }
             _stateMachine.ChangeState(EEnemyState.Idle);
         }
         if (_enemy.CanAttack())
@@ -40,19 +44,6 @@ public class EnemyTraceState : EnemyState
             _stateMachine.ChangeState(EEnemyState.Attack);
         }
 
-        ////공격범위에 들어오면 어택
-        //if (_enemy.GetDistanceToPlayer() <= _enemy.Data.AttackRange)
-        //{
-        //    Debug.Log("공격");
-        //    _stateMachine.ChangeState(EEnemyState.Attack);
-        //}
-        ////플레이어와 멀어지면 리턴
-        //if (_enemy.GetDistanceToPlayer() >= _enemy.Data.ReturnRange)
-        //{
-        //    _stateMachine.ChangeState(EEnemyState.Return);
-        //}
-
-        //_enemy.Agent.SetDestination(_enemy.Player.transform.position);
     }
     private bool CanUpdateDestination()
     {

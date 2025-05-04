@@ -2,19 +2,15 @@ using UnityEngine;
 
 public class EnemyDamagedState : EnemyState
 {
-    public EnemyDamagedState(EnemyStateMachine stateMachine, CharacterController characterController, Enemy enemy, string animBoolName) : base(stateMachine, characterController, enemy, animBoolName)
+    public EnemyDamagedState(EnemyStateMachine stateMachine, Enemy enemy, string animBoolName) : base(stateMachine, enemy, animBoolName)
     {
     }
 
     public override void Enter()
     {
         base.Enter();
-
-        _characterController.Move(Vector3.zero);
-        _stateTimer = _enemy.Data.SturnTime;
-
         _enemy.Agent.isStopped = true;
-        _enemy.Agent.ResetPath();
+        _enemy.FlashRed(2);
     }
 
     public override void Exit()
@@ -26,7 +22,7 @@ public class EnemyDamagedState : EnemyState
     {
         base.Update();
 
-        if (_stateTimer <= 0)
+        if (_triggerCalled)
         {
             _stateMachine.ChangeState(EEnemyState.Trace);
         }

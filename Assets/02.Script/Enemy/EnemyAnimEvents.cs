@@ -9,8 +9,10 @@ public class EnemyAnimEvents : MonoBehaviour
         _enemy = GetComponent<Enemy>();
     }
 
+    private void StartManualMovement() => _enemy.AcitveManualMovement(true);
+    private void StopManualMovement() => _enemy.AcitveManualMovement(false);
     private void OnAnimTrigger() => _enemy.AnimTrigger();
-    private void AttackRay()
+    private void OnTryAttack()
     {
         _enemy.TryAttack();
     }

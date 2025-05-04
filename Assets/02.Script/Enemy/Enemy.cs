@@ -13,21 +13,24 @@ public enum EEnemyState
     Move,
     Recovery
 }
-
+public enum EEnemyType
+{
+    Nomal,
+    Chase,
+    Big
+}
 public class Enemy : MonoBehaviour, IDamageable
 {
     [Header("Data")]
     [SerializeField] protected SO_EnemyData _enemyData;
     [SerializeField] private Transform _ragdollCenterBone;
+    [SerializeField] private Renderer _mainRenderer;
+    [SerializeField] private EEnemyType _enemyType;
+    private Color _originalColor;
     public Transform RagdollCenterBone => _ragdollCenterBone;
 
 
     public GameObject CurrencyDropPrefab;
-
-    //넉백
-    protected float knockbackPower;
-    protected float knockbackDuration = 0.1f;
-    //
 
     protected GameObject _player;
     protected EnemyUiController _uiController;
@@ -42,51 +45,68 @@ public class Enemy : MonoBehaviour, IDamageable
 
     protected int _currentHealth;
 
+    private bool ManualRotation;
+    private bool ManualMovement;
+
     #region Getter
     public GameObject Player => _player;
     public Animator Animator => _animator;
     public SO_EnemyData Data => _enemyData;
     public Vector3 StartPos => _startPosition;
     public int CurrentHealth => _currentHealth;
+    public EEnemyType EnemyType => _enemyType;
     #endregion
 
     protected void OnEnable()
     {
-        //_ragdolllController.DisableRagdoll();
+        _startPosition = transform.position;
+        Debug.Log(_startPosition);
         _currentHealth = Data.Health;
         _uiController.SetActiveHealthBar(true);
         _uiController.RefreshPlayer(_currentHealth);
+        _mainRenderer.material.color = _originalColor;
     }
     protected virtual void Awake()
     {
+        _startPosition = transform.position;
         Agent = GetComponent<NavMeshAgent>();
         _characterController = GetComponent<CharacterController>();
         _ragdolllController = GetComponent<RagdolllController>();
         _uiController = GetComponent<EnemyUiController>();
         _animator = GetComponent<Animator>();
 
+ 
+
+        _originalColor = _mainRenderer.material.color;
         Agent.speed = Data.MoveSpeed;
 
         _stateMachine = new EnemyStateMachine();
 
-        _startPosition = transform.position;
-
         _statesMap = new Dictionary<EEnemyState, EnemyState>
     {
-        { EEnemyState.Idle,     new EnemyIdleState(_stateMachine, _characterController, this, "Idle") },
-        { EEnemyState.Trace,    new EnemyTraceState(_stateMachine, _characterController, this, "Trace") },
-        { EEnemyState.Return,   new EnemyReturnState(_stateMachine, _characterController, this, "Return", _startPosition) },
-        { EEnemyState.Damaged,  new EnemyDamagedState(_stateMachine, _characterController, this, "Damaged") },
-        { EEnemyState.Attack,   new EnemyAttackState(_stateMachine, _characterController, this, "Attack") },
-        { EEnemyState.Dead,     new EnemyDeadState(_stateMachine, _characterController, this, "Dead",_ragdolllController) },
-        { EEnemyState.Move,   new EnemyMoveState(_stateMachine, _characterController, this, "Move") },
-        { EEnemyState.Recovery, new EnemyRecoveryState(_stateMachine, _characterController, this,"Recovery") }
+        { EEnemyState.Idle,     new EnemyIdleState(_stateMachine, this, "Idle") },
+        { EEnemyState.Trace,    new EnemyTraceState(_stateMachine, this, "Trace") },
+        { EEnemyState.Return,   new EnemyReturnState(_stateMachine, this, "Return", _startPosition) },
+        { EEnemyState.Damaged,  new EnemyDamagedState(_stateMachine, this, "Damaged") },
+        { EEnemyState.Attack,   new EnemyAttackState(_stateMachine, this, "Attack") },
+        { EEnemyState.Dead,     new EnemyDeadState(_stateMachine, this, "Idle",_ragdolllController) },
+        { EEnemyState.Move,   new EnemyMoveState(_stateMachine, this, "Move") },
+        { EEnemyState.Recovery, new EnemyRecoveryState(_stateMachine, this,"Recovery") }
     };
 
     }
 
+    private void SetEnemyTypeForAnim()
+    {
+        if(_enemyType == EEnemyType.Big)
+            _animator.SetFloat("EnemyType", 1.0f);
+        else
+            _animator.SetFloat("EnemyType", 0.0f);
+    }
+
     protected virtual void Start()
     {
+        SetEnemyTypeForAnim();
         _stateMachine.InitStateMachine(_statesMap[EEnemyState.Idle], this, _statesMap);
         _player = GameObject.FindGameObjectWithTag("Player");
     }
@@ -99,25 +119,10 @@ public class Enemy : MonoBehaviour, IDamageable
     public void TakeDamage(Damage damage)
     {
         _currentHealth -= damage.Value;
-        knockbackPower = damage.Power;
-
         _uiController.RefreshPlayer(_currentHealth);
 
-        StartCoroutine(KnockbackCoroutine(damage.ForwardDir));
         _stateMachine.ChangeState(EEnemyState.Damaged);
 
-    }
-
-    private IEnumerator KnockbackCoroutine(Vector3 direction)
-    {
-        float timer = 0f;
-
-        while (timer < knockbackDuration)
-        {
-            _characterController.Move(direction * knockbackPower * Time.deltaTime);
-            timer += Time.deltaTime;
-            yield return null;
-        }
     }
 
     public void AnimTrigger() => _stateMachine.CurrentState.AnimTrigger();
@@ -171,10 +176,30 @@ public class Enemy : MonoBehaviour, IDamageable
         }
     }
 
+    public void AcitveManualMovement(bool ManualRotation) => this.ManualMovement = ManualRotation;
+    public bool ManualMovementActive() => ManualMovement;
 
-    private void OnDrawGizmos()
+    public void AcitveManualRotation(bool ManualRotation) => this.ManualRotation = ManualRotation;
+    public bool ManualRotationActive() => ManualRotation;
+
+
+
+    public void FlashRed(float duration = 0.1f)
     {
-        Gizmos.DrawWireSphere(transform.position, Data.AttackRange);
-        Gizmos.DrawWireSphere(transform.position, Data.DetectRange);
+        if (_mainRenderer == null) return;
+        StopAllCoroutines(); // 중복 방지
+        StartCoroutine(FlashCoroutine(duration));
     }
+
+    private IEnumerator FlashCoroutine(float duration)
+    {
+        _mainRenderer.material.color = Color.red;
+        yield return new WaitForSeconds(duration);
+        _mainRenderer.material.color = _originalColor;
+    }
+    //private void OnDrawGizmos()
+    //{
+    //    Gizmos.DrawWireSphere(transform.position, Data.AttackRange);
+    //    Gizmos.DrawWireSphere(transform.position, Data.DetectRange);
+    //}
 }

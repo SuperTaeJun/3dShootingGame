@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class EnemyRecoveryState : EnemyState
 {
-    public EnemyRecoveryState(EnemyStateMachine stateMachine, CharacterController characterController, Enemy enemy, string animBoolName) : base(stateMachine, characterController, enemy, animBoolName)
+    public EnemyRecoveryState(EnemyStateMachine stateMachine , Enemy enemy, string animBoolName) : base(stateMachine, enemy, animBoolName)
     {
     }
 

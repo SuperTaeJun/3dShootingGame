@@ -24,6 +24,7 @@ public class Drum : MonoBehaviour, IDamageable
 
     public void TakeDamage(Damage damage)
     {
+        Debug.Log("shiled");
         _health -= damage.Value;
         if (_health <= 0 && !isDestroyed)
         {
@@ -43,7 +44,7 @@ public class Drum : MonoBehaviour, IDamageable
             Collider[] hitObjects = Physics.OverlapSphere(center, radius, LayerMask.GetMask("Enemy", "Player", "Prop"));
             foreach (var obj in hitObjects)
             {
-                obj.gameObject.GetComponent<IDamageable>().TakeDamage(new Damage(100, gameObject, 40f, transform.forward));
+                obj.gameObject.GetComponentInParent<IDamageable>().TakeDamage(new Damage(100, gameObject, 40f, transform.forward));
             }
             DestroyAll();
         }

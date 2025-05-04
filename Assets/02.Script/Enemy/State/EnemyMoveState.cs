@@ -1,16 +1,11 @@
-using TMPro;
 using UnityEngine;
-using static UnityEngine.UI.Image;
+using UnityEngine.AI;
 
 public class EnemyMoveState : EnemyState
 {
-    private float _patrolRadius = 5f;
-    private float _waitTime = 2f;
-
     private Vector3 Destination;
-    private bool isMoving = false;
 
-    public EnemyMoveState(EnemyStateMachine stateMachine, CharacterController characterController, Enemy enemy, string animBoolName) : base(stateMachine, characterController, enemy, animBoolName)
+    public EnemyMoveState(EnemyStateMachine stateMachine , Enemy enemy, string animBoolName) : base(stateMachine, enemy, animBoolName)
     {
     }
 
@@ -49,29 +44,27 @@ public class EnemyMoveState : EnemyState
         }
 
 
-        //if (_enemy.GetDistanceToPlayer() < _enemy.Data.DetectRange)
-        //{
-        //    _stateMachine.ChangeState(EEnemyState.Trace);
-        //}
-
-        //if (isMoving)
-        //{
-        //    MoveToTarget();
-        //}
-        //else
-        //{
-        //    if (_stateTimer <= 0)
-        //    {
-        //        PickNewDestination();
-        //        _stateTimer = _waitTime;
-        //    }
-        //}
     }
     void PickNewDestination()
     {
-        Vector2 randomOffset = Random.insideUnitCircle * _patrolRadius;
-        Destination = _enemy.StartPos + new Vector3(randomOffset.x, 0, randomOffset.y);
-        isMoving = true;
+        float maxDistance = 80f; // 원하는 이동 거리 범위
+        int maxAttempts = 10;
+
+        for (int i = 0; i < maxAttempts; i++)
+        {
+            Vector3 randomDirection = Random.insideUnitSphere * maxDistance;
+            randomDirection.y = 0; // 수평 방향만
+
+            Vector3 randomPoint = _enemy.transform.position + randomDirection;
+
+            if (NavMesh.SamplePosition(randomPoint, out NavMeshHit hit, 2.0f, NavMesh.AllAreas))
+            {
+                Destination = hit.position;
+                return;
+            }
+        }
+
+        Destination = _enemy.transform.position; // fallback
     }
 
 }

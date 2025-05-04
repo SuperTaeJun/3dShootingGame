@@ -3,7 +3,7 @@ using UnityEngine;
 public class EnemyDeadState : EnemyState
 {
     RagdolllController ragdolllController;
-    public EnemyDeadState(EnemyStateMachine stateMachine, CharacterController characterController, Enemy enemy, string animBoolName, RagdolllController ragdolllController) : base(stateMachine, characterController, enemy, animBoolName)
+    public EnemyDeadState(EnemyStateMachine stateMachine , Enemy enemy, string animBoolName, RagdolllController ragdolllController) : base(stateMachine, enemy, animBoolName)
     {
         this.ragdolllController = ragdolllController;
     }

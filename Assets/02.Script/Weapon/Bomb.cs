@@ -1,4 +1,5 @@
 using UnityEngine;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class Bomb : ProjectileBase
 {
@@ -31,7 +32,11 @@ public class Bomb : ProjectileBase
         Collider[] hitEnemies = Physics.OverlapSphere(center, radius, LayerMask.GetMask("Enemy"));
         foreach (var enemy in hitEnemies)
         {
-            enemy.gameObject.GetComponent<Enemy>().TakeDamage(new Damage(10, gameObject, 40f, transform.forward));
+            if (enemy.GetComponentInParent<IDamageable>() is IDamageable damageable)
+            {
+                damageable.TakeDamage(new Damage(10, gameObject, 40f, transform.forward));
+            }
+
         }
 
         ObjectPool.Instance.ReturnToPool(gameObject);

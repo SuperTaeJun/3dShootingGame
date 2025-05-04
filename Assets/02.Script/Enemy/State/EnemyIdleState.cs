@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class EnemyIdleState : EnemyState
 {
-    public EnemyIdleState(EnemyStateMachine stateMachine, CharacterController characterController, Enemy enemy, string animBoolName) : base(stateMachine, characterController, enemy, animBoolName)
+    public EnemyIdleState(EnemyStateMachine stateMachine,  Enemy enemy, string animBoolName) : base(stateMachine, enemy, animBoolName)
     {
     }
 

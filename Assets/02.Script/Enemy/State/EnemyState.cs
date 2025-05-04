@@ -12,10 +12,9 @@ public class EnemyState
 
     public virtual void AnimFinishTrigger() => _triggerCalled = true;
 
-    public EnemyState(EnemyStateMachine stateMachine, CharacterController characterController, Enemy enemy, string animBoolName)
+    public EnemyState(EnemyStateMachine stateMachine, Enemy enemy, string animBoolName)
     {
         _stateMachine = stateMachine;
-        _characterController = characterController;
         _enemy = enemy;
         _animBoolName = animBoolName;
 

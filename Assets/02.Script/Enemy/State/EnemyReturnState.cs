@@ -3,7 +3,7 @@ using UnityEngine;
 public class EnemyReturnState : EnemyState
 {
     Vector3 _startPosition;
-    public EnemyReturnState(EnemyStateMachine stateMachine, CharacterController characterController, Enemy enemy, string animBoolName, Vector3 startPosition) : base(stateMachine, characterController, enemy, animBoolName)
+    public EnemyReturnState(EnemyStateMachine stateMachine, Enemy enemy, string animBoolName, Vector3 startPosition) : base(stateMachine, enemy, animBoolName)
     {
         _startPosition = startPosition;
     }

@@ -64,10 +64,11 @@ public class Shotgun : WeaponBase
                 {
                     Debug.DrawLine(_attackPos.position, hit.point, Color.red, 2f);
 
-                    if (hit.collider.TryGetComponent<IDamageable>(out IDamageable damageable))
+                    if (hit.collider.GetComponentInParent<IDamageable>() is IDamageable damageable)
                     {
                         damageable.TakeDamage(new Damage(_data.Damage, _player.gameObject, 20f, transform.forward));
                     }
+          
 
                     Instantiate(_hitVfxPrefab, hit.point, Quaternion.LookRotation(hit.normal));
                     StartCoroutine(SpawnTrail(trail, hit.point));
