@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a72950d5b764cd428b8492fb1b59c49, type: 3}
   m_Name: SO_EnemyData
   m_EditorClassIdentifier: 
-  DetectRange: 10
+  DetectRange: 14
   AttackRange: 3
   ReturnRange: 20
   TraceSpeed: 4

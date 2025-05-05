@@ -140,8 +140,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data: {fileID: 0}
   _attackPos: {fileID: 0}
-  _hitVfxPrefab: {fileID: 8172394614802003838, guid: 3b0b674a3a9daac4daf2e4445e62d2a9, type: 3}
-  _trailPrefab: {fileID: 8378503196372639160, guid: 69cc072cb0ed7344c8ed765f4f9efd17, type: 3}
+  _hitVfxPrefab: {fileID: 4186470608034871016, guid: 419d6ca370932a142a195479044cb169, type: 3}
+  _trailPrefab: {fileID: 5912344974454636654, guid: e1dffc863f951234c8886eb1bb39e9dd, type: 3}
   _bombPrefab: {fileID: 879731797590016981, guid: 87ad805c9e0b30d4fb9b19b88e98bc3e, type: 3}
   _baseThrowPower: 5
   _maxThrowPower: 30

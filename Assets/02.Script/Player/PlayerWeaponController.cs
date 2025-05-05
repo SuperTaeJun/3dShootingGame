@@ -37,22 +37,36 @@ public class PlayerWeaponController : MonoBehaviour
     }
     private void WeaponChangeHandler()
     {
-        if(Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            CurrentWeaponType = EWeaponType.Rifle;
-            SetCurrentWeapon();
-            OnWeaponChange.Invoke(CurrentWeaponType);
-        }
+        // 키보드 숫자키 입력
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+            ChangeWeaponByIndex(0);
         if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
+            ChangeWeaponByIndex(1);
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+            ChangeWeaponByIndex(2);
 
-            CurrentWeaponType = EWeaponType.Shotgun;
-            SetCurrentWeapon();
-            OnWeaponChange.Invoke(CurrentWeaponType);
-        }
-        if(Input.GetKeyDown(KeyCode.Alpha3))
+        // 마우스 휠 입력
+        float scroll = Input.mouseScrollDelta.y;
+        if (scroll != 0)
         {
-            CurrentWeaponType = EWeaponType.Soward;
+            int weaponCount = System.Enum.GetNames(typeof(EWeaponType)).Length;
+            int currentIndex = (int)CurrentWeaponType;
+
+            if (scroll > 0)
+                currentIndex = (currentIndex + 1) % weaponCount; // 다음 무기
+            else
+                currentIndex = (currentIndex - 1 + weaponCount) % weaponCount; // 이전 무기
+
+            ChangeWeaponByIndex(currentIndex);
+        }
+    }
+
+    private void ChangeWeaponByIndex(int index)
+    {
+        EWeaponType newType = (EWeaponType)index;
+        if (newType != CurrentWeaponType)
+        {
+            CurrentWeaponType = newType;
             SetCurrentWeapon();
             OnWeaponChange.Invoke(CurrentWeaponType);
         }

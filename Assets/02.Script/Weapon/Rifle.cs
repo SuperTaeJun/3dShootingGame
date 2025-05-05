@@ -4,8 +4,9 @@ using System.Collections;
 public class Rifle : WeaponBase
 {
     [Header("Fire Settings")]
-    [SerializeField] private GameObject _trailPrefab;
+    [SerializeField] private GameObject _bulletPrefab;
     [SerializeField] private GameObject _bombPrefab;
+
 
     [Header("Bomb Settings")]
     [SerializeField] private float _baseThrowPower = 5f;
@@ -29,7 +30,6 @@ public class Rifle : WeaponBase
     public override void Attack()
     {
         HandleBulletInput();
-        HandleBombInput();
     }
 
     private void HandleBulletInput()
@@ -63,55 +63,18 @@ public class Rifle : WeaponBase
         while (_player.CurrentBulletNum > 0)
         {
             OnTriggerFireStart.Invoke();
-            GameObject trail = ObjectPool.Instance.GetObject(_trailPrefab);
-            trail.transform.position = _attackPos.position;
-            trail.transform.rotation = gameObject.transform.rotation;
 
             _player.UseBullet();
 
             Vector3 fireDir = GetFireDirection();
 
-            if (Physics.Raycast(_attackPos.position, fireDir, out RaycastHit hit, _data.AttackRange))
-            {
-                Debug.DrawLine(_attackPos.position, hit.point, Color.red, 2f);
-
-                if (hit.collider.GetComponentInParent<IDamageable>() is IDamageable damageable)
-                {
-                    damageable.TakeDamage(new Damage(_data.Damage, _player.gameObject, 20f, transform.forward));
-                }
-
-                //else if (hit.collider.TryGetComponent<IDamageable>(out IDamageable damageable))
-                //{
-                //    damageable.TakeDamage(new Damage(_data.Damage, _player.gameObject, 20f, transform.forward));
-                //}
-
-                Instantiate(_hitVfxPrefab, hit.point, Quaternion.LookRotation(hit.normal));
-                StartCoroutine(SpawnTrail(trail, hit.point));
-            }
-            else
-            {
-                Vector3 endPoint = _attackPos.position + fireDir * _data.AttackRange;
-                Debug.DrawLine(_attackPos.position, endPoint, Color.red, 2f);
-                StartCoroutine(SpawnTrail(trail, endPoint));
-            }
+            GameObject bulletObj = Instantiate(_bulletPrefab);
+            bulletObj.transform.position = _attackPos.position;
+            bulletObj.transform.rotation = Quaternion.LookRotation(fireDir);
+            Bullet bullet = bulletObj.GetComponent<Bullet>();
+            bullet.Initialize(fireDir, _player.gameObject);
 
             yield return new WaitForSeconds(fireRate);
-        }
-    }
-
-    private IEnumerator SpawnTrail(GameObject trail, Vector3 hitPoint)
-    {
-        float alpha = 0f;
-        Vector3 startPos = trail.transform.position;
-
-        while (alpha < 2f)
-        {
-            trail.transform.position = Vector3.Lerp(startPos, hitPoint, alpha);
-            alpha += Time.deltaTime / 0.2f;//trailRenderer.time;
-
-
-            if (alpha >= 2) ObjectPool.Instance.ReturnToPool(trail);
-            yield return null;
         }
     }
 
@@ -124,6 +87,8 @@ public class Rifle : WeaponBase
             if (Physics.Raycast(ray, out RaycastHit hit, 100f, LayerMask.GetMask("Ground")))
             {
                 Vector3 targetPos = hit.point;
+                targetPos.y = _attackPos.position.y; // 총구 높이와 일치
+
                 Vector3 dir = (targetPos - _attackPos.position).normalized;
                 return dir;
             }
@@ -147,43 +112,4 @@ public class Rifle : WeaponBase
         return (finalPos - startPos).normalized;
     }
 
-    #region Bomb
-    private void HandleBombInput()
-    {
-        //if (_player.CurrentBombNum <= 0) return;
-
-        //if (Input.GetMouseButtonDown(1))
-        //{
-        //    PlayerUiManager.Instance.SetActiveUI(EUiType.BombChargingBar, true);
-        //    ChargingParticle.SetActive(true);
-        //    ChargingParticle.transform.position = _attackPos.position;
-        //}
-
-        //if (Input.GetMouseButton(1))
-        //{
-        //    _currentThrowPower = Mathf.Min(_currentThrowPower + Time.deltaTime * _bombChargeRate, _maxThrowPower);
-        //    PlayerUiManager.Instance.RefreshBombCharging(_currentThrowPower);
-        //}
-
-        //if (Input.GetMouseButtonUp(1))
-        //{
-        //    ChargingParticle.SetActive(false);
-        //    ThrowBomb();
-        //}
-    }
-
-    private void ThrowBomb()
-    {
-        Bomb bomb = ObjectPool.Instance.GetObject(_bombPrefab).GetComponent<Bomb>();
-        bomb.transform.position = _attackPos.position;
-        bomb.transform.rotation = _player.transform.rotation;
-
-        Vector3 throwDir = GetFireDirection(); // ← 변경된 방향 사용
-        bomb.Initialize(throwDir, _currentThrowPower, _player.gameObject);
-
-        _currentThrowPower = _baseThrowPower;
-        _player.UseBomb();
-        PlayerUiManager.Instance.SetActiveUI(EUiType.BombChargingBar, false);
-    }
-    #endregion
 }

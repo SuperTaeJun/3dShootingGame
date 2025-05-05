@@ -13,10 +13,10 @@ public class EnemyAttackState : EnemyState
     public override void Enter()
     {
         base.Enter();
-        int randomIndex = Random.Range(0, 3);
+        int randomIndex = Random.Range(0, 2);
         _enemy.Animator.SetFloat("AttackIndex", randomIndex);
 
-        AttackMoveSpeed = _enemy.Data.MoveSpeed;
+        AttackMoveSpeed = _enemy.Data.MoveSpeed*2;
 
         _enemy.Agent.isStopped = true;
         _enemy.Agent.velocity = Vector3.zero;

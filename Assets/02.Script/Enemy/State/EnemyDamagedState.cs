@@ -10,7 +10,7 @@ public class EnemyDamagedState : EnemyState
     {
         base.Enter();
         _enemy.Agent.isStopped = true;
-        _enemy.FlashRed(2);
+        _enemy.FlashRed(1);
     }
 
     public override void Exit()

@@ -3,7 +3,7 @@ using System.Collections;
 public class Shotgun : WeaponBase
 {
     [Header("Fire Settings")]
-    [SerializeField] private GameObject _trailPrefab;
+    [SerializeField] private GameObject _bulletPrefab;
     [SerializeField] private int _numOfPill;
 
     [Header("Scatter Settings")]
@@ -15,7 +15,7 @@ public class Shotgun : WeaponBase
     protected override void Start()
     {
         base.Start();
-        _distanceToSphere = _data.AttackRange;
+        _distanceToSphere = _data.AttackRange*2;
     }
     public override void Attack()
     {
@@ -52,33 +52,15 @@ public class Shotgun : WeaponBase
             for (int i = 0; i < _numOfPill; ++i)
             {
                 OnTriggerFireStart.Invoke();
-                GameObject trail = ObjectPool.Instance.GetObject(_trailPrefab);
-                trail.transform.position = _attackPos.position;
-                trail.transform.rotation = gameObject.transform.rotation;
-
                 _player.UseBullet();
 
                 Vector3 fireDir = GetFireDirection();
 
-                if (Physics.Raycast(_attackPos.position, fireDir, out RaycastHit hit, _data.AttackRange))
-                {
-                    Debug.DrawLine(_attackPos.position, hit.point, Color.red, 2f);
-
-                    if (hit.collider.GetComponentInParent<IDamageable>() is IDamageable damageable)
-                    {
-                        damageable.TakeDamage(new Damage(_data.Damage, _player.gameObject, 20f, transform.forward));
-                    }
-          
-
-                    Instantiate(_hitVfxPrefab, hit.point, Quaternion.LookRotation(hit.normal));
-                    StartCoroutine(SpawnTrail(trail, hit.point));
-                }
-                else
-                {
-                    Vector3 endPoint = _attackPos.position + fireDir * _data.AttackRange;
-                    Debug.DrawLine(_attackPos.position, endPoint, Color.red, 2f);
-                    StartCoroutine(SpawnTrail(trail, endPoint));
-                }
+                GameObject bulletObj = Instantiate(_bulletPrefab);
+                bulletObj.transform.position = _attackPos.position;
+                bulletObj.transform.rotation = Quaternion.LookRotation(fireDir);
+                Bullet bullet = bulletObj.GetComponent<Bullet>();
+                bullet.Initialize(fireDir, _player.gameObject);
             }
             yield return new WaitForSeconds(fireRate);
         }
@@ -92,6 +74,8 @@ public class Shotgun : WeaponBase
             if (Physics.Raycast(ray, out RaycastHit hit, 100f, LayerMask.GetMask("Ground")))
             {
                 Vector3 targetPos = hit.point;
+                targetPos.y = _attackPos.position.y; // 총구 높이와 일치
+
                 Vector3 dir = (targetPos - _attackPos.position).normalized;
                 return dir;
             }

@@ -11,13 +11,15 @@ public enum EEnemyState
     Attack,
     Dead,
     Move,
-    Recovery
+    Recovery,
+    JumpAttack
 }
 public enum EEnemyType
 {
     Nomal,
     Chase,
-    Big
+    Big,
+    Jump
 }
 public class Enemy : MonoBehaviour, IDamageable
 {
@@ -26,7 +28,10 @@ public class Enemy : MonoBehaviour, IDamageable
     [SerializeField] private Transform _ragdollCenterBone;
     [SerializeField] private Renderer _mainRenderer;
     [SerializeField] private EEnemyType _enemyType;
-    private Color _originalColor;
+
+    private static readonly int HitEffectStrengthID = Shader.PropertyToID("_HitEffectStrength");
+    private Coroutine _hitFlashCoroutine;
+
     public Transform RagdollCenterBone => _ragdollCenterBone;
 
 
@@ -47,7 +52,12 @@ public class Enemy : MonoBehaviour, IDamageable
 
     private bool ManualRotation;
     private bool ManualMovement;
-
+    [Header("JumpAttackSet")]
+    [SerializeField]private float _jumpAttackCoolDown = 15f;
+    [SerializeField] private float _minJumAttackDistance = 4;
+    public GameObject LandingZonePrefab;
+    public GameObject JumpAttackVfx;
+    private float lastCoolTimeJumped;
     #region Getter
     public GameObject Player => _player;
     public Animator Animator => _animator;
@@ -60,11 +70,11 @@ public class Enemy : MonoBehaviour, IDamageable
     protected void OnEnable()
     {
         _startPosition = transform.position;
-        Debug.Log(_startPosition);
         _currentHealth = Data.Health;
         _uiController.SetActiveHealthBar(true);
         _uiController.RefreshPlayer(_currentHealth);
-        _mainRenderer.material.color = _originalColor;
+
+
     }
     protected virtual void Awake()
     {
@@ -75,9 +85,6 @@ public class Enemy : MonoBehaviour, IDamageable
         _uiController = GetComponent<EnemyUiController>();
         _animator = GetComponent<Animator>();
 
- 
-
-        _originalColor = _mainRenderer.material.color;
         Agent.speed = Data.MoveSpeed;
 
         _stateMachine = new EnemyStateMachine();
@@ -91,14 +98,15 @@ public class Enemy : MonoBehaviour, IDamageable
         { EEnemyState.Attack,   new EnemyAttackState(_stateMachine, this, "Attack") },
         { EEnemyState.Dead,     new EnemyDeadState(_stateMachine, this, "Idle",_ragdolllController) },
         { EEnemyState.Move,   new EnemyMoveState(_stateMachine, this, "Move") },
-        { EEnemyState.Recovery, new EnemyRecoveryState(_stateMachine, this,"Recovery") }
+        { EEnemyState.Recovery, new EnemyRecoveryState(_stateMachine, this,"Recovery") },
+        { EEnemyState.JumpAttack, new EnemyJumpAttack(_stateMachine,this,"JumpAttack") }
     };
 
     }
 
     private void SetEnemyTypeForAnim()
     {
-        if(_enemyType == EEnemyType.Big)
+        if (_enemyType == EEnemyType.Big)
             _animator.SetFloat("EnemyType", 1.0f);
         else
             _animator.SetFloat("EnemyType", 0.0f);
@@ -114,6 +122,7 @@ public class Enemy : MonoBehaviour, IDamageable
     protected virtual void Update()
     {
         _stateMachine.Update();
+
     }
 
     public void TakeDamage(Damage damage)
@@ -126,9 +135,22 @@ public class Enemy : MonoBehaviour, IDamageable
     }
 
     public void AnimTrigger() => _stateMachine.CurrentState.AnimTrigger();
+    public bool CanJumpAttack() => Vector3.Distance(transform.position, _player.transform.position) < Data.AttackRange*2;
     public bool CanAttack() => Vector3.Distance(transform.position, _player.transform.position) < Data.AttackRange;
     public bool CanDetect() => Vector3.Distance(transform.position, _player.transform.position) < Data.DetectRange;
+    public bool CanDoJumpAttack()
+    {
+        float distanceToPlayer = Vector3.Distance(transform.position, Player.transform.position);
 
+        if(distanceToPlayer < _minJumAttackDistance) return false;
+
+        if(Time.time>lastCoolTimeJumped+_jumpAttackCoolDown)
+        {
+            lastCoolTimeJumped = Time.time;
+            return true;
+        }
+        return false;
+    }
     public float GetDistanceToPlayer()
     {
         return Vector3.Distance(transform.position, _player.transform.position);
@@ -148,8 +170,8 @@ public class Enemy : MonoBehaviour, IDamageable
     {
         if (_player == null) return;
 
-        Vector3 origin = transform.position + Vector3.up;           // 적 시야 기준 위치
-        Vector3 target = _player.transform.position + Vector3.up;   // 플레이어 기준 위치
+        Vector3 origin = transform.position + Vector3.up;         
+        Vector3 target = _player.transform.position + Vector3.up;  
 
         Vector3 toPlayer = target - origin;
         float distance = toPlayer.magnitude;
@@ -159,10 +181,9 @@ public class Enemy : MonoBehaviour, IDamageable
         Vector3 flatForward = new Vector3(forward.x, 0, forward.z).normalized;
         Vector3 flatToPlayer = new Vector3(toPlayer.x, 0, toPlayer.z).normalized;
 
-        float angle = 45f;
+        float angle = 90f;
         float range = _enemyData.AttackRange;
 
-        // === 충돌 체크 ===
         if (distance <= range)
         {
             float angleToPlayer = Vector3.Angle(flatForward, flatToPlayer);
@@ -175,31 +196,73 @@ public class Enemy : MonoBehaviour, IDamageable
             }
         }
     }
+    public void TryJumpAttack()
+    {
 
+        float radius = 4.5f;
+        LayerMask playerMask = LayerMask.GetMask("Player"); // 플레이어가 이 레이어에 있어야 함
+
+
+        if (JumpAttackVfx != null)
+        {
+            Vector3 effectPos = transform.position;
+            effectPos.y += 0.05f;
+
+            GameObject vfx = GameObject.Instantiate(JumpAttackVfx, effectPos, Quaternion.identity);
+            GameObject.Destroy(vfx, 3f); 
+        }
+
+
+        Collider[] hits = Physics.OverlapSphere(transform.position + Vector3.up, radius, playerMask);
+
+        foreach (var hit in hits)
+        {
+            if (hit.TryGetComponent<IDamageable>(out IDamageable damageable))
+            {
+                Vector3 dir = (hit.transform.position - transform.position).normalized;
+                damageable.TakeDamage(new Damage(_enemyData.Damage, gameObject, 20f, dir));
+            }
+        }
+    }
     public void AcitveManualMovement(bool ManualRotation) => this.ManualMovement = ManualRotation;
     public bool ManualMovementActive() => ManualMovement;
 
     public void AcitveManualRotation(bool ManualRotation) => this.ManualRotation = ManualRotation;
     public bool ManualRotationActive() => ManualRotation;
 
-
-
-    public void FlashRed(float duration = 0.1f)
+    public void FlashRed(float duration = 0.15f)
     {
         if (_mainRenderer == null) return;
-        StopAllCoroutines(); // 중복 방지
-        StartCoroutine(FlashCoroutine(duration));
+
+        if (_hitFlashCoroutine != null)
+        {
+            StopCoroutine(_hitFlashCoroutine);
+        }
+
+        _hitFlashCoroutine = StartCoroutine(HitFlashCoroutine(duration));
     }
 
-    private IEnumerator FlashCoroutine(float duration)
+    private IEnumerator HitFlashCoroutine(float duration)
     {
-        _mainRenderer.material.color = Color.red;
-        yield return new WaitForSeconds(duration);
-        _mainRenderer.material.color = _originalColor;
+        Material mat = _mainRenderer.material;
+        mat.SetFloat(HitEffectStrengthID, 1f);
+
+        float timer = 0f;
+        while (timer < duration)
+        {
+            float t = 1f - (timer / duration);
+            mat.SetFloat(HitEffectStrengthID, t);
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+        mat.SetFloat(HitEffectStrengthID, 0f);
+        _hitFlashCoroutine = null; // 코루틴 종료 후 클리어
     }
-    //private void OnDrawGizmos()
-    //{
-    //    Gizmos.DrawWireSphere(transform.position, Data.AttackRange);
-    //    Gizmos.DrawWireSphere(transform.position, Data.DetectRange);
-    //}
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireSphere(transform.position, Data.AttackRange);
+        Gizmos.DrawWireSphere(transform.position, Data.DetectRange);
+
+    }
 }

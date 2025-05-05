@@ -39,6 +39,10 @@ public class EnemyTraceState : EnemyState
             }
             _stateMachine.ChangeState(EEnemyState.Idle);
         }
+        if(_enemy.CanDoJumpAttack() && _enemy.EnemyType == EEnemyType.Jump)
+        {
+            _stateMachine.ChangeState(EEnemyState.JumpAttack);
+        }
         if (_enemy.CanAttack())
         {
             _stateMachine.ChangeState(EEnemyState.Attack);

@@ -5,8 +5,6 @@ public abstract class WeaponBase : MonoBehaviour
 {
     [Header("Data")]
     [SerializeField] protected SO_WeaponData _data;
-    
-
 
     [SerializeField] protected Transform _attackPos;
     [SerializeField] protected GameObject _hitVfxPrefab;

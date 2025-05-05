@@ -48,6 +48,10 @@ public class GoldItem : MonoBehaviour
         Vector3 direction = (_playerTransform.position - transform.position).normalized;
         transform.position += direction * _moveSpeed * Time.deltaTime;
 
+        // 크기 줄이기 
+        float shrinkSpeed = 5f; 
+        transform.localScale = Vector3.Lerp(transform.localScale, Vector3.zero, shrinkSpeed * Time.deltaTime);
+
         if (Vector3.Distance(transform.position, _playerTransform.position) < 0.5f)
         {
             CurrencyManager.Instance.AddCurrency(_currencyType, _amount);

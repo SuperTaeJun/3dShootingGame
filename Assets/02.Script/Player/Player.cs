@@ -2,9 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
-using UnityEditorInternal;
 using UnityEngine;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class Player : MonoBehaviour, IDamageable
 {
@@ -43,6 +41,7 @@ public class Player : MonoBehaviour, IDamageable
     public float UseRunStamina => _playerData.UseRunStamina;
     public float UseClimbStamina => _playerData.UseClimbStamina;
     #endregion
+
 
     private void Awake()
     {

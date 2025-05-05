@@ -45,8 +45,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _enemyTypes:
-  - prefab: {fileID: 51679174134685541, guid: 9d91f4334d9109b4b994efa7832f9ad9, type: 3}
-    spawnWeight: 10
-  - prefab: {fileID: 51679174134685541, guid: 8c8d2a72ef9dd9a4b83a12a0cdb4c2c2, type: 3}
+  - prefab: {fileID: 905883253456285697, guid: 01101ac40451f63419706c4823950568, type: 3}
     spawnWeight: 5
+  - prefab: {fileID: 6837993625668166969, guid: ba723d4dc430feb498fcb721e82418e1, type: 3}
+    spawnWeight: 5
+  - prefab: {fileID: 777483156193490759, guid: 37eae18e4e6b391458e0127cea5c84ed, type: 3}
+    spawnWeight: 3
+  - prefab: {fileID: 2952054487582207492, guid: 7c199bfad9b12da48bd131b1f3b9d9fd, type: 3}
+    spawnWeight: 2
   _spawnInterval: 8

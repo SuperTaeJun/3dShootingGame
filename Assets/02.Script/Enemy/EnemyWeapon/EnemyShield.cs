@@ -26,6 +26,7 @@ public class EnemyShield : MonoBehaviour, IDamageable
         _health -= damage.Value;
         if (_health <= 0 && !isDestroyed)
         {
+            Debug.Log("shiled");
             _enemy.Animator.SetFloat("Shield", 0);
 
             fragments = explosion.Explode();
