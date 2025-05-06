@@ -141,13 +141,15 @@ MonoBehaviour:
   _data: {fileID: 0}
   _attackPos: {fileID: 0}
   _hitVfxPrefab: {fileID: 4186470608034871016, guid: 419d6ca370932a142a195479044cb169, type: 3}
-  _trailPrefab: {fileID: 5912344974454636654, guid: e1dffc863f951234c8886eb1bb39e9dd, type: 3}
+  _bulletPrefab: {fileID: 0}
   _bombPrefab: {fileID: 879731797590016981, guid: 87ad805c9e0b30d4fb9b19b88e98bc3e, type: 3}
   _baseThrowPower: 5
   _maxThrowPower: 30
   _bombChargeRate: 10
   ChargingParticle: {fileID: 5732568103209889489, guid: e23741b3f14f27e46a31d8d542a2033e, type: 3}
   _scatterRadius: 1
+  _shakeDuration: 0.1
+  _shakeMagnitude: 0.05
 --- !u!1 &1000011705015594
 GameObject:
   m_ObjectHideFlags: 0

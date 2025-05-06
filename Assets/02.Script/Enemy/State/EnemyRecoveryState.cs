@@ -9,6 +9,9 @@ public class EnemyRecoveryState : EnemyState
     public override void Enter()
     {
         base.Enter();
+        int randomIndex = Random.Range(0, 4);
+        _enemy.Animator.SetFloat("RecoveryIndex", randomIndex);
+
         _enemy.Agent.isStopped = true;
         _enemy.Agent.velocity = Vector3.zero;
     }

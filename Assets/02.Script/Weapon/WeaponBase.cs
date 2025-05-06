@@ -9,6 +9,10 @@ public abstract class WeaponBase : MonoBehaviour
     [SerializeField] protected Transform _attackPos;
     [SerializeField] protected GameObject _hitVfxPrefab;
 
+    [Header("CameraShake")]
+    [SerializeField] protected float _shakeDuration = 0.1f;
+    [SerializeField] protected float _shakeMagnitude = 0.2f;
+
     protected Player _player;
     protected RaycastHit _traceHitResult;
     protected ECameraType _currentCameraType;
@@ -60,6 +64,17 @@ public abstract class WeaponBase : MonoBehaviour
     protected void HandleCameraTypeChanged(ECameraType type)
     {
         _currentCameraType = type;
+    }
+
+    protected void UseCameraShake()
+    {
+        // 카메라 쉐이크 호출
+        var cam = Camera.main.GetComponent<MyCamera>();
+        if (cam != null)
+        {
+            // 예: 0.1초간, 최대 0.2유닛 흔들기
+            cam.Shake(_shakeDuration, _shakeMagnitude);
+        }
     }
 
 }

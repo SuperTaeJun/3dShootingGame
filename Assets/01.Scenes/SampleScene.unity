@@ -1286,7 +1286,7 @@ Camera:
     height: 1
   near clip plane: 0.05
   far clip plane: 1000
-  field of view: 60.000004
+  field of view: 60
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -1377,14 +1377,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _target: {fileID: 330561217}
   _firstPersonOffset:
-    PositionOffset: {x: 0, y: 0.5, z: 0.25}
+    PositionOffset: {x: 0, y: 0.5, z: 0.3}
     RotationOffset: {x: 0, y: 0, z: 0}
+    FieldOfView: 100
   _thirdPersonOffset:
-    PositionOffset: {x: 0, y: 1, z: -5}
+    PositionOffset: {x: -0.5, y: 1, z: -3}
     RotationOffset: {x: 10, y: 0, z: 0}
+    FieldOfView: 80
   _quarterViewOffset:
     PositionOffset: {x: 0, y: 15, z: -14}
     RotationOffset: {x: 45, y: 0, z: 0}
+    FieldOfView: 60
   _rotationSpeed: 300
 --- !u!1 &350617953
 GameObject:

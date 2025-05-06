@@ -14,13 +14,12 @@ public class Rifle : WeaponBase
     [SerializeField] private float _bombChargeRate = 10f;
     [SerializeField] private GameObject ChargingParticle;
 
-
     [Header("Scatter Settings")]
     [SerializeField] private float _scatterRadius = 2f;
+
     private float _distanceToSphere;
 
-    private Coroutine _fireCoroutine;
-    private float _currentThrowPower;
+    private float _cooldownTimer = 0f;
 
     protected override void Start()
     {
@@ -34,48 +33,29 @@ public class Rifle : WeaponBase
 
     private void HandleBulletInput()
     {
-        if (Input.GetMouseButtonDown(0)) StartFiring();
-        if (Input.GetMouseButtonUp(0)) StopFiring();
-    }
+        _cooldownTimer -= Time.deltaTime;
 
-    private void StartFiring()
-    {
-        if (_fireCoroutine == null && _player.CurrentBulletNum > 0)
+        if (Input.GetMouseButton(0) && _cooldownTimer <= 0f && _player.CurrentBulletNum > 0)
         {
-
-            _fireCoroutine = StartCoroutine(FireLoop(_data.FireRate));
-            _player.IsFiring = true;
+            FireOnce();
+            _cooldownTimer = _data.FireRate;
         }
     }
-
-    private void StopFiring()
+    private void FireOnce()
     {
-        if (_fireCoroutine != null)
-        {
-            StopCoroutine(_fireCoroutine);
-            _fireCoroutine = null;
-            _player.IsFiring = false;
-        }
-    }
+        OnTriggerFireStart.Invoke();
 
-    private IEnumerator FireLoop(float fireRate)
-    {
-        while (_player.CurrentBulletNum > 0)
-        {
-            OnTriggerFireStart.Invoke();
+        UseCameraShake();
+        _player.UseBullet();
 
-            _player.UseBullet();
-
-            Vector3 fireDir = GetFireDirection();
-
-            GameObject bulletObj = Instantiate(_bulletPrefab);
-            bulletObj.transform.position = _attackPos.position;
-            bulletObj.transform.rotation = Quaternion.LookRotation(fireDir);
-            Bullet bullet = bulletObj.GetComponent<Bullet>();
-            bullet.Initialize(fireDir, _player.gameObject);
-
-            yield return new WaitForSeconds(fireRate);
-        }
+        Vector3 dir = GetFireDirection();
+        GameObject bullet = Instantiate(
+            _bulletPrefab,
+            _attackPos.position,
+            Quaternion.LookRotation(dir)
+        );
+        bullet.GetComponent<Bullet>()
+              .Initialize(dir, _player.gameObject);
     }
 
     // 지금 카메라 모드에따라서 다른 방식으로 방향을구해줌 + 반동도 추가됨

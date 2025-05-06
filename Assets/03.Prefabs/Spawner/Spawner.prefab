@@ -48,9 +48,9 @@ MonoBehaviour:
   - prefab: {fileID: 905883253456285697, guid: 01101ac40451f63419706c4823950568, type: 3}
     spawnWeight: 5
   - prefab: {fileID: 6837993625668166969, guid: ba723d4dc430feb498fcb721e82418e1, type: 3}
-    spawnWeight: 5
+    spawnWeight: 3
   - prefab: {fileID: 777483156193490759, guid: 37eae18e4e6b391458e0127cea5c84ed, type: 3}
     spawnWeight: 3
   - prefab: {fileID: 2952054487582207492, guid: 7c199bfad9b12da48bd131b1f3b9d9fd, type: 3}
     spawnWeight: 2
-  _spawnInterval: 8
+  _spawnInterval: 12

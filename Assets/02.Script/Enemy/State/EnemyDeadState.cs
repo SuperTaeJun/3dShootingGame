@@ -1,20 +1,34 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyDeadState : EnemyState
 {
-    RagdolllController ragdolllController;
+    private readonly RagdolllController _ragdollController;
+
+    // Fade 제어용 머티리얼 리스트
+    private List<Material> _materials;
+
     public EnemyDeadState(EnemyStateMachine stateMachine , Enemy enemy, string animBoolName, RagdolllController ragdolllController) : base(stateMachine, enemy, animBoolName)
     {
-        this.ragdolllController = ragdolllController;
+        this._ragdollController = ragdolllController;
     }
 
     public override void Enter()
     {
         base.Enter();
-        _enemy.Agent.isStopped = true;
         _stateTimer = _enemy.Data.DeadTime;
+
+        _enemy.Agent.isStopped = true;
         _enemy.UiController.SetActiveHealthBar(false);
-        ragdolllController.EnableRagdoll();
+        _ragdollController.EnableRagdoll();
+
+        // 3) Fade 조절할 머티리얼들 캐싱
+        _materials = new List<Material>();
+        foreach (var rend in _enemy.GetComponentsInChildren<Renderer>())
+        {
+            // 인스턴스 복제된 머티리얼만 건드림
+            _materials.Add(rend.material);
+        }
     }
 
     public override void Exit()
@@ -25,10 +39,27 @@ public class EnemyDeadState : EnemyState
     public override void Update()
     {
         base.Update();
-        if(_stateTimer<0)
+
+        // 남은 시간 비례로 _Fade 값 보간 (1 → 0)
+        float f = Mathf.Clamp01(_stateTimer / _enemy.Data.DeadTime);
+        foreach (var mat in _materials)
+        {
+            if (mat.HasProperty("_Fade"))
+                mat.SetFloat("_Fade", f);
+        }
+
+
+        if (_stateTimer<0)
         {
             DropGold();
-            ragdolllController.DisableRagdoll();
+            _ragdollController.DisableRagdoll();
+
+            // fade를 원상(1)으로 돌려놓고
+            foreach (var mat in _materials)
+            {
+                if (mat.HasProperty("_Fade"))
+                    mat.SetFloat("_Fade", 1f);
+            }
             ObjectPool.Instance.ReturnToPool(_enemy.gameObject);
         }
 

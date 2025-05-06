@@ -17,16 +17,15 @@ public class ThirdPersonCameraMode
 
     public void UpdateCamera(Transform cameraTransform, Transform target)
     {
-        float mouseX = Input.GetAxis("Mouse X") * _rotationSpeed * Time.deltaTime;
-        float mouseY = Input.GetAxis("Mouse Y") * _rotationSpeed * Time.deltaTime;
 
-        _rotationX += mouseX;
-        _rotationY = Mathf.Clamp(_rotationY - mouseY, -40f, 40f);
+        float mouseX = Input.GetAxis("Mouse X");
+        float mouseY = Input.GetAxis("Mouse Y");
 
-        Quaternion rotation = Quaternion.Euler(_rotationY, _rotationX, 0);
-        Vector3 offsetPos = rotation * new Vector3(0, _offset.PositionOffset.y, _offset.PositionOffset.z);
+        _rotationX += mouseX * _rotationSpeed * Time.deltaTime;
+        _rotationY = Mathf.Clamp(_rotationY + mouseY * _rotationSpeed * Time.deltaTime, -60f, 60f);
 
-        cameraTransform.position = target.position + offsetPos;
-        cameraTransform.LookAt(target.position + Vector3.up * _offset.PositionOffset.y);
+        cameraTransform.position = target.position + target.rotation * _offset.PositionOffset;
+        cameraTransform.eulerAngles = new Vector3(-_rotationY, _rotationX, 0);
+
     }
 }

@@ -41,7 +41,7 @@ public class Enemy : MonoBehaviour, IDamageable
     protected EnemyUiController _uiController;
     public EnemyUiController UiController => _uiController;
     protected EnemyStateMachine _stateMachine;
-    protected CharacterController _characterController;
+
     protected RagdolllController _ragdolllController;
     public NavMeshAgent Agent;
     protected Animator _animator;
@@ -58,6 +58,7 @@ public class Enemy : MonoBehaviour, IDamageable
     public GameObject LandingZonePrefab;
     public GameObject JumpAttackVfx;
     private float lastCoolTimeJumped;
+
     #region Getter
     public GameObject Player => _player;
     public Animator Animator => _animator;
@@ -80,7 +81,7 @@ public class Enemy : MonoBehaviour, IDamageable
     {
         _startPosition = transform.position;
         Agent = GetComponent<NavMeshAgent>();
-        _characterController = GetComponent<CharacterController>();
+
         _ragdolllController = GetComponent<RagdolllController>();
         _uiController = GetComponent<EnemyUiController>();
         _animator = GetComponent<Animator>();
@@ -259,6 +260,7 @@ public class Enemy : MonoBehaviour, IDamageable
         mat.SetFloat(HitEffectStrengthID, 0f);
         _hitFlashCoroutine = null; // 코루틴 종료 후 클리어
     }
+
     private void OnDrawGizmos()
     {
         Gizmos.DrawWireSphere(transform.position, Data.AttackRange);

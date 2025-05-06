@@ -665,6 +665,10 @@ MonoBehaviour:
   _enemyType: 0
   CurrencyDropPrefab: {fileID: 1334438985897625269, guid: 6a4a94d363f33494ab1c8a7183d00a2e, type: 3}
   Agent: {fileID: 998967862849653474}
+  _jumpAttackCoolDown: 15
+  _minJumAttackDistance: 4
+  LandingZonePrefab: {fileID: 0}
+  JumpAttackVfx: {fileID: 0}
 --- !u!195 &998967862849653474
 NavMeshAgent:
   m_ObjectHideFlags: 0

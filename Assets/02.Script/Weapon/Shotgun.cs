@@ -10,7 +10,7 @@ public class Shotgun : WeaponBase
     [SerializeField] private float _scatterRadius = 2f;
     private float _distanceToSphere;
 
-    private Coroutine _fireCoroutine;
+    private float _cooldownTimer = 0f;
 
     protected override void Start()
     {
@@ -24,45 +24,29 @@ public class Shotgun : WeaponBase
 
     private void HandleBulletInput()
     {
-        if (Input.GetMouseButtonDown(0)) StartFiring();
-        if (Input.GetMouseButtonUp(0)) StopFiring();
-    }
-    private void StartFiring()
-    {
-        if (_fireCoroutine == null && _player.CurrentBulletNum > 0)
+        _cooldownTimer -= Time.deltaTime;
+
+        if (Input.GetMouseButton(0)
+            && _cooldownTimer <= 0f
+            && _player.CurrentBulletNum > 0)
         {
-            _fireCoroutine = StartCoroutine(FireLoop(_data.FireRate));
-            _player.IsFiring = true;
+            FireOnce();
+            _cooldownTimer = _data.FireRate;
         }
     }
-
-    private void StopFiring()
+    private void FireOnce()
     {
-        if (_fireCoroutine != null)
-        {
-            StopCoroutine(_fireCoroutine);
-            _fireCoroutine = null;
-            _player.IsFiring = false;
-        }
-    }
-    private IEnumerator FireLoop(float fireRate)
-    {
-        while (_player.CurrentBulletNum > 0)
-        {
-            for (int i = 0; i < _numOfPill; ++i)
-            {
-                OnTriggerFireStart.Invoke();
-                _player.UseBullet();
+        OnTriggerFireStart.Invoke();
+        UseCameraShake();
 
-                Vector3 fireDir = GetFireDirection();
+        for (int i = 0; i < _numOfPill; ++i)
+        {
+            _player.UseBullet();
 
-                GameObject bulletObj = Instantiate(_bulletPrefab);
-                bulletObj.transform.position = _attackPos.position;
-                bulletObj.transform.rotation = Quaternion.LookRotation(fireDir);
-                Bullet bullet = bulletObj.GetComponent<Bullet>();
-                bullet.Initialize(fireDir, _player.gameObject);
-            }
-            yield return new WaitForSeconds(fireRate);
+            Vector3 dir = GetFireDirection();
+            GameObject obj = Instantiate(_bulletPrefab, _attackPos.position, Quaternion.LookRotation(dir));
+            obj.GetComponent<Bullet>()
+               .Initialize(dir, _player.gameObject);
         }
     }
 
@@ -97,21 +81,5 @@ public class Shotgun : WeaponBase
         Vector3 randomOffset = Random.insideUnitSphere * _scatterRadius;
         Vector3 finalPos = sphereCenter + randomOffset;
         return (finalPos - startPos).normalized;
-    }
-
-    private IEnumerator SpawnTrail(GameObject trail, Vector3 hitPoint)
-    {
-        float alpha = 0f;
-        Vector3 startPos = trail.transform.position;
-
-        while (alpha < 2f)
-        {
-            trail.transform.position = Vector3.Lerp(startPos, hitPoint, alpha);
-            alpha += Time.deltaTime / 0.2f;//trailRenderer.time;
-
-
-            if (alpha >= 2) ObjectPool.Instance.ReturnToPool(trail);
-            yield return null;
-        }
     }
 }
