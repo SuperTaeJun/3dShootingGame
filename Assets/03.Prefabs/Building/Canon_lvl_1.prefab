@@ -100,6 +100,7 @@ GameObject:
   - component: {fileID: 4047213423198265501}
   - component: {fileID: 7068397820456067953}
   - component: {fileID: 9121794354257549338}
+  - component: {fileID: 8507819261260981481}
   m_Layer: 0
   m_Name: Canon_lvl_1
   m_TagString: Building
@@ -222,6 +223,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.5942931, y: 0.9847822, z: 0.9391765}
   m_Center: {x: 0, y: 0.48275936, z: 0.17744854}
+--- !u!208 &8507819261260981481
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2117189860210124079}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.29714656, y: 0.4923911, z: 0.46958825}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0.4827594, z: 0.1774485}
+  m_TimeToStationary: 0.5
 --- !u!1 &7081819437327170401
 GameObject:
   m_ObjectHideFlags: 0

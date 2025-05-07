@@ -2,13 +2,11 @@ using UnityEngine;
 
 public class BuildManager : MonoBehaviour
 {
-    public GameObject[] buildingPrefabs;
+    public GameObject[] BuildingPrefabs;
+    public LayerMask TerrainLayer;
 
-    public float gridSize = 2f;
-    public LayerMask terrainLayer;
-
-    private GameObject previewInstance;
-    private int selectedIndex = 0;
+    private GameObject _previewInstance;
+    private int _selectedIndex = 0;
 
     void Update()
     {
@@ -18,23 +16,23 @@ public class BuildManager : MonoBehaviour
 
     public void StartBuildMode(int prefabIndex)
     {
-        selectedIndex = prefabIndex;
+        _selectedIndex = prefabIndex;
 
 
-        if (previewInstance != null) Destroy(previewInstance);
+        if (_previewInstance != null) Destroy(_previewInstance);
 
 
-        previewInstance = Instantiate(buildingPrefabs[selectedIndex]);
+        _previewInstance = Instantiate(BuildingPrefabs[_selectedIndex]);
 
 
-        foreach (var col in previewInstance.GetComponentsInChildren<Collider>()) col.enabled = false;
-        var bo = previewInstance.GetComponent<BuildableObject>();
+        foreach (var col in _previewInstance.GetComponentsInChildren<Collider>()) col.enabled = false;
+        var bo = _previewInstance.GetComponent<BuildableObject>();
         if (bo != null) Destroy(bo);
 
 
-        previewInstance.SetActive(false);
+        _previewInstance.SetActive(false);
 
-        SetPreviewMaterial(previewInstance, new Color(1, 1, 1, 0.5f));
+        SetPreviewMaterial(_previewInstance, new Color(1, 1, 1, 0.5f));
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
@@ -42,42 +40,39 @@ public class BuildManager : MonoBehaviour
 
     private void HandlePreview()
     {
-        if (previewInstance == null) return;
+        if (_previewInstance == null) return;
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (!Physics.Raycast(ray, out RaycastHit hit, 200f, terrainLayer))
+        if (!Physics.Raycast(ray, out RaycastHit hit, 200f, TerrainLayer))
         {
-            previewInstance.SetActive(false);
+            _previewInstance.SetActive(false);
             return;
         }
 
- 
-        Vector3 snapped = new Vector3(
-            Mathf.Round(hit.point.x / gridSize) * gridSize,
-            hit.point.y,
-            Mathf.Round(hit.point.z / gridSize) * gridSize
-        );
 
-        previewInstance.transform.position = snapped;
-        previewInstance.SetActive(true);
+        Vector3 snappedPos = hit.point;
 
 
-        bool canPlace = CanPlace(snapped) &&
+        _previewInstance.transform.position = snappedPos;
+        _previewInstance.SetActive(true);
+
+
+        bool canPlace = CanPlace(snappedPos) &&
                         CurrencyManager.Instance.GetCurrency(ECurrencyType.Gold)
-                        >= buildingPrefabs[selectedIndex]
+                        >= BuildingPrefabs[_selectedIndex]
                           .GetComponent<BuildableObject>()
-                          .buildCost;
-        SetPreviewMaterial(previewInstance,canPlace ? Color.green * 0.5f : Color.red * 0.5f);
+                          .BuildCost;
+        SetPreviewMaterial(_previewInstance,canPlace ? Color.green * 0.5f : Color.red * 0.5f);
 
 
         if (canPlace && Input.GetMouseButtonDown(1))
         {
-            var buildable = buildingPrefabs[selectedIndex].GetComponent<BuildableObject>();
+            var buildable = BuildingPrefabs[_selectedIndex].GetComponent<BuildableObject>();
 
   
             GameObject placed = Instantiate(
-                buildingPrefabs[selectedIndex],
-                snapped,
+                BuildingPrefabs[_selectedIndex],
+                snappedPos,
                 Quaternion.identity
             );
             placed.tag = "Building";
@@ -85,7 +80,7 @@ public class BuildManager : MonoBehaviour
 
             CurrencyManager.Instance.SpendCurrency(
                 ECurrencyType.Gold,
-                buildable.buildCost
+                buildable.BuildCost
             );
 
             CancelBuildMode();
@@ -94,7 +89,7 @@ public class BuildManager : MonoBehaviour
 
     private bool CanPlace(Vector3 pos)
     {
-        float radius = gridSize * 0.4f;
+        float radius =  0.4f;
         foreach (var c in Physics.OverlapSphere(pos, radius))
             if (c.CompareTag("Building"))
                 return false;
@@ -103,10 +98,10 @@ public class BuildManager : MonoBehaviour
 
     public void CancelBuildMode()
     {
-        if (previewInstance != null)
+        if (_previewInstance != null)
         {
-            Destroy(previewInstance);
-            previewInstance = null;
+            Destroy(_previewInstance);
+            _previewInstance = null;
         }
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -114,8 +109,8 @@ public class BuildManager : MonoBehaviour
 
     private void HandleRotateInput()
     {
-        if (previewInstance != null && Input.GetKeyDown(KeyCode.Tab))
-            previewInstance.transform.Rotate(Vector3.up, 90f);
+        if (_previewInstance != null && Input.GetKeyDown(KeyCode.Tab))
+            _previewInstance.transform.Rotate(Vector3.up, 90f);
     }
 
     private void SetPreviewMaterial(GameObject go, Color col)

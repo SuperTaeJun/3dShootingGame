@@ -4,24 +4,24 @@ using UnityEngine;
 public class AttackTower : BuildableObject
 {
     [Header("Turret Settings")]
-    public float attackRange = 20f;
-    public float attackCooldown = 1f;
-    public int attackDamage = 10;
+    public float AttackRange = 20f;
+    public float AttackCooldown = 1f;
+    public int AttackDamage = 10;
 
     [Header("Projectile Settings")]
-    public GameObject bulletPrefab;     
-    public Transform firePoint;         
+    public GameObject BulletPrefab;     
+    public Transform FirePoint;         
 
-    public LayerMask enemyLayerMask;
+    public LayerMask EnemyLayerMask;
 
-    private float attackTimer = 0f;
+    private float _attackTimer = 0f;
 
     void Update()
     {
-        attackTimer -= Time.deltaTime;
-        if (attackTimer > 0f) return;
+        _attackTimer -= Time.deltaTime;
+        if (_attackTimer > 0f) return;
 
-        Collider[] hits = Physics.OverlapSphere(transform.position, attackRange, enemyLayerMask, QueryTriggerInteraction.Collide);
+        Collider[] hits = Physics.OverlapSphere(transform.position, AttackRange, EnemyLayerMask, QueryTriggerInteraction.Collide);
         Enemy closest = null;
         float minDistSqr = float.MaxValue;
 
@@ -41,7 +41,7 @@ public class AttackTower : BuildableObject
         if (closest != null)
         {
             Shoot(closest);
-            attackTimer = attackCooldown;
+            _attackTimer = AttackCooldown;
         }
     }
 
@@ -51,7 +51,7 @@ public class AttackTower : BuildableObject
         Vector3 dir = (target.transform.position - transform.position).normalized;
         transform.rotation = Quaternion.LookRotation(new Vector3(dir.x, 0, dir.z));
 
-        GameObject bulletObj = Instantiate(bulletPrefab, firePoint.position, Quaternion.LookRotation(dir));
+        GameObject bulletObj = Instantiate(BulletPrefab, FirePoint.position, Quaternion.LookRotation(dir));
         var bullet = bulletObj.GetComponent<Bullet>();
         bullet.Initialize(dir, gameObject);
 
@@ -61,6 +61,6 @@ public class AttackTower : BuildableObject
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, attackRange);
+        Gizmos.DrawWireSphere(transform.position, AttackRange);
     }
 }
