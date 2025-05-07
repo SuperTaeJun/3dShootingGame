@@ -24,10 +24,11 @@ public abstract class ProjectileBase : MonoBehaviour
     {
         Destroy(gameObject, 10f);
     }
-    public virtual void Initialize(Vector3 launchDirection , GameObject owner = null)
+    public virtual void Initialize(Vector3 launchDirection, int damage ,GameObject owner = null)
     {
         this._owner = owner;
         _rb.linearVelocity = launchDirection.normalized * _speed;
+        _damage = damage;
     }
 
     protected virtual void OnCollisionEnter(Collision collision)

@@ -23,6 +23,9 @@ public enum EEnemyType
 }
 public class Enemy : MonoBehaviour, IDamageable
 {
+    private Transform _baseTarget;
+    public Transform BaseTarget => _baseTarget;
+
     [Header("Data")]
     [SerializeField] protected SO_EnemyData _enemyData;
     [SerializeField] private Transform _ragdollCenterBone;
@@ -79,6 +82,8 @@ public class Enemy : MonoBehaviour, IDamageable
     }
     protected virtual void Awake()
     {
+        _baseTarget = GameObject.FindGameObjectWithTag("BaseCamp").gameObject.transform;
+
         _startPosition = transform.position;
         Agent = GetComponent<NavMeshAgent>();
 
@@ -125,11 +130,20 @@ public class Enemy : MonoBehaviour, IDamageable
         _stateMachine.Update();
 
     }
-
+    private float _cooldownDuration = 10f;
+    private float _lastDamagedTime = -Mathf.Infinity;
     public void TakeDamage(Damage damage)
     {
         _currentHealth -= damage.Value;
         _uiController.RefreshPlayer(_currentHealth);
+        FlashRed(1);
+        // 쿨타임 중이면 그냥 Trace 상태로 돌아가기
+        if (Time.time < _lastDamagedTime + _cooldownDuration && CurrentHealth >0)
+        {
+            return;
+        }
+        // 쿨타임 갱신
+        _lastDamagedTime = Time.time;
 
         _stateMachine.ChangeState(EEnemyState.Damaged);
 

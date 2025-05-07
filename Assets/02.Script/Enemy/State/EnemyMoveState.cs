@@ -16,8 +16,9 @@ public class EnemyMoveState : EnemyState
         _enemy.Agent.isStopped = false;
         _enemy.Agent.speed = _enemy.Data.MoveSpeed;
 
-        PickNewDestination();
-        _enemy.Agent.SetDestination(Destination);
+        //PickNewDestination();
+        //_enemy.Agent.SetDestination(Destination);
+        MoveToBase();
     }
 
     public override void Exit()
@@ -43,8 +44,19 @@ public class EnemyMoveState : EnemyState
             _stateMachine.ChangeState(EEnemyState.Idle);
         }
 
-
     }
+    private void MoveToBase()
+    {
+        if (_enemy.BaseTarget != null)
+        {
+            _enemy.Agent.SetDestination(_enemy.BaseTarget.position);
+        }
+        else
+        {
+            Debug.LogWarning("BaseTarget is not assigned on Enemy.");
+        }
+    }
+
     void PickNewDestination()
     {
         float maxDistance = 80f; // 원하는 이동 거리 범위

@@ -16,5 +16,5 @@ MonoBehaviour:
   MaxBulletNum: 50
   FireRate: 1
   ReloadTime: 2
-  Damage: 20
+  Damage: 5
   AttackRange: 10

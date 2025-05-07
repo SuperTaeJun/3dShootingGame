@@ -46,7 +46,7 @@ public class Shotgun : WeaponBase
             Vector3 dir = GetFireDirection();
             GameObject obj = Instantiate(_bulletPrefab, _attackPos.position, Quaternion.LookRotation(dir));
             obj.GetComponent<Bullet>()
-               .Initialize(dir, _player.gameObject);
+               .Initialize(dir, Data.Damage, _player.gameObject);
         }
     }
 

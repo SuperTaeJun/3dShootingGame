@@ -2,28 +2,37 @@ using UnityEngine;
 
 public class Bomb : ProjectileBase
 {
-    [Header("Explosion Settings")]
-    [SerializeField] private float explosionRadius = 3f;
-    [SerializeField] private float explosionForce = 40f;
-    [SerializeField] private int explosionDamage = 10;
-    [SerializeField] private LayerMask damageLayer = default;
+    [Header("Bomb Settings")]
+    [SerializeField] private float _explosionRadius = 5f;
+    [SerializeField] private LayerMask _damageableLayers;
 
     protected override void OnProjectileImpact(Collision collision)
     {
-        Vector3 center = transform.position;
-
-        // 디버그 시각화
-        Debug.DrawLine(center, center + Vector3.up * 0.1f, Color.red, 1.0f);
-        DebugExtension.DrawSphere(center, Color.red, explosionRadius, 10);
-
-        // 범위 내 피해 적용
-        Collider[] hitTargets = Physics.OverlapSphere(center, explosionRadius, damageLayer);
-        foreach (var target in hitTargets)
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, _explosionRadius, _damageableLayers);
+        foreach (var hitCollider in hitColliders)
         {
-            if (target.GetComponentInParent<IDamageable>() is IDamageable damageable)
+            Vector3 directionToTarget = (hitCollider.transform.position - transform.position).normalized;
+
+            EnemyShield shield = hitCollider.GetComponent<EnemyShield>();
+            if (shield)
             {
-                damageable.TakeDamage(new Damage(explosionDamage, _owner, explosionForce, transform.forward));
+                shield.TakeDamage(new Damage(_damage, _owner, 10f, directionToTarget));
+                continue;
+            }
+
+            if (hitCollider.GetComponentInParent<IDamageable>() is IDamageable target)
+            {
+                target.TakeDamage(new Damage(_damage, _owner, 10f, directionToTarget));
             }
         }
     }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, _explosionRadius);
+    }
 }
+
+
+
