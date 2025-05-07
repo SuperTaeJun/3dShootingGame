@@ -124,8 +124,8 @@ public class MyCamera : MonoBehaviour
             Cursor.lockState = CursorLockMode.None;
         }
 
-        if (Input.GetKeyDown(KeyCode.F1)) Cursor.lockState = CursorLockMode.Locked;
-        if (Input.GetKeyDown(KeyCode.F2)) Cursor.lockState = CursorLockMode.None;
+        //if (Input.GetKeyDown(KeyCode.F1)) Cursor.lockState = CursorLockMode.Locked;
+        //if (Input.GetKeyDown(KeyCode.F2)) Cursor.lockState = CursorLockMode.None;
     }
 
     private void SetCameraType(ECameraType newType)

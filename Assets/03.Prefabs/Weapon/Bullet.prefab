@@ -111,6 +111,18 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 7
       objectReference: {fileID: 0}
+    - target: {fileID: 5859815570234300078, guid: 83f8c9cbe221fca4eaae68c50efd83d3, type: 3}
+      propertyPath: looping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5859815570234300078, guid: 83f8c9cbe221fca4eaae68c50efd83d3, type: 3}
+      propertyPath: stopAction
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5859815570234300078, guid: 83f8c9cbe221fca4eaae68c50efd83d3, type: 3}
+      propertyPath: lengthInSec
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 5912344974454636654, guid: 83f8c9cbe221fca4eaae68c50efd83d3, type: 3}
       propertyPath: m_Name
       value: SmallEnergyBullet
@@ -126,6 +138,18 @@ PrefabInstance:
     - target: {fileID: 5977554717477253535, guid: 83f8c9cbe221fca4eaae68c50efd83d3, type: 3}
       propertyPath: m_Layer
       value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7300938123587259680, guid: 83f8c9cbe221fca4eaae68c50efd83d3, type: 3}
+      propertyPath: looping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7300938123587259680, guid: 83f8c9cbe221fca4eaae68c50efd83d3, type: 3}
+      propertyPath: stopAction
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7300938123587259680, guid: 83f8c9cbe221fca4eaae68c50efd83d3, type: 3}
+      propertyPath: lengthInSec
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7459070775325551399, guid: 83f8c9cbe221fca4eaae68c50efd83d3, type: 3}
       propertyPath: m_LocalPosition.x
@@ -167,9 +191,33 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7537485722929905639, guid: 83f8c9cbe221fca4eaae68c50efd83d3, type: 3}
+      propertyPath: looping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7537485722929905639, guid: 83f8c9cbe221fca4eaae68c50efd83d3, type: 3}
+      propertyPath: stopAction
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7537485722929905639, guid: 83f8c9cbe221fca4eaae68c50efd83d3, type: 3}
+      propertyPath: lengthInSec
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 8062084589951058596, guid: 83f8c9cbe221fca4eaae68c50efd83d3, type: 3}
       propertyPath: m_Layer
       value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8843151686388034270, guid: 83f8c9cbe221fca4eaae68c50efd83d3, type: 3}
+      propertyPath: looping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8843151686388034270, guid: 83f8c9cbe221fca4eaae68c50efd83d3, type: 3}
+      propertyPath: stopAction
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8843151686388034270, guid: 83f8c9cbe221fca4eaae68c50efd83d3, type: 3}
+      propertyPath: lengthInSec
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

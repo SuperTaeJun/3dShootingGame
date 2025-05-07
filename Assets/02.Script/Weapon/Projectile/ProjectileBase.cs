@@ -20,6 +20,10 @@ public abstract class ProjectileBase : MonoBehaviour
         _rb = GetComponent<Rigidbody>();
     }
 
+    protected virtual void Start()
+    {
+        Destroy(gameObject, 10f);
+    }
     public virtual void Initialize(Vector3 launchDirection , GameObject owner = null)
     {
         this._owner = owner;
