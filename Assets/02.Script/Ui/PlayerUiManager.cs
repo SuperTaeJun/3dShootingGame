@@ -58,9 +58,7 @@ public class PlayerUiManager : MonoBehaviour
 
         _player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
 
-        GameManager.Instance.OnChangeGameToReady += GameReady;
-        GameManager.Instance.OnChangeGameToRun += GameRun;
-        GameManager.Instance.OnChangeGameToOver += GameOver;
+        GameManager.Instance.OnChangeGameStatea += OnChangeGameStatea;
 
 
     }
@@ -117,50 +115,13 @@ public class PlayerUiManager : MonoBehaviour
         SetActiveUI(EUiType.CrossHair, showCrosshair);
     }
 
-    private void GameReady()
-    {
-        StartCoroutine(ReadyRoutine());
-    }
-    IEnumerator ReadyRoutine()
-    {
-        ReadyText.gameObject.SetActive(true);
-        Time.timeScale = 0;
-        yield return new WaitForSecondsRealtime(3f);
-        ReadyText.gameObject.SetActive(false);
-        GameManager.Instance.ChanageState(EGameState.Run);
-    }
-
-    private void GameRun()
-    {
-        StartCoroutine(RunRoutine());
-    }
-
-    IEnumerator RunRoutine()
-    {
-        RunText.gameObject.SetActive(true);
-        Time.timeScale = 0;
-        yield return new WaitForSecondsRealtime(1f);
-        Time.timeScale = 1;
-        RunText.gameObject.SetActive(false);
-    }
-    private void GameOver()
-    {
-        StartCoroutine(OverRoutine());
-    }
-
-    IEnumerator OverRoutine()
-    {
-        OverText.gameObject.SetActive(true);
-        Time.timeScale = 0;
-        yield return new WaitForSecondsRealtime(5f);
-
-        GameManager.Instance.ChanageState(EGameState.Ready);
-        OverText.gameObject.SetActive(false);
-    }
-
-    private void RefreshCurrencyUi()
+      private void RefreshCurrencyUi()
     {
         GoldText.text = $"Gold : {CurrencyManager.Instance.GetCurrency(ECurrencyType.Gold)}";
         DiamondText.text = $"Diamond : {CurrencyManager.Instance.GetCurrency(ECurrencyType.Diamond)}";
+    }
+
+    public void OnChangeGameStatea(EGameState curState)
+    {
     }
 }

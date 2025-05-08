@@ -34,9 +34,9 @@ public class Rifle : WeaponBase
     private void HandleBulletInput()
     {
         _cooldownTimer -= Time.deltaTime;
-
         if (Input.GetMouseButton(0) && _cooldownTimer <= 0f && _player.CurrentBulletNum > 0)
         {
+
             FireOnce();
             _cooldownTimer = _data.FireRate;
         }
