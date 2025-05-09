@@ -1,3 +1,4 @@
+using System.Collections;
 using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
 using static UnityEngine.UI.GridLayoutGroup;
@@ -11,6 +12,8 @@ public abstract class ProjectileBase : MonoBehaviour
     [Header("Stats")]
     [SerializeField] protected float _speed = 50f;
     [SerializeField] protected int _damage = 10;
+    private float _lifeTime = 4f;
+    private float _timer = 0;
 
     [Header("Effects")]
     [SerializeField] protected GameObject _explosionVfxPrefab;
@@ -20,9 +23,24 @@ public abstract class ProjectileBase : MonoBehaviour
         _rb = GetComponent<Rigidbody>();
     }
 
+    protected virtual void OnEnable()
+    {
+        _timer = _lifeTime;
+    }
+
     protected virtual void Start()
     {
-        Destroy(gameObject, 10f);
+
+    }
+    protected virtual void Update()
+    {
+        _timer -= Time.deltaTime;
+
+        if(_timer <0)
+        {
+            ObjectPool.Instance.ReturnToPool(gameObject);
+        }
+
     }
     public virtual void Initialize(Vector3 launchDirection, int damage ,GameObject owner = null)
     {
@@ -35,7 +53,7 @@ public abstract class ProjectileBase : MonoBehaviour
     {
         OnProjectileImpact(collision);
         PlayImpactEffect();
-        Destroy(gameObject);
+        ObjectPool.Instance.ReturnToPool(gameObject);
     }
     
 
@@ -48,4 +66,5 @@ public abstract class ProjectileBase : MonoBehaviour
             Instantiate(_explosionVfxPrefab, transform.position, Quaternion.identity);
         }
     }
+
 }

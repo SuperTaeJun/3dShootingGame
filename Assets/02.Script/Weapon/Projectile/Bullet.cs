@@ -2,10 +2,6 @@ using UnityEngine;
 
 public class Bullet : ProjectileBase
 {
-    [Header("Bullet Settings")]
-    [SerializeField] private float _lifeTime = 3f;
-
-
     protected override void OnProjectileImpact(Collision collision)
     {
         EnemyShield shield = collision.collider.GetComponent<EnemyShield>();

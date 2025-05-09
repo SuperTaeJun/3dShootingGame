@@ -13,7 +13,8 @@ public class EnemyDamagedState : EnemyState
 
         base.Enter();
 
-        _enemy.Agent.isStopped = true;
+        if(_enemy.gameObject.activeSelf == true)
+            _enemy.Agent.isStopped = true;
 
     }
 
@@ -26,8 +27,10 @@ public class EnemyDamagedState : EnemyState
     {
         base.Update();
 
+
         if (_enemy.CurrentHealth <= 0)
         {
+            _enemy.IsDead = true;
             _stateMachine.ChangeState(EEnemyState.Dead);
         }
         if (_triggerCalled)

@@ -53,4 +53,4 @@ MonoBehaviour:
     spawnWeight: 3
   - prefab: {fileID: 2952054487582207492, guid: 7c199bfad9b12da48bd131b1f3b9d9fd, type: 3}
     spawnWeight: 2
-  _spawnInterval: 12
+  _spawnInterval: 2

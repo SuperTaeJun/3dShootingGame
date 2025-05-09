@@ -11,7 +11,8 @@ public class SingleShotTower : BaseAttackTower
         Vector3 dir = (target.transform.position - transform.position).normalized;
         transform.rotation = Quaternion.LookRotation(new Vector3(dir.x, 0, dir.z));
 
-        GameObject bulletObj = Instantiate(BulletPrefab, FirePoint.position, Quaternion.LookRotation(dir));
+        //GameObject bulletObj = Instantiate(BulletPrefab, FirePoint.position, Quaternion.LookRotation(dir));
+        GameObject bulletObj = ObjectPool.Instance.GetObject(BulletPrefab, FirePoint.position, Quaternion.LookRotation(dir));
         bulletObj.GetComponent<Bullet>().Initialize(dir, Damage, gameObject);
     }
 }

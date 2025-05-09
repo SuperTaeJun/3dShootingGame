@@ -29,20 +29,25 @@ public class EnemyState
 
     public virtual void Enter()
     {
+        
+
         _stateTimer = 0;
 
         SetAnimation(true);
         _triggerCalled = false;
 
+        if (_enemy.gameObject.activeSelf != true) return;
+
     }
     public virtual void Update()
     {
         _stateTimer -= Time.deltaTime;
-
+        if (_enemy.gameObject.activeSelf != true) return;
     }
     public virtual void Exit()
     {
         SetAnimation(false);
+        if (_enemy.gameObject.activeSelf != true) return;
     }
 
     public void AnimTrigger() => _triggerCalled = true;

@@ -49,13 +49,13 @@ public class Rifle : WeaponBase
         _player.UseBullet();
 
         Vector3 dir = GetFireDirection();
-        GameObject bullet = Instantiate(
-            _bulletPrefab,
-            _attackPos.position,
-            Quaternion.LookRotation(dir)
-        );
-        bullet.GetComponent<Bullet>()
-              .Initialize(dir, Data.Damage,_player.gameObject);
+        //GameObject bullet = Instantiate(
+        //    _bulletPrefab,
+        //    _attackPos.position,
+        //    Quaternion.LookRotation(dir)
+        //);
+        GameObject bullet = ObjectPool.Instance.GetObject(_bulletPrefab, _attackPos.position, Quaternion.LookRotation(dir));
+        bullet.GetComponent<Bullet>().Initialize(dir, Data.Damage,_player.gameObject);
     }
 
     // 지금 카메라 모드에따라서 다른 방식으로 방향을구해줌 + 반동도 추가됨

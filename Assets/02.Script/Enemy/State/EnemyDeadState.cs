@@ -16,6 +16,7 @@ public class EnemyDeadState : EnemyState
     public override void Enter()
     {
         base.Enter();
+
         _stateTimer = _enemy.Data.DeadTime;
 
         _enemy.Agent.isStopped = true;
@@ -40,7 +41,6 @@ public class EnemyDeadState : EnemyState
     {
         base.Update();
 
-        // 남은 시간 비례로 _Fade 값 보간 (1 → 0)
         float f = Mathf.Clamp01(_stateTimer / _enemy.Data.DeadTime);
         foreach (var mat in _materials)
         {
@@ -54,7 +54,6 @@ public class EnemyDeadState : EnemyState
             DropGold();
             _ragdollController.DisableRagdoll();
 
-            // fade를 원상(1)으로 돌려놓고
             foreach (var mat in _materials)
             {
                 if (mat.HasProperty("_Fade"))
@@ -66,7 +65,7 @@ public class EnemyDeadState : EnemyState
     }
     private void DropGold()
     {
-        var dropPrefab = _enemy.CurrencyDropPrefab; // 드랍용 골드 프리팹 연결 필요
+        var dropPrefab = _enemy.CurrencyDropPrefab; 
         if (dropPrefab == null)
         {
             Debug.LogWarning("CurrencyDropPrefab이 세팅 안되어있어요!");
@@ -74,7 +73,7 @@ public class EnemyDeadState : EnemyState
         }
 
         GoldItem drop = GameObject.Instantiate(dropPrefab, _enemy.RagdollCenterBone.position, Quaternion.identity).GetComponent<GoldItem>();
-        drop.Initialize(ECurrencyType.Gold, Random.Range(5, 11)); // 5~10 골드 랜덤 드랍
+        drop.Initialize(ECurrencyType.Gold, Random.Range(5, 11)); 
     }
 
 }

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public enum EUiType
@@ -37,6 +38,11 @@ public class PlayerUiManager : MonoBehaviour
     [Header("UiElementss")]
     [SerializeField] private Dictionary<EUiType, GameObject> uiElements;
 
+    [Header("Loading")]
+    public Slider ProgressSlider;
+    public TextMeshProUGUI ProgressText;
+    public Image LoadingImage;
+
     private void Awake()
     {
         if (Instance == null)
@@ -68,6 +74,7 @@ public class PlayerUiManager : MonoBehaviour
         PlayerWeaponController.OnWeaponChange += OnChanageWeaponUi;
         MyCamera.OnCameraTypeChanged += HandleCameraTypeChanged;
         CurrencyManager.Instance.OnChangedCurrency += RefreshCurrencyUi;
+
     }
     public void OnChanageWeaponUi(EWeaponType currentType)
     {
@@ -124,4 +131,5 @@ public class PlayerUiManager : MonoBehaviour
     public void OnChangeGameStatea(EGameState curState)
     {
     }
+
 }

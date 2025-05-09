@@ -21,9 +21,7 @@ public class EnemySapwner : MonoBehaviour
         {
             var enemyInfo = GetRandomEnemyInfo();
 
-            GameObject enemy = ObjectPool.Instance.GetObject(enemyInfo.prefab);
-            enemy.transform.position = transform.position;
-            enemy.transform.rotation = Quaternion.identity;
+            GameObject enemy = ObjectPool.Instance.GetObject(enemyInfo.prefab, transform.position, Quaternion.identity);
 
             yield return new WaitForSeconds(interval);
         }

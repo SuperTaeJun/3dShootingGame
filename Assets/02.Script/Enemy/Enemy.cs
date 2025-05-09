@@ -62,6 +62,9 @@ public class Enemy : MonoBehaviour, IDamageable
     public GameObject JumpAttackVfx;
     private float lastCoolTimeJumped;
 
+
+    public bool IsDead = false;
+
     #region Getter
     public GameObject Player => _player;
     public Animator Animator => _animator;
@@ -75,6 +78,7 @@ public class Enemy : MonoBehaviour, IDamageable
     {
         _startPosition = transform.position;
         _currentHealth = Data.Health;
+        IsDead = false;
         _uiController.SetActiveHealthBar(true);
         _uiController.RefreshPlayer(_currentHealth);
 
@@ -134,6 +138,8 @@ public class Enemy : MonoBehaviour, IDamageable
     private float _lastDamagedTime = -Mathf.Infinity;
     public void TakeDamage(Damage damage)
     {
+        if (IsDead == true) return;
+
         _currentHealth -= damage.Value;
         _uiController.RefreshPlayer(_currentHealth);
         FlashRed(1);

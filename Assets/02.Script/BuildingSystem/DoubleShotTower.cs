@@ -11,10 +11,10 @@ public class DoubleShotTower : BaseAttackTower
         transform.rotation = Quaternion.LookRotation(new Vector3(dir.x, 0, dir.z));
 
         // 각 총구에서 직진 방향으로 발사
-        GameObject bullet1 = Instantiate(BulletPrefab, FirePoint[0].position, Quaternion.LookRotation(dir));
-        bullet1.GetComponent<Bullet>().Initialize(dir, Damage, gameObject);
+        GameObject bulletObj1 = ObjectPool.Instance.GetObject(BulletPrefab, FirePoint[0].position, Quaternion.LookRotation(dir));
+        bulletObj1.GetComponent<Bullet>().Initialize(dir, Damage, gameObject);
 
-        GameObject bullet2 = Instantiate(BulletPrefab, FirePoint[1].position, Quaternion.LookRotation(dir));
-        bullet2.GetComponent<Bullet>().Initialize(dir, Damage, gameObject);
+        GameObject bulletObj2 = ObjectPool.Instance.GetObject(BulletPrefab, FirePoint[1].position, Quaternion.LookRotation(dir));
+        bulletObj2.GetComponent<Bullet>().Initialize(dir, Damage, gameObject);
     }
 }

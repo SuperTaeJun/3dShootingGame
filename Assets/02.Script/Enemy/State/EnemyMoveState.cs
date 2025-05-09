@@ -39,11 +39,13 @@ public class EnemyMoveState : EnemyState
 
         _enemy.transform.rotation = _enemy.ForwardTarget(_enemy.Agent.steeringTarget);
 
-        if (_enemy.Agent.remainingDistance <= _enemy.Agent.stoppingDistance + 0.05f)
+        if (_enemy.Agent.isActiveAndEnabled && _enemy.Agent.isOnNavMesh)
         {
-            _stateMachine.ChangeState(EEnemyState.Idle);
+            if (_enemy.Agent.remainingDistance <= _enemy.Agent.stoppingDistance + 0.05f)
+            {
+                _stateMachine.ChangeState(EEnemyState.Idle);
+            }
         }
-
     }
     private void MoveToBase()
     {
